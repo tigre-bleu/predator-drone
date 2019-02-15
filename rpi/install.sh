@@ -19,3 +19,8 @@ sudo vim /etc/init.d/hostapd
 sudo apt install aircrack-ng
 sudo apt install npm
 #include nodejs
+
+# Configure Bluetooth PAN
+# https://raspberrypi.stackexchange.com/a/71587
+apt install bluez bluez-tools
+
