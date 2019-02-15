@@ -17,13 +17,13 @@ Le script `hack.py` est celui exécuté pour perpétrer l'attaque.
 
 - [x] Configurer la Raspberry Pi Zero W
 - [x] Faire fonctionner un cockpit
-- [ ] Faire fonctionner l'attaque :
+- [x] Faire fonctionner l'attaque :
   - [x] Listing des réseaux WiFi
   - [x] Filtrage des réseaux Parrot
   - [x] Listing des clients connectés à un réseau Parrot
   - [x] Désauthentification d'un client
-  - [ ] Connexion au réseau Parrot
-  - [ ] Prise de contrôle
+  - [x] Connexion au réseau Parrot
+  - [x] Prise de contrôle
 - [ ] Mettre au propre `hack.py`
   - [ ] Ordonner les fonctions
   - [ ] Spliter le script en une bibliothèque

