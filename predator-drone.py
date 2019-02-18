@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 #
 # Drone hacker tool
-# Inspired from https://github.com/samyk/skyjack/
 #
 
 from predatordrone.parrot.list import ParrotAPsList
@@ -37,6 +36,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Drone predator")
     parser.add_argument("--verb", "-v", type=int, default=disp.Verb.INFO,
             help="script verbosity (0,.. => ERROR, WARNING, INFO, DEBUG)")
+    parser.add_argument("iface", type=str, default="",
+            help="wireless interface to be used")
     args = parser.parse_args()
 
     # Register verbosity
@@ -52,7 +53,7 @@ if __name__ == "__main__":
             "                                /_/                                            \n")
 
     # Hacking tools
-    parrot_list = ParrotAPsList(WifiManager("wlp61s0", "phy0"))
+    parrot_list = ParrotAPsList(WifiManager(args.iface))
 
     # Main menu
     main_menu = Menu("Main menu:", "Your choice:",
