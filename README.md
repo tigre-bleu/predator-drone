@@ -24,9 +24,11 @@ Le script `hack.py` est celui exécuté pour perpétrer l'attaque.
   - [x] Désauthentification d'un client
   - [x] Connexion au réseau Parrot
   - [x] Prise de contrôle
-- [ ] Mettre au propre `hack.py`
-  - [ ] Ordonner les fonctions
-  - [ ] Spliter le script en une bibliothèque
+- [x] Mettre au propre `hack.py`
+  - [x] Ordonner les fonctions
+  - [x] Spliter le script en une bibliothèque
+  - [x] Définir plusieurs niveaux de verbosité
+- [ ] Utiliser la bibliothèque PyRIC
 - [ ] Étendre le concept à un autre drone, par exemple à l'Eachine E511
 
 
