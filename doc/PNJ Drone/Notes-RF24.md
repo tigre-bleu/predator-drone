@@ -33,3 +33,10 @@ On peut donc supposer que c'est une puce [BK2421](http://www.bekencorp.com/en/Bo
 # Analyse SPI
 
 [Tutorial on capturing SPI TX data](https://www.youtube.com/watch?v=ylGnIQcg1-E)
+
+CSN: Blanc
+CE: Jaune
+MISO: Gris
+IRQ: Non connecté
+MOSI: Vert
+SCK: Orange
