@@ -3,9 +3,9 @@
 # Wifi management
 #
 
-from external_exec import do
+from predatordrone.external_exec import do
+import predatordrone.disp as disp
 from scapy.all import *
-import disp
 
 
 

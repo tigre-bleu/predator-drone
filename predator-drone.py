@@ -4,11 +4,11 @@
 # Inspired from https://github.com/samyk/skyjack/
 #
 
-from parrot_list import ParrotAPsList
-from wifi import WifiManager
-from menu import Menu
+from predatordrone.parrot.list import ParrotAPsList
+from predatordrone.wifi import WifiManager
+from predatordrone.menu import Menu
+import predatordrone.disp as disp
 import argparse
-import disp
 
 
 
@@ -20,7 +20,7 @@ def clear_lists(menu, parrot_hacker):
     """ Clears all lists (registered APs, etc.). """
 
     menu.clear_numbered_opt()
-    disp.info("Numbered entries of main menu cleared")
+    disp.info("Main menu entries cleared")
 
     parrot_hacker.clear_lists()
     disp.info("Access Points lists cleared")

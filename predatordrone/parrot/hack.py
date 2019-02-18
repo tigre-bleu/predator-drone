@@ -3,10 +3,10 @@
 # Parrot APs listing functions
 #
 
-from wifi import WifiManager, AccessPoint, Client
-from external_exec import do
-from menu import Menu
-import disp
+from predatordrone.wifi import WifiManager, AccessPoint, Client
+from predatordrone.external_exec import do
+from predatordrone.menu import Menu
+import predatordrone.disp as disp
 import re
 
 
@@ -64,7 +64,7 @@ class ParrotHacker:
         """ Clears client list. """
 
         self.menu.clear_numbered_opt()
-        disp.info("Numbered entries of main menu cleared")
+        disp.info("Parrot hacking menu entries cleared")
 
         self.clients = []
         disp.info("Client list cleared")

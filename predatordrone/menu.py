@@ -3,7 +3,7 @@
 # Menu made easy!
 #
 
-import disp
+import predatordrone.disp as disp
 import sys
 
 

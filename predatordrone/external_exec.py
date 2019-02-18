@@ -3,8 +3,8 @@
 # External command execution
 #
 
+import predatordrone.disp as disp
 import subprocess as sbp
-import disp
 import sys
 
 
