@@ -29,5 +29,11 @@ Le script `predator-drone.py` est celui exécuté pour perpétrer l'attaque.
   - [x] Spliter le script en une bibliothèque
   - [x] Définir plusieurs niveaux de verbosité
 - [x] Utiliser la bibliothèque [PyRIC](https://github.com/wraith-wireless/pyric)
-- [ ] Étendre le concept à un autre drone, par exemple à l'Eachine E511
+- [ ] Mettre à jour le README avec des instructions d'installation
+  - [ ] `npm`, `bower`
+  - [ ] bug fix de scapy
+- [ ] Changer la méthode de connexion à un AccessPoint
+      => ne fonctionne actuellement pas toujours
+- [ ] [Vérifier l'euid au démarrage du 
+  script](https://stackoverflow.com/questions/2806897/)
 
