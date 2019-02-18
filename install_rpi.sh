@@ -180,5 +180,5 @@ bt-adapter --set Discoverable 0
 # ==========================
 
 apt install npm python3
-pip3 install pyric
+pip3 install pyric scapy
 
