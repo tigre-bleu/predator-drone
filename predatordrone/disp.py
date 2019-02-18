@@ -3,6 +3,8 @@
 # Display management
 #
 
+import sys
+
 
 # ======================
 #    Printing symbols
@@ -53,7 +55,7 @@ def red(*msg):
 # =============================================
 
 class Verb:
-    curr    = 0
+    curr    = 2
     ERROR   = 0
     WARNING = 1
     INFO    = 2
@@ -70,6 +72,13 @@ class Verb:
 
     def isdebug():
         return Verb.curr >= Verb.DEBUG
+
+
+def die(*msg):
+    """ Prints an error message. """
+    error(*msg)
+    print()
+    sys.exit(1)
 
 
 def error(*msg):

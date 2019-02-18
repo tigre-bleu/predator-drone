@@ -8,14 +8,15 @@ import subprocess as sbp
 import sys
 
 
-def do(*args):
+def do(*args, force_output=False):
     """ Execute an external command. """
-    command  = ' '.join(args)
+    command     = ' '.join(args)
+    show_output = disp.Verb.isdebug() or force_output
 
     try:
         disp.debug("Running '" + command + "'")
         p = sbp.Popen(command, shell=True, stderr=sys.stderr,
-                stdout=(None if disp.Verb.isdebug() else sys.stdout))
+                stdout=(sys.stdout if show_output else sbp.DEVNULL))
         p.wait()
 
         if p.returncode != 0:

