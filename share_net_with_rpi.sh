@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /usr/bin/env bash
 #
 # Enable NAT for RpiW0
 #
@@ -20,6 +20,7 @@ if [ "$#" -ne 1 ] || [ ! -d "/sys/class/net/$1" ]; then
   ls /sys/class/net
   exit
 fi
+
 
 # Enable routing
 echo 1 > /proc/sys/net/ipv4/ip_forward
