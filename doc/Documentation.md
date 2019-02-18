@@ -38,3 +38,21 @@ Then run ./baudline from downloaded tar on official website
 Shmoocon 2017: A Simple Tool For Reverse Engineering RF](https://hackaday.com/2017/01/15/shmoocon-2017-a-simple-tool-for-reverse-engineering-rf/)
 - [Universal Radio Hacker](https://github.com/jopohl/urh)
 - [NRF Analyse](https://github.com/chopengauer/nrf_analyze)
+
+## Share USB device over TCP:
+On server side:
+```
+sudo modprobe usbip_core
+sudo modprobe usbip_host
+sudo usbip list --local
+sudo usbip bind --busid=1-2
+```
+
+On client side:
+```
+sudo modprobe usbip_core
+sudo modprobe usbip_host
+sudo modprobe vhci-hcd
+sudo usbip list --remote=192.168.2.2
+sudo usbip attach --remote 192.168.2.2 --busid=1-2
+```
