@@ -27,8 +27,6 @@ class ParrotAPsList:
         : param wlan  A WifiManager instance, to manipulate WiFi
         """
         self.wlan = wlan
-
-        self.parrot_aps     = []
         self.parrot_hackers = []
 
 
@@ -49,11 +47,11 @@ class ParrotAPsList:
         disp.info("Filtering Parrot's APs")
         for ap in self.wlan.detected_aps:
             # Eventually register AP only if not registered
-            if ap not in self.parrot_aps:
+            hacker = ParrotHacker(self.wlan, ap)
+            if hacker not in self.parrot_hackers:
                 # Check all Parrot MACs
                 for mac in self.PARROT_MACS:
                     if re.match(mac, ap.bssid, re.IGNORECASE):
-                        hacker = ParrotHacker(self.wlan, ap)
                         self.parrot_hackers.append(hacker)
 
                         menu.add_numbered_opt( ("Hack Parrot", ap.ssid, '(' + ap.bssid + ')'),

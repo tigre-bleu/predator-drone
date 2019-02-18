@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 #
-# Parrot APs listing functions
+# Parrot AR.Drone hacking tool
+# Inspired from https://github.com/samyk/skyjack/
 #
 
 from predatordrone.wifi import WifiManager, AccessPoint, Client
@@ -48,6 +49,10 @@ class ParrotHacker:
 
     def __str__(self):
         return self.ap.__str__()
+
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.ap.__eq__(other.ap)
 
 
     def hack(self):
