@@ -19,9 +19,8 @@ def do(*args, force_output=False):
                 stdout=(sys.stdout if show_output else sbp.DEVNULL))
         p.wait()
 
-        if p.returncode != 0:
-            disp.error("Command failed with exit code", p.returncode)
-            sys.exit(1)
+        if p.returncode < 0:
+            disp.die("Command killed by signal", p.returncode)
         else:
             disp.debug("Command returned", p.returncode)
 

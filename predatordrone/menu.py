@@ -150,7 +150,7 @@ class Menu:
         """ Prints numbered menu options. """
         # Print numbered options if there are
         if len(self.numbered_opts) > 0:
-            for str_idx in self.numbered_opts:
+            for str_idx in sorted(self.numbered_opts):
                 option = self.numbered_opts[str_idx]
                 disp.menu_option(str_idx, option.msg)
 

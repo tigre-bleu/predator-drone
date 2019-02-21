@@ -75,7 +75,7 @@ class Verb:
 
 
 def die(*msg):
-    """ Prints an error message. """
+    """ Prints an error message then exit. """
     error(*msg)
     print()
     sys.exit(1)
