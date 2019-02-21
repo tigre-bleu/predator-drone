@@ -55,3 +55,21 @@ Services ouverts sur le Parrot AR drone :
   Oui, mais seulement avec le *Flight Recorder*, qui fait la traduction. Le module 
   introduit une gestion GPS et une interface avec *QGroundControl*.
 
+
+# Notes sur les dongles WiFi USB disponibles
+
+- [TP-Link TL-WN823N (puce RTL8192CU)](https://doc.ubuntu-fr.org/hercules_hwnup-150)
+- Ralink MT7601U (puce RTL8192SU) ([doc Debian](https://wiki.debian.org/fr/rtl819x))
+- [Dlink DWA-131 (non compatible *nl80211*)](https://doc.ubuntu-fr.org/dwa-131), non 
+  affiché par `iw dev`.
+
+# Recherches sur la désauthentification WiFi avec Scapy
+
+- <https://github.com/0x90/wifi-scripts/blob/master/deauth/psdos.py>
+- <https://github.com/catalyst256/MyJunk/blob/master/scapy-deauth.py>
+- 
+<https://pen-testing.sans.org/blog/2011/10/13/special-request-wireless-client-sniffing-with-scapy/>
+- <https://mrncciew.com/2014/10/11/802-11-mgmt-deauth-disassociation-frames/>
+- 
+<https://security.stackexchange.com/questions/145484/deauthentication-attacks-from-or-to-client>
+
