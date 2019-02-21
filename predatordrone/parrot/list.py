@@ -20,13 +20,17 @@ class ParrotAPsList:
     PARROT_MACS = ("90:03:B7", "00:12:1C", "90:3A:E6", "A0:14:3D", "00:12:1C", "00:26:7E")
 
 
-    def __init__(self, wlan):
+    def __init__(self, wlan_manager, mon_manager):
         """
         Initialize the Parrot APs listing class.
 
         : param wlan  A WifiManager instance, to manipulate WiFi
         """
-        self.wlan = wlan
+        # Register WifiManagers
+        self.wlan = wlan_manager
+        self.mon  = mon_manager
+
+        # Init ParrotHackers list
         self.parrot_hackers = []
 
 
@@ -41,13 +45,15 @@ class ParrotAPsList:
 
         : param menu  A Menu instance in which add Parrot APs
         """
-        self.wlan.refresh_aps_list()
+        self.mon.refresh_aps_list()
 
         # Filter Parrot's MAC addresses
         disp.info("Filtering Parrot's APs")
-        for ap in self.wlan.detected_aps:
-            # Eventually register AP only if not registered
-            hacker = ParrotHacker(self.wlan, ap)
+        for ap in self.mon.detected_aps:
+            # Build ParrotHacker class
+            hacker = ParrotHacker(ap, self.wlan, self.mon)
+
+            # Register AP only if not registered
             if hacker not in self.parrot_hackers:
                 # Check all Parrot MACs
                 for mac in self.PARROT_MACS:
@@ -62,7 +68,7 @@ class ParrotAPsList:
 
     def show_detected_aps(self):
         """ Show detected access points. """
-        self.wlan.show_detected_aps()
+        self.mon.show_detected_aps()
 
         # Show Parrot APs
         print("Found APs with Parrot MAC address:")
@@ -75,5 +81,5 @@ class ParrotAPsList:
     def clear_lists(self):
         """ Clears APs lists. """
         self.parrot_hackers = []
-        self.wlan.clear_aps_list()
+        self.mon.clear_aps_list()
 

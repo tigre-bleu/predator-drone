@@ -37,11 +37,19 @@ if __name__ == "__main__":
     parser.add_argument("--verb", "-v", type=int, default=disp.Verb.INFO,
             help="script verbosity (0,.. => ERROR, WARNING, INFO, DEBUG)")
     parser.add_argument("iface", type=str, default="",
-            help="wireless interface to be used")
+            help="wireless interface to be used to connect to Parrot")
+    parser.add_argument("mon_iface", type=str, default="",
+            help="wireless interface to be used in monitoring mode")
     args = parser.parse_args()
+
+
+    # Check that the two interfaces are differents
+    if args.iface == args.mon_iface:
+        disp.die("The monitoring interface and managed one must be different!")
 
     # Register verbosity
     disp.Verb.curr = args.verb
+
 
     # Display banner
     disp.banner(
@@ -52,8 +60,12 @@ if __name__ == "__main__":
             "  /_____/_/   \____/_/ /_/\___/  / .___/_/   \___/\__,_/\__,_/\__/\____/_/     \n"
             "                                /_/                                            \n")
 
+
     # Hacking tools
-    parrot_list = ParrotAPsList(WifiManager(args.iface))
+    wifi_mon = WifiManager(args.mon_iface, mon_mode=True)
+    wifi     = WifiManager(args.iface,     mon_mode=False)
+    parrot_list = ParrotAPsList(wifi, wifi_mon)
+
 
     # Main menu
     main_menu = Menu("Main menu:", "Your choice:",

