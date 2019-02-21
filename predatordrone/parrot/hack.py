@@ -128,7 +128,7 @@ class ParrotHacker:
         disp.info("Disconnecting client", client, "in a separated thread")
         deauth_process = Process(
                 target = self.mon.deauth_client,
-                args   = (client, self.ap, True))
+                args   = (client, self.ap, True, ))
         deauth_process.start()
 
         # Take control

