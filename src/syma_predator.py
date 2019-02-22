@@ -4,6 +4,8 @@
 import os,sys
 import time
 import threading
+import re
+from subprocess import Popen, PIPE
 
 from RF24 import *
 import RPi.GPIO as GPIO
@@ -12,7 +14,10 @@ import RPi.GPIO as GPIO
 
 config_cepin=RPI_V2_GPIO_P1_22 # CE PIN
 config_cspin=RPI_V2_GPIO_P1_24 # CS PIN
+
 config_joystick='/dev/hidraw0' # Joystick controller (needed for capture)
+
+usbip_server_list=["172.20.1.2", "172.20.1.3"] # Remote hosts that can host the Gamepad with USBIP
 
 ####################################
 
@@ -20,6 +25,12 @@ config_joystick='/dev/hidraw0' # Joystick controller (needed for capture)
 def debug_print(msg):
     if debug:
         print msg
+
+def shell_exec(cmd): 
+    process = Popen([cmd], stdout=PIPE,shell=True)
+    (output, err) = process.communicate()
+    exit_code = process.wait()
+    return output
 
 def exp(value, koef=1.01, maximum=255):
     if value < 10:
@@ -224,24 +235,56 @@ class Joystick_Controller(threading.Thread):
         debug_print("Initilizing joystick")
         path = '/dev/'
                 
-        try:
-            file_list = [f for f in os.listdir(path) if f.startswith('hidr')]
-            if file_list == []:
-                print ("Error: No device hidraw. Controlling the captured drone is not possible.")
+        init_joystick = True
+        while (init_joystick):
+        
+            try:
+                file_list = [f for f in os.listdir(path) if f.startswith('hidr')]
+                if file_list == []:
+                    print ("No existing hidraw device. Trying to connect with USBIP.")
+                    if (not self.connect_usbip()):
+                        print ("Error: Couldn't connect USBIP device. No joystick available.")
+                        exit(-1)
+                    time.sleep(1)
+                else:
+                    joystick_file = path + file_list[-1]
+                    print('Joystick detected: '+joystick_file)
+                    self.joystick = open(joystick_file, 'r')
+                    init_joystick = False
+            except:
+                print ("Error while initilizing joystick")
                 exit(-1)
-            else:
-                joystick_file = path + file_list[-1]
-                print('Joystick detected: '+joystick_file)
-                self.joystick = open(joystick_file, 'r')
-        except:
-            print ("Error while initilizing joystick")
-            exit(-1)
  
         super(Joystick_Controller, self).__init__()
 
         self.syma_controller = controller
 
         print("Everything is ready. Press <START> to capture drone "+str(self.syma_controller.address)+". Press <SELECT> to exit predator tool.")
+
+    def connect_usbip(self):
+        found = False
+
+        for ip in usbip_server_list:
+            if (not found):
+                output =shell_exec('usbip list --remote='+ip)
+
+                regex = r"([-0-9]+): GreenAsia Inc. : MaxFire Blaze2 \(0e8f:0003\)"
+                match = re.findall(regex,output)
+                if (match):
+                    busid = match[0]
+                    server = ip
+                    found = True
+        if found:
+            print("GreenAsia Gamepad detected on " + server + " with bus-id=" + busid)
+            output = shell_exec('modprobe usbip_host usbip_core')
+            output = shell_exec('modprobe vhci_hcd')
+        
+            output = shell_exec('usbip attach --remote ' + server + ' --busid=' + busid)
+            print(output)
+            return True
+        else:
+            print("GreenAsia Gamepad not detected in " + str(usbip_server_list))
+            return False
 
     def stop(self):
         self.stopped = True
@@ -318,12 +361,13 @@ if __name__ == "__main__":
             debug = False
     else:
         debug = False
-    #syma_scanner = Syma_Scanner()
-    #drones=syma_scanner.scan()
-    #syma_scanner.display_drones()
 
-    drones = {}
-    drones["a1ca201670"]=[10, 34, 66, 42]
+    syma_scanner = Syma_Scanner()
+    drones=syma_scanner.scan()
+    syma_scanner.display_drones()
+
+    #drones = {}
+    #drones["a1ca201670"]=[10, 34, 66, 42]
 
     for drone in drones:
         syma_controller = Syma_Controller(drone, drones[drone])
