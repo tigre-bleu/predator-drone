@@ -26,6 +26,9 @@ class AccessPoint:
         self.crypto = crypto
         self.ipv4   = None
 
+    def set_ipv4(self, ip):
+        self.ipv4 = ip
+
     def __str__(self):
         return "AP " + self.bssid                           \
             + " with SSID " + self.ssid                     \

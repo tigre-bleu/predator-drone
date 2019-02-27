@@ -82,8 +82,8 @@ class ParrotHacker:
     def register_client(self, client, ap_ip):
         """ Register a client to this Parrot AP. """
         # Register Access Point IP
-        self.ap.ipv4 = ap_ip
-        disp.debug("AP IPv4 is", ap_ip)
+        self.ap.set_ipv4(ap_ip)
+        disp.debug("AP IPv4 is", self.ap.ipv4 or "None")
 
         # Register client
         if client not in self.clients:
