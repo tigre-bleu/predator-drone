@@ -60,7 +60,7 @@ class ParrotAPsList:
                     if re.match(mac, ap.bssid, re.IGNORECASE):
                         self.parrot_hackers.append(hacker)
 
-                        menu.add_numbered_opt( ("Hack Parrot", ap.ssid, '(' + ap.bssid + ')'),
+                        menu.add_numbered_opt( ("Hack Parrot", ap.short_str()),
                                                 hacker.hack)
 
                         disp.item1("New Parrot drone found with MAC", ap.bssid)

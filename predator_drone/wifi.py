@@ -37,8 +37,7 @@ class AccessPoint:
             + ", IPv4=" + (self.ipv4 or "unknown") + ")"
 
     def short_str(self):
-        return self.ssid + " (" + self.bssid                \
-                + ", IPv4=" + (self.ipv4 or "unknown") + ")"
+        return self.ssid + " (" + self.bssid + ")"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
