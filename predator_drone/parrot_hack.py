@@ -131,7 +131,10 @@ class ParrotHacker:
             except KeyboardInterrupt:
                 pass
 
-            do("iptables -t nat -F")
+            do("iptables -t nat -D PREROUTING -d", self.LISTENING_IP,
+                    "-j DNAT --to", self.ap.ipv4 or self.DEFAULT_PARROT_IP)
+            do("iptables -t nat -D POSTROUTING -o", self.wlan.card.dev,
+                    "-j SNAT --to", self.wlan.get_IP())
             disp.debug("NAT disabled")
 
             do("echo 0 | sudo tee /proc/sys/net/ipv4/ip_forward")
