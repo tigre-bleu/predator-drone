@@ -1,6 +1,6 @@
 [submodule "ardrone-webflight"]
-	path = ardrone-webflight
+	path = src/ardrone-webflight
 	url = https://github.com/eschnou/ardrone-webflight
 [submodule "webflight-gamepad"]
-	path = webflight-gamepad
+	path = src/plugins/gamepad
 	url = https://github.com/wiseman/webflight-gamepad/
