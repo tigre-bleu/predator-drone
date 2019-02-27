@@ -34,8 +34,6 @@ Le script `predator-drone.py` est celui exécuté pour perpétrer l'attaque.
 - [x] [Vérifier l'euid au démarrage du 
   script](https://stackoverflow.com/questions/2806897/)
 - [x] Avoir un exploit fonctionnel sur la RPi
-- [ ] Utiliser une bibliothèque Python pour gérer les `iptables`
-- [ ] Gérer le filtrage des APs Parrot avec PyRIC
 - [x] Récupérer l'adresse de l'AP grâce à Scapy
 - [ ] Mettre à jour le README avec des instructions d'installation
   - [ ] `npm`, `bower`
