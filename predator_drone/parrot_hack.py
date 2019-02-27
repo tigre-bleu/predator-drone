@@ -18,6 +18,8 @@ from . import disp
 # ==================================
 
 class ParrotHacker:
+    LISTENING_IP      = "172.20.1.10"       # IP used with NAT forwarding to AR.Drone
+    DEFAULT_PARROT_IP = "192.168.1.1"       # IP used if no clients are found
 
     def __init__(self, parrot_ap, wlan, mon):
         """ Initialize the Parrot hacker class. """
@@ -77,8 +79,12 @@ class ParrotHacker:
         self.mon.search_clients(self.ap, self.register_client)
 
 
-    def register_client(self, client):
+    def register_client(self, client, ap_ip):
         """ Register a client to this Parrot AP. """
+        # Register Access Point IP
+        self.ap.ipv4 = ap_ip
+
+        # Register client
         if client not in self.clients:
             self.clients.append(client)
             self.menu.add_numbered_opt(
@@ -108,14 +114,14 @@ class ParrotHacker:
             do("echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward")
             disp.debug("IP forwarding enabled")
 
-            do("iptables -t nat -A PREROUTING -d 172.20.1.10",
-                    "-j DNAT --to 192.168.1.1")
+            do("iptables -t nat -A PREROUTING -d", self.LISTENING_IP,
+                    "-j DNAT --to", self.ap.ipv4 or self.DEFAULT_PARROT_IP)
             do("iptables -t nat -A POSTROUTING -o", self.wlan.card.dev,
                     "-j SNAT --to", self.wlan.get_IP())
             disp.debug("NAT enabled")
 
-            disp.info("You can launch on 172.20.1.1 using:")
-            disp.info("  export DEFAULT_DRONE_IP=172.20.1.10")
+            disp.info("You can launch cockpit on your computer using:")
+            disp.info("  export DEFAULT_DRONE_IP=" + LISTENING_IP)
             disp.info("  node app.js")
             disp.info("Press Ctrl+C when you are done")
 

@@ -24,12 +24,15 @@ class AccessPoint:
         self.bssid  = bssid
         self.chan   = channel
         self.crypto = crypto
+        self.ipv4   = None
 
     def __str__(self):
-        return "AP " + self.bssid \
-            + " with SSID " + self.ssid \
-            + " on channel " + str(self.chan) \
-            + " (" + ' / '.join(self.crypto) + ")"
+        return "AP " + self.bssid                           \
+            + " with SSID " + self.ssid                     \
+            + " on channel " + str(self.chan)               \
+            + " (" + ' / '.join(self.crypto)                \
+            + (", IPv4=" + self.ipv4 if self.ipv4 else "")  \
+            + ")"
 
     def short_str(self):
         return self.ssid + " (" + self.bssid + ")"
@@ -187,9 +190,10 @@ class WifiManager:
     # =====================
 
     def __f_bssid_clients(self, bssid, p):
-        """ Filter wifi clients of a specific BSSID. """
-        return ( ( p.haslayer(Dot11) or p.haslayer(Dot11FCS) )
-                and p.addr3 == bssid and p.haslayer(IP) )
+        """ Filter wifi packets of a specific BSSID, addressed to/from AP. """
+        return ( p.haslayer(Dot11) or p.haslayer(Dot11FCS) )   \
+                and p.addr3 == bssid and p.haslayer(IP)        \
+                and (p.addr1 == p.addr3 or p.addr2 == p.addr3)
 
 
     def __add_ssid_client(self, reg_client, p):
@@ -202,11 +206,12 @@ class WifiManager:
         ip_dst = p[IP].dst
         ip_src = p[IP].src
 
-        mac = mac_src   if mac_src != bssid     else mac_dst
-        ip  = ip_src    if mac_src != bssid     else ip_dst
+        mac   = mac_src   if mac_src != bssid     else mac_dst
+        ip    = ip_src    if mac_src != bssid     else ip_dst
+        ap_ip = ip_src    if mac_src == bssid     else ip_dst
 
         # Register client
-        reg_client( Client(mac, ip) )
+        reg_client(Client(mac, ip), ap_ip)
 
 
     def search_clients(self, ap, reg_client):
