@@ -1,0 +1,33 @@
+{
+  "name": "webflight-gamepad",
+  "version": "0.0.1",
+  "description": "Plugin for webflight that lets you control a drone with a joystick or gamepad.",
+  "main": "./index.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+  },
+  "bin": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/wiseman/webflight-gamepad.git"
+  },
+  "keywords": [
+    "gamepad",
+    "joystick",
+    "AR.Drone",
+    "drone"
+  ],
+  "author": {
+    "name": "John Wiseman",
+    "email": "jjwiseman@gmail/com",
+    "url": "http://lemondronor.com"
+  },
+  "license": "MIT/X11",
+  "engine": {
+    "node": ">=0.4"
+  }
+}
