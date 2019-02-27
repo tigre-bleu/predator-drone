@@ -126,7 +126,7 @@ class ParrotHacker:
                 while True:
                     time.sleep(100)
             except KeyboardInterrupt:
-                pass
+                print()
 
             do("iptables -t nat -D PREROUTING -d", self.LISTENING_IP,
                     "-j DNAT --to", self.ap.ipv4 or self.DEFAULT_PARROT_IP)
