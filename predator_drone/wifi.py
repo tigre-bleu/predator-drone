@@ -31,11 +31,11 @@ class AccessPoint:
             + " with SSID " + self.ssid                     \
             + " on channel " + str(self.chan)               \
             + " (" + ' / '.join(self.crypto)                \
-            + (", IPv4=" + self.ipv4 if self.ipv4 else "")  \
-            + ")"
+            + ", IPv4=" + (self.ipv4 if self.ipv4 else "unknown") + ")"
 
     def short_str(self):
-        return self.ssid + " (" + self.bssid + ")"
+        return self.ssid + " (" + self.bssid                \
+                + ", IPv4=" + (self.ipv4 if self.ipv4 else "unknown") + ")"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

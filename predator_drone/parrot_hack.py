@@ -121,7 +121,7 @@ class ParrotHacker:
             disp.debug("NAT enabled")
 
             disp.info("You can launch cockpit on your computer using:")
-            disp.info("  export DEFAULT_DRONE_IP=" + LISTENING_IP)
+            disp.info("  export DEFAULT_DRONE_IP=" + self.LISTENING_IP)
             disp.info("  node app.js")
             disp.info("Press Ctrl+C when you are done")
 
@@ -143,7 +143,7 @@ class ParrotHacker:
     def deauth_and_control(self, client):
         """ Disconnects a client then take control. """
         # Disconnect client
-        disp.info("Disconnecting client", client, "from AP", self.ap)
+        disp.info("Disconnecting client", client, "from AP", self.ap.short_str())
         self.mon.deauth_client(client, self.ap)
 
         # Take control
