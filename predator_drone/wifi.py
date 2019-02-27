@@ -243,18 +243,25 @@ class WifiManager:
 
     def connect_access_point(self, ap, force=True):
         self.__check_mode(MODE_MAN)
-        do("iw", self.card.dev, "connect", ap.ssid)
+        pyw.connect(self.card, ap.ssid.encode(), bssid=ap.bssid)
         time.sleep(0.5)
-        do("while [ \"$(iw", self.card.dev, "link)\" = \"Not connected.\" ];",
-                "do echo Waiting for connection; sleep 0.5; done")
+        while not pyw.isconnected(self.card):
+            disp.warning("Waiting for connection to AP", ap.ssid)
+            time.sleep(0.5)
         disp.info("Connected to network", ap.ssid)
 
 
     def acquire_IP(self):
         self.__check_mode(MODE_MAN)
-        do("dhclient -r")
-        do("dhclient -v", self.card.dev)
-        return True
+
+        if not pyw.isconnected(self.card):
+            disp.error("Can't acquire IP using DHCP: wireless card not connected to AP!")
+            return false
+        else:
+            do("dhclient -r")
+            do("dhclient -v", self.card.dev)
+            return True
+
 
     def get_IP(self):
         return pyw.ifinfo(self.card)['inet']
