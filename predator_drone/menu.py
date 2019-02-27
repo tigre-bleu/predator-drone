@@ -71,7 +71,6 @@ class Menu:
                 # Show menu
                 self.__print_menu_title()
                 self.__print_numbered_opts()
-                print()
                 self.__print_static_opts()
 
                 # Get user input
