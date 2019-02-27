@@ -111,9 +111,6 @@ class ParrotHacker:
         if ip_ok:
             disp.info("Well done! You've hijacked the Parrot drone! :)")
 
-            do("echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward")
-            disp.debug("IP forwarding enabled")
-
             do("iptables -t nat -A PREROUTING -d", self.LISTENING_IP,
                     "-j DNAT --to", self.ap.ipv4 or self.DEFAULT_PARROT_IP)
             do("iptables -t nat -A POSTROUTING -o", self.wlan.card.dev,
@@ -136,9 +133,6 @@ class ParrotHacker:
             do("iptables -t nat -D POSTROUTING -o", self.wlan.card.dev,
                     "-j SNAT --to", self.wlan.get_IP())
             disp.debug("NAT disabled")
-
-            do("echo 0 | sudo tee /proc/sys/net/ipv4/ip_forward")
-            disp.debug("IP forwarding disabled")
 
             self.wlan.disconnect()
 
