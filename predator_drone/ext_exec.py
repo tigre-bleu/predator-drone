@@ -26,8 +26,3 @@ def do(*args, force_output=False):
     except OSError as e:
         disp.error("Execution failed:", e)
 
-
-def sudo(*args, force_output=False):
-    """ Execute a sudo command. """
-    do("sudo", *args, force_output=force_output)
-

@@ -118,10 +118,10 @@ class ParrotHacker:
             do("echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward")
             disp.debug("IP forwarding enabled")
 
-            sudo("iptables -t nat -F")
-            sudo("iptables -t nat -A PREROUTING -d 172.20.1.10",
+            do("iptables -t nat -F")
+            do("iptables -t nat -A PREROUTING -d 172.20.1.10",
                     "-j DNAT --to 192.168.1.1")
-            sudo("iptables -t nat -A POSTROUTING -o", self.wlan.card.dev,
+            do("iptables -t nat -A POSTROUTING -o", self.wlan.card.dev,
                     "-j SNAT --to", self.wlan.get_IP())
             disp.debug("NAT enabled")
 

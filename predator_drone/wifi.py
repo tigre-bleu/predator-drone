@@ -9,7 +9,7 @@ import pyric.pyw as pyw
 import pyric
 import time
 
-from .ext_exec import sudo
+from .ext_exec import do
 from . import disp
 
 
@@ -243,17 +243,17 @@ class WifiManager:
 
     def connect_access_point(self, ap, force=True):
         self.__check_mode(MODE_MAN)
-        sudo("iw", self.card.dev, "connect", ap.ssid)
+        do("iw", self.card.dev, "connect", ap.ssid)
         time.sleep(0.5)
-        sudo("while [ \"$(iw", self.card.dev, "link)\" = \"Not connected.\" ];",
+        do("while [ \"$(iw", self.card.dev, "link)\" = \"Not connected.\" ];",
                 "do echo Waiting for connection; sleep 0.5; done")
         disp.info("Connected to network", ap.ssid)
 
 
     def acquire_IP(self):
         self.__check_mode(MODE_MAN)
-        sudo("dhclient -r")
-        sudo("dhclient -v", self.card.dev)
+        do("dhclient -r")
+        do("dhclient -v", self.card.dev)
         return True
 
     def get_IP(self):
