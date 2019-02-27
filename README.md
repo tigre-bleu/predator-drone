@@ -29,11 +29,16 @@ Le script `predator-drone.py` est celui exécuté pour perpétrer l'attaque.
   - [x] Spliter le script en une bibliothèque
   - [x] Définir plusieurs niveaux de verbosité
 - [x] Utiliser la bibliothèque [PyRIC](https://github.com/wraith-wireless/pyric)
+- [x] Changer la méthode de connexion à un AccessPoint
+      => ne fonctionne actuellement pas toujours
+- [x] [Vérifier l'euid au démarrage du 
+  script](https://stackoverflow.com/questions/2806897/)
+- [x] Avoir un exploit fonctionnel sur la RPi
+- [ ] Utiliser une bibliothèque Python pour gérer les `iptables`
+- [ ] Gérer le filtrage des APs Parrot avec PyRIC
+- [ ] Récupérer l'adresse de l'AP grâce à Scapy
 - [ ] Mettre à jour le README avec des instructions d'installation
   - [ ] `npm`, `bower`
-  - [ ] bug fix de scapy
-- [ ] Changer la méthode de connexion à un AccessPoint
-      => ne fonctionne actuellement pas toujours
-- [ ] [Vérifier l'euid au démarrage du 
-  script](https://stackoverflow.com/questions/2806897/)
-
+  - [ ] pyRF24 (increased swap)
+  - [ ] `usbip`
+  - [x] bug fix de scapy
