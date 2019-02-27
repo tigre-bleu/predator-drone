@@ -251,6 +251,13 @@ class WifiManager:
         disp.info("Connected to network", ap.ssid)
 
 
+    def disconnect(self):
+        self.__check_mode(MODE_MAN)
+        do("dhclient -r", self.card.dev)
+        pyw.disconnect(self.card)
+        disp.info("Wireless adapter", self.card.dev, "disconnected from any Access Point")
+
+
     def acquire_IP(self):
         self.__check_mode(MODE_MAN)
 
@@ -258,7 +265,6 @@ class WifiManager:
             disp.error("Can't acquire IP using DHCP: wireless card not connected to AP!")
             return false
         else:
-            do("dhclient -r")
             do("dhclient -v", self.card.dev)
             return True
 

