@@ -83,6 +83,7 @@ class ParrotHacker:
         """ Register a client to this Parrot AP. """
         # Register Access Point IP
         self.ap.ipv4 = ap_ip
+        disp.debug("AP IPv4 is", ap_ip)
 
         # Register client
         if client not in self.clients:
