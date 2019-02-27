@@ -1,2 +1,10 @@
 */__pycache__/*
 *.pyc
+tools/Gnuradio/Captures
+*.pioenvs
+*.piolibdeps
+*.vscode
+*.complex
+*.raw
+tools/nrf_analyze
+src/Syma_NRF_Scanner
