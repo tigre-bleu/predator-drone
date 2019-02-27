@@ -3,12 +3,8 @@
 # Drone hacker tool
 #
 
-from predatordrone.parrot.list import ParrotAPsList
-from predatordrone.wifi import WifiManager
-from predatordrone.menu import Menu
-import predatordrone.disp as disp
-import argparse
-
+from argparse import ArgumentParser
+from predator_drone import *
 
 
 # ======================
@@ -33,7 +29,7 @@ def clear_lists(menu, parrot_hacker):
 if __name__ == "__main__":
 
     # Parse arguments
-    parser = argparse.ArgumentParser(description="Drone predator")
+    parser = ArgumentParser(description="Drone predator")
     parser.add_argument("--verb", "-v", type=int, default=disp.Verb.INFO,
             help="script verbosity (0,.. => ERROR, WARNING, INFO, DEBUG)")
     parser.add_argument("iface", type=str, default="",

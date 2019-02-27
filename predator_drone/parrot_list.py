@@ -1,12 +1,12 @@
-#! /usr/bin/env python3
 #
 # Parrot APs listing functions
 #
 
-from predatordrone.wifi import WifiManager, AccessPoint
-from predatordrone.parrot.hack import ParrotHacker
-import predatordrone.disp as disp
 import re
+
+from .wifi import WifiManager, AccessPoint
+from .parrot_hack import ParrotHacker
+from . import disp
 
 
 

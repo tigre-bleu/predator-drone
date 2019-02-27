@@ -1,10 +1,6 @@
-#! /usr/bin/env python3
 #
-# Wifi management
+# Wifi management tool
 #
-
-from predatordrone.external_exec import do
-import predatordrone.disp as disp
 
 from scapy.all import Dot11, Dot11FCS, IP, Dot11Beacon, sniff
 from scapy.all import RadioTap, Dot11Deauth, sendp
@@ -12,6 +8,9 @@ from scapy.all import RadioTap, Dot11Deauth, sendp
 import pyric.pyw as pyw
 import pyric
 import time
+
+from .ext_exec import sudo
+from . import disp
 
 
 
@@ -71,6 +70,7 @@ class WifiManager:
         self.iface_no_mon = iface.replace("mon", "")
 
         # Check interface is wireless
+        self.card = None
         if not pyw.iswireless(iface):
             disp.die(iface, "is not a wireless interface!\n",
                     "   Available interfaces: ", pyw.winterfaces())
@@ -84,7 +84,9 @@ class WifiManager:
 
     def __del__(self):
         # Go to managed mode
-        self.__set_mode(MODE_MAN)
+        #if self.card != None:
+        #    self.__set_mode(MODE_MAN)
+        pass
 
 
 
@@ -117,7 +119,7 @@ class WifiManager:
 
         # Change mode
         else:
-            iface = self.iface_no_mon + ("mon" if mode == "monitor" else "")
+            iface = self.iface_no_mon + ("mon" if mode == MODE_MON else "")
             card  = pyw.devadd(self.card, iface, mode)
             pyw.devdel(self.card)
 
@@ -233,7 +235,7 @@ class WifiManager:
 
         # Send deauth with aireplay
         do("aireplay-ng",
-                "-0", '0' if dont_stop else '5',
+                "-0", '0' if dont_stop else '3',
                 "-a", ap.bssid,
                 "-c", client.mac,
                 self.card.dev)
@@ -241,25 +243,19 @@ class WifiManager:
 
     def connect_access_point(self, ap, force=True):
         self.__check_mode(MODE_MAN)
-
-        while not pyw.link(self.card):
-            try:
-                pyw.connect(self.card, ap.ssid.encode(), bssid=ap.bssid)
-                time.sleep(1)
-            except pyric.error as e:
-                disp.warn("Error connecting network:", e)
-
+        sudo("iw", self.card.dev, "connect", ap.ssid)
+        time.sleep(0.5)
+        sudo("while [ \"$(iw", self.card.dev, "link)\" = \"Not connected.\" ];",
+                "do echo Waiting for connection; sleep 0.5; done")
         disp.info("Connected to network", ap.ssid)
 
 
-    def acquire_ip(self):
+    def acquire_IP(self):
         self.__check_mode(MODE_MAN)
+        sudo("dhclient -r")
+        sudo("dhclient -v", self.card.dev)
+        return True
 
-        if pyw.link(self.card) == None:
-            disp.error("Can't acquire IP using DHCP: wireless card not connected to AP!")
-            return False
-        else:
-            do("dhclient -r")
-            do("dhclient -v", self.card.dev)
-            return True
+    def get_IP(self):
+        return pyw.ifinfo(self.card)['inet']
 

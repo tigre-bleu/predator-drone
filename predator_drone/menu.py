@@ -1,9 +1,8 @@
-#! /usr/bin/env python3
 #
-# Menu made easy!
+# Menus made easy!
 #
 
-import predatordrone.disp as disp
+from . import disp
 import sys
 
 
