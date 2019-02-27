@@ -24,6 +24,7 @@ fi
 
 # Disconnect
 dhclient -r
+iw $1 disconnect
 ip link set $1 down
 ip link set $1 up
 
