@@ -82,6 +82,11 @@ class WifiManager:
         self.__set_mode(MODE_MON if mon_mode else MODE_MAN)
 
 
+    def __del__(self):
+        # Go to managed mode
+        self.__set_mode(MODE_MAN)
+
+
 
     # =======================
     #    Device management
