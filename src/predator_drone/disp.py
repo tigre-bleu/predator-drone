@@ -35,16 +35,16 @@ class syms:
 #    String utilities
 # ======================
 
-def join(msg):
+def str_join(msg):
     """ Builds a string from a tuple. """
     if isinstance(msg, str):
         return msg
     else:
         return ' '.join(msg)
 
-def red(*msg):
+def str_red(*msg):
     """ Builds a red string from a tuple/str. """
-    return term.RED + join(*msg) + term.ENDC
+    return term.RED + str_join(*msg) + term.ENDC
 
 
 

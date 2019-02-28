@@ -176,7 +176,7 @@ class WifiManager:
         """ Show detected access points. """
         print("Found APs:")
         if len(self.detected_aps) == 0:
-            disp.item0(disp.red("No AP found!"))
+            disp.item0(disp.str_red("No AP found!"))
         else:
             for ap in self.detected_aps: disp.item0(ap)
 

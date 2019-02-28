@@ -18,7 +18,7 @@ class Option:
         : param msg     The option description (tuple or str)
         : param fct     The function to call when this option is selected
         """
-        self.msg = disp.join(msg)
+        self.msg = disp.str_join(msg)
         self.fct = fct
 
     def __eq__(self, other):
@@ -44,11 +44,11 @@ class Menu:
 
         Note: the option 'Q' will always exit the menu
         """
-        self.title           = disp.join(title)
+        self.title           = disp.str_join(title)
         self.numbered_opts   = {}
         self.static_opts     = {}
-        self.question        = disp.join(question)
-        self.no_num_opts_msg = disp.join(no_num_opts_msg)
+        self.question        = disp.str_join(question)
+        self.no_num_opts_msg = disp.str_join(no_num_opts_msg)
         self.exit_on_ctrlc   = exit_on_ctrlc
 
         self.add_static_opt('Q', exit_opt_msg, self.__exit)

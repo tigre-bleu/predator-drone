@@ -73,7 +73,7 @@ class ParrotAPsList:
         # Show Parrot APs
         print("Found APs with Parrot MAC address:")
         if len(self.parrot_hackers) == 0:
-            disp.item0(disp.red("No Parrot AP found!"))
+            disp.item0(disp.str_red("No Parrot AP found!"))
         else:
             for hacker in self.parrot_hackers: disp.item0(hacker)
 
