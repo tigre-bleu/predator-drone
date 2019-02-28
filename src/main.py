@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 #
-# Drone hacker tool
+# Drone hacking tool
 #
 
 from argparse import ArgumentParser
@@ -24,14 +24,11 @@ def usage():
     sys.exit(0)
 
 
-def clear_lists(menu, parrot_hacker):
+def clear_lists(menu, parrot, syma):
     """ Clears all lists (registered APs, etc.). """
-
     menu.clear_numbered_opt()
-    disp.info("Main menu entries cleared")
-
-    parrot_hacker.clear_lists()
-    disp.info("Access Points lists cleared")
+    parrot.clear_lists()
+    syma.clear_lists()
 
 
 

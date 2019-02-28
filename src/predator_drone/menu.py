@@ -107,6 +107,7 @@ class Menu:
     def clear_numbered_opt(self):
         """ Clears the registered number options. """
         self.numbered_opts = {}
+        disp.info("Menu's numbered entries cleared")
 
 
     def add_numbered_opt(self, msg, fct):

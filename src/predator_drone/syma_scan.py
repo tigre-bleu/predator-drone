@@ -106,9 +106,9 @@ class SymaScanner():
 
 
 
-    # ==================
-    #    Print drones
-    # ==================
+    # ===================
+    #    Listing stuff
+    # ===================
 
     def show_detected_drones(self):
         print("Syma X5C-1 drones found:")
@@ -118,4 +118,9 @@ class SymaScanner():
 
         for hacker in self.syma_hackers:
             disp.item0(hacker)
+
+
+    def clear_lists(self):
+        self.syma_hackers = []
+        disp.info("Syma X5C-1 list cleared")
 

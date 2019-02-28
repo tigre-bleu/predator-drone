@@ -82,4 +82,5 @@ class ParrotAPsList:
         """ Clears APs lists. """
         self.parrot_hackers = []
         self.mon.clear_aps_list()
+        disp.info("Access Points lists cleared")
 
