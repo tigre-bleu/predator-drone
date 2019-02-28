@@ -47,6 +47,7 @@ class Menu:
         self.title           = disp.str_join(title)
         self.numbered_opts   = {}
         self.static_opts     = {}
+        self.static_opt_chars= []
         self.question        = disp.str_join(question)
         self.no_num_opts_msg = disp.str_join(no_num_opts_msg)
         self.exit_on_ctrlc   = exit_on_ctrlc
@@ -132,7 +133,9 @@ class Menu:
         : param msg     Option explanation (tuple or str)
         : param fct     Function to be executed when the option is selected
         """
-        self.static_opts[char.upper()] = Option(msg, fct)
+        char = char.upper()
+        self.static_opt_chars.append(char)
+        self.static_opts[char] = Option(msg, fct)
 
 
 
@@ -161,7 +164,7 @@ class Menu:
     def __print_static_opts(self):
         """ Prints static menu options. """
         # Print static options
-        for char in self.static_opts:
+        for char in self.static_opt_chars:
             if char != 'Q':
                 option = self.static_opts[char]
                 disp.menu_option(char, option.msg)
