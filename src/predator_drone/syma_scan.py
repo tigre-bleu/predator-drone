@@ -2,6 +2,7 @@
 # Syma X5C-1 drone scanner
 #
 
+import binascii
 import time
 
 from .syma_hack import SymaController
@@ -57,7 +58,7 @@ class SymaScanner():
                                 data[5] ^ data[6] ^ data[7] ^ data[8] ^ data[9]
                                 ^ data[10] ^ data[11] ^ data[12] ^ data[13]     ) + 0x55
                         received_crc = data[14]
-                        hex_data = str(data).encode('hex')
+                        hex_data = binascii.hexlify(data).decode()
 
                         if received_crc == computed_crc:
                             target_address = '0x{:02x}'.format(data[0]) \
