@@ -8,6 +8,7 @@ from predator_drone import *
 import sys, os
 
 
+
 # ======================
 #    Useful functions
 # ======================
@@ -72,6 +73,10 @@ if __name__ == "__main__":
         disp.die("The monitoring interface and managed one must be different!")
 
 
+    # Display banner
+    banner.show()
+
+
     # Hacking tools
     #  - Parrot
     wifi_mon    = WifiManager(mon_iface, mon_mode=True)
@@ -80,16 +85,6 @@ if __name__ == "__main__":
     #  - Syma X5C-1
     radio_rf24 = RadioManager()
     syma_list  = SymaScanner(radio_rf24)
-
-
-    # Display banner
-    disp.banner(
-            "      ____                                               __      __            \n"
-            "     / __ \_________  ____  ___     ____  ________  ____/ /___ _/ /_____  _____\n"
-            "    / / / / ___/ __ \/ __ \/ _ \   / __ \/ ___/ _ \/ __  / __ `/ __/ __ \/ ___/\n"
-            "   / /_/ / /  / /_/ / / / /  __/  / /_/ / /  /  __/ /_/ / /_/ / /_/ /_/ / /    \n"
-            "  /_____/_/   \____/_/ /_/\___/  / .___/_/   \___/\__,_/\__,_/\__/\____/_/     \n"
-            "                                /_/                                            \n")
 
 
     # Main menu

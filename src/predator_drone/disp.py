@@ -112,7 +112,7 @@ def debug(*msg):
 
 def banner(banner):
     """ Prints the program banner. """
-    print(term.CLEAR + term.BLUE + banner + term.ENDC)
+    print(term.CLEAR + banner + term.ENDC)
 
 
 def todo(*msg):
