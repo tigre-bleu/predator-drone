@@ -7,7 +7,7 @@ from RF24 import *
 import time
 
 from .joystick import JoystickController
-from .radio import Radio
+from .radio import RadioManager
 from . import disp
 
 

@@ -6,7 +6,7 @@ import binascii
 import time
 
 from .syma_hack import SymaController
-from .radio import Radio
+from .radio import RadioManager
 from . import disp
 
 
