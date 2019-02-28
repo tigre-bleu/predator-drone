@@ -68,7 +68,7 @@ Note : le pilote par défaut sur la RPi Zero pour ce dongle est le `8192cu`, mai
 n'a pas fonctionné pour l'attaque. Il nous a été nécessaire d'enlever le pilote
 `rtl8192cu` de la *blacklist* noyau dans `/etc/modprobe.d/blacklist-rtl8192cu.conf`.
 
-
+Il est nécessaire de connecter un module nRF24l01+ sur le bus SPI du RPi tel que spécifié [ici](doc/nRF24l01+/Readme.md).
 
 ### Dépendances
 

@@ -10,3 +10,5 @@ De nombreaux tutoriels existent sur le web. Le code de ce projet est basé sur l
 ![Image](./RPI_nRF24l01_conection.png?raw=true)
 
 Les Headers des RPi 2, 3, Zero et Zero W sont identiques.
+
+Le condensateur est recommandé car le module est sensible au bruit sur l'alimentation, mais il n'est pas indispensable.
