@@ -1,6 +1,6 @@
 # Projet `predator-drone`
 
-L'objectif de ce projet est de développer un drone prédateur permettant de prendre le 
+L'objectif de ce projet est de développer un drone prédateur permettant de prendre le
 contrôle d'un autre drone. Deux types de drones ont été abordés :
 
 - RF2.4Ghz (Syma X5C)
@@ -8,20 +8,20 @@ contrôle d'un autre drone. Deux types de drones ont été abordés :
 
 ## Prise de contrôle d'un AR.Drone
 
-L'attaque perpetrée est une variante de la preuve de concept 
-[`skyjack`](https://github.com/samyk/skyjack). Le cockpit utilisé pour piloter l'AR.Drone 
-est [`ardrone-webflight`](https://github.com/eschnou/ardrone-webflight), avec le plugin 
-[`webflight-gamepad`](https://github.com/wiseman/webflight-gamepad/) permettant un 
+L'attaque perpetrée est une variante de la preuve de concept
+[`skyjack`](https://github.com/samyk/skyjack). Le cockpit utilisé pour piloter l'AR.Drone
+est [`ardrone-webflight`](https://github.com/eschnou/ardrone-webflight), avec le plugin
+[`webflight-gamepad`](https://github.com/wiseman/webflight-gamepad/) permettant un
 contrôle avec une manette de jeu.
 
-Le script `main.py` est celui à exécuter pour perpétrer l'attaque. La majeure partie du 
+Le script `main.py` est celui à exécuter pour perpétrer l'attaque. La majeure partie du
 code est dans la bibliothèque Python `predator_drone`. Cette bibliothèque contient :
 
 - `disp.py` : multiples fonctions d'affichage (`debug`, `warn`, etc.)
 - `ext_exec.py` : exécution de commande externe (fonction `do`)
 - `menu.py` : affichage simple d'un menu
-- `parrot_hack.py` : piratage d'un Parrot (en renseignant l'AP WiFi) et redirection de 
-  tous les paquets reçus sur une adresse IP vers l'adresse de l'AP de l'AR.Drone (avec 
+- `parrot_hack.py` : piratage d'un Parrot (en renseignant l'AP WiFi) et redirection de
+  tous les paquets reçus sur une adresse IP vers l'adresse de l'AP de l'AR.Drone (avec
   `iptables`)
 - `parrot_list.py` : listage de l'ensemble des AP WiFi Parrot
 - `wifi.py` : gestion d'une carte WiFi
@@ -35,23 +35,23 @@ code est dans la bibliothèque Python `predator_drone`. Cette bibliothèque cont
 
 ### Intégration sur une RPi Zero W
 
-Ce programme devait pouvoir être embarqué sur une Raspberry Pi Zero W, elle-même embarquée 
-sur un drone. Le script `tools/install_on_rpi.sh` permet d'installer les dépendances 
-nécessaires et de configurer le Bluetooth de la RPi en point d'accès réseau. C'est grâce à 
+Ce programme devait pouvoir être embarqué sur une Raspberry Pi Zero W, elle-même embarquée
+sur un drone. Le script `tools/install_on_rpi.sh` permet d'installer les dépendances
+nécessaires et de configurer le Bluetooth de la RPi en point d'accès réseau. C'est grâce à
 ce point d'accès que l'on garde le contrôle de la RPi, avec une connexion SSH par exemple.
 
-La RPi Zero W dispose d'une carte WiFi intégrée qui est utilisée par le programme pour se 
-connecter au point d'accès WiFi de l'AR.Drone piraté. Il est nécessaire d'ajouter un 
-dongle WiFi pour pouvoir écouter les réseaux WiFi et envoyer les trames de 
-désauthentification. Ce dongle WiFi doit supporter un mode *monitor*. Celui que nous avons 
+La RPi Zero W dispose d'une carte WiFi intégrée qui est utilisée par le programme pour se
+connecter au point d'accès WiFi de l'AR.Drone piraté. Il est nécessaire d'ajouter un
+dongle WiFi pour pouvoir écouter les réseaux WiFi et envoyer les trames de
+désauthentification. Ce dongle WiFi doit supporter un mode *monitor*. Celui que nous avons
 utilisé est le TP-Link TL-WIN823N :
 
 ```
 ID 0bda:8178 Realtek Semiconductor Corp. RTL8192CU 802.11n WLAN Adapter
 ```
 
-Note : le pilote par défaut sur la RPi Zero pour ce dongle est le `8192cu`, mais celui-ci 
-n'a pas fonctionné pour l'attaque. Il nous a été nécessaire d'enlever le pilote 
+Note : le pilote par défaut sur la RPi Zero pour ce dongle est le `8192cu`, mais celui-ci
+n'a pas fonctionné pour l'attaque. Il nous a été nécessaire d'enlever le pilote
 `rtl8192cu` de la *blacklist* noyau dans `/etc/modprobe.d/blacklist-rtl8192cu.conf`.
 
 
@@ -60,10 +60,10 @@ n'a pas fonctionné pour l'attaque. Il nous a été nécessaire d'enlever le pil
 
 Le dossier `tools` contient les scripts :
 
-- `disconnect_link.sh` permet de déconnecter une interface WiFi de l'AP sur lequel elle 
+- `disconnect_link.sh` permet de déconnecter une interface WiFi de l'AP sur lequel elle
   est enregistrée
-- `share_net_with_rpi.sh` permet de partager Internet, disponible sur votre PC hôte, avec 
-  la Raspberry Pi (il faut tout de même indiquer une route par défaut sur la RPi, ainsi 
+- `share_net_with_rpi.sh` permet de partager Internet, disponible sur votre PC hôte, avec
+  la Raspberry Pi (il faut tout de même indiquer une route par défaut sur la RPi, ainsi
   qu'un *nameserver* dans `/etc/resolv.conf`)
 - `install_rpi.sh` permet d'installer le programme sur une Raspberry Pi
 
@@ -73,13 +73,13 @@ Le dossier `tools` contient les scripts :
 
 Les dépendances de ce projet sont :
 
-- [`ardrone-webflight`](https://github.com/eschnou/ardrone-webflight) avec le plugin 
+- [`ardrone-webflight`](https://github.com/eschnou/ardrone-webflight) avec le plugin
   [`webflight-gamepad`](https://github.com/wiseman/webflight-gamepad/)
 - `aireplay-ng`
 - `dhclient`
 - `iptables`
 - Python 3 et `pip3`
-  + [`Scapy`](https://scapy.net/) avec le correctif du bug 
+  + [`Scapy`](https://scapy.net/) avec le correctif du bug
     [#1872](https://github.com/secdev/scapy/issues/1872)
   + [`PyRIC`](https://github.com/wraith-wireless/pyric)
 
@@ -149,9 +149,44 @@ python3 setup.py build
 sudo python3 setup.py install
 ```
 
-
-
 ### Notes sur l'installation d'`usbip`
 
-***TODO***
+USBIP permet d'utiliser sur le RPi une manette USB connectée sur le PC de l'attaquant. USBIP dépends d'une partie noyau et d'une partie utilisateur. En pratique, le périphérique est partagé via une connexion TCP.
 
+*Attention: La version d'usbip dans Rasbian Stretch est trop vieille et n'est pas compatible avec un serveur plus récent. Il est nécessaire d'installer la version de Raspbian Buster (Version Testing). Les versions d'USBIP présente dans les dépots Debian armhf ne fonctionnent pas (Segmentation Fault)*
+
+__Installation côté serveur__:
+Le serveur est le PC qui a le périphérique USB physiquement connecté.
+
+Lancer le démon:
+```
+sudo modprobe usbip_core
+sudo modprobe usbip_host
+sudo modprobe vhci-hcd
+sudo usbipd -D
+```
+
+Lister les périphériques USB disponibles
+```bash
+sudo usbip list --local
+```
+La liste des périphériques USB est affiché. Il faut noter le Bus ID de celui à partager. Ensuite on le partage avec
+```bash
+sudo usbip bind -b <bus-id>
+```
+
+__Installation côté client__:
+Le client est le RPi qui va utiliser le périphérique USB.
+
+```bash
+sudo modprobe usbip_core
+sudo modprobe usbip_host
+```
+On liste les périphériques disponibles sur l'hôte distant:
+```bash
+sudo usbip list --remote=<IP_Serveur>
+```
+Enfin on attache le périphérique:
+```bash
+usbip attach --remote <IP_Serveur> --busid=<bus-id>
+```
