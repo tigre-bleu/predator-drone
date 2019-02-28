@@ -116,6 +116,6 @@ class SymaScanner():
         if len(self.syma_hackers) == 0:
             disp.item0(disp.str_red("No drone found"))
 
-        for hacker in self.syma_hacker:
+        for hacker in self.syma_hackers:
             disp.item0(hacker)
 
