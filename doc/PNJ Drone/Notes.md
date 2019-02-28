@@ -7,6 +7,7 @@ Un peu de recherche sur internet nous insique:
 - https://www.rcgroups.com/forums/showthread.php?2069017-Hacking-STM8-RFM73-based-micros-UDI816-yd717-Sky-Botz
 - https://www.deviationtx.com/forum/protocol-development/2551-udi-r-c-u816-u818-protocol
 
+```
 // Known UDI 2.4GHz protocol variants, all using BK2421
 //  * UDI U819 coaxial 3ch helicoper
 //  * UDI U816/817/818 quadcopters
@@ -15,8 +16,8 @@ Un peu de recherche sur internet nous insique:
 //    - "V3" with green LEDs on TX. Did not get my hands on yet.
 //  * U830 mini quadcopter with tilt steering ("Protocol 2014")
 //  * U839 nano quadcopter ("Protocol 2014")
-
-Il y a aussi une puce ARM et une autre puce avec une inscription à reconnaitre
+```
+Il y a aussi une puce ARM et une autre puce avec une inscription difficile à lire.
 
 ## Télécommande
 Une grande puce sans inscription sur laquelle arrivent les boutons et partent des pistes vers le tranceiver RF.
@@ -30,13 +31,24 @@ Le circuit ressemble très fortement à celui ci: https://www.hackster.io/geekph
 
 On peut donc supposer que c'est une puce [BK2421](http://www.bekencorp.com/en/Botong.Asp?Parent_id=2&Class_id=8&Id=13)
 
-# Analyse SPI
+# Analyse du bus SPI
 
-[Tutorial on capturing SPI TX data](https://www.youtube.com/watch?v=ylGnIQcg1-E)
+## Connexion au bus
 
-CSN: Blanc
-CE: Jaune
-MISO: Gris
-IRQ: Non connecté
-MOSI: Vert
-SCK: Orange
+On soude sur la télécommande des fils qui vont nous permettre de connecter ce qu'on suppose être un bus SPI à un analyseur logique.
+
+Nous choissons les couleurs suivantes:
+- CSN: Blanc
+- CE: Jaune
+- MISO: Gris
+- IRQ: Non connecté
+- MOSI: Vert
+- SCK: Orange
+
+## Analyse
+
+L'analyseur logique nous confirme bien que nous avons un bus SPI. En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le [comparer à la spec du module BK2421](Dump\ SPI\ Init\ Manette.ods).
+
+![Image](Analyse_SPI_Binding.png?raw=true)
+
+On voit que cela semble bien correspondre. Une analyse avec un SDR nous confirme de l'activité sur les canaux 70, 63, 56 et 48.
