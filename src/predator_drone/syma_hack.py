@@ -43,6 +43,18 @@ class SymaController(Thread):
         super(SymaController, self).__init__()
 
 
+    def __str__(self):
+        return disp.str_join("Syma X5C-1", self.address,
+                "on channels", '[%s]' % ', '.join(map(str, drone)) )
+
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__)            \
+                and self.address.__eq__(other.address)      \
+                and self.channels.__eq__(other.channels)
+
+
+
     # =======================
     #    Packet management
     # =======================

@@ -76,9 +76,12 @@ if __name__ == "__main__":
 
 
     # Hacking tools
+    #  - Parrot
     wifi_mon = WifiManager(mon_iface, mon_mode=True)
     wifi     = WifiManager(iface,     mon_mode=False)
     parrot_list = ParrotAPsList(wifi, wifi_mon)
+    #  - Syma X5C-1
+    syma_list = SymaScanner()
 
 
     # Display banner
@@ -94,12 +97,18 @@ if __name__ == "__main__":
     # Main menu
     main_menu = Menu("Main menu:", "Your choice:",
             exit_opt_msg  ="Exit program",
-            no_num_opts_msg="No Parrot AP detected. Try to refresh!")
+            no_num_opts_msg="No drone detected. Try to refresh!")
 
-    main_menu.add_static_opt('R', "Refresh Parrot APs list",
+    main_menu.add_static_opt('P', "Refresh Parrot APs list",
             lambda: parrot_list.refresh_aps_list(main_menu))
-    main_menu.add_static_opt('S', "Show found APs",
+    main_menu.add_static_opt('W', "Show found WiFi APs",
             parrot_list.show_detected_aps)
+
+    main_menu.add_static_opt('X', "Scan RF for Syma X5C-1",
+            lambda: syma_list.scan(main_menu))
+    main_menu.add_static_opt('D', "Show detected Syma X5C-1",
+            syma_list.show_detected_drones)
+
     main_menu.add_static_opt('C', "Clear all lists",
             lambda: clear_lists(main_menu, parrot_list))
 

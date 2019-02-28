@@ -4,6 +4,7 @@
 
 import time
 
+from .syma_hack import SymaController
 from .radio import Radio
 from . import disp
 
@@ -15,26 +16,29 @@ from . import disp
 class SymaScanner():
 
     def __init__(self):
-        self.drones = {}
-        self.seen_drones = {}
+        self.seen_drones         = {}       # Seen drones on different channels
+        self.consolidated_drones = {}       # Only real drones (on the 4 expected channels)
+        self.syma_hackers        = []       # List of hacking objects
 
         disp.debug("Initializing radio")
         self.radio = Radio()
         self.radio.set_rx()
 
 
+
     # =========================
     #    Searching for drone
     # =========================
 
-    def scan(self):
-        self.scan_radio()
-        self.identify_drones()
-        return self.drones
+    def scan(self, menu):
+        self.__scan_radio()
+        self.__identify_drones()
+        self.__register_drones()
 
 
-    def scan_radio(self):
+    def __scan_radio(self):
         disp.info("Searching for Syma X5C-1")
+        self.seen_drones = {}
 
         for start_chans in self.radio.start_chans_list:
             disp.debug("Searching in channels", str(start_chans))
@@ -67,29 +71,37 @@ class SymaScanner():
                                     target_address, "(" + hex_data + ")")
 
                             # Add drone to seen list
-                            if not target_address in self.drones.keys():
-                                self.drones[target_address] = {}
+                            if not target_address in self.seen_drones.keys():
+                                self.seen_drones[target_address] = {}
 
                             # Add channel to seen list
-                            if not channel in self.drones[target_address].keys():
-                                self.drones[target_address][channel] = True
+                            if not channel in self.seen_drones[target_address].keys():
+                                self.seen_drones[target_address][channel] = True
 
 
-    def identify_drones(self):
-        consolidated_drones = {}
+    def __identify_drones(self):
+        self.consolidated_drones = {}
+
         for start_chans in self.radio.start_chans_list:
             # Check if a valid frame has been found on each of the expected 4 channels
-            for address in self.drones:
-                drone = self.drones[address]
+            for address in self.seen_drones:
+                drone = self.seen_drones[address]
                 i=0
                 for channel in start_chans:
                     if channel in drone.keys():
                         i = i+1
                 if (i==4):
-                    consolidated_drones[address]=drone.keys()
+                    self.consolidated_drones[address]=drone.keys()
 
-        # Clean self.drones to keep only the ones that are valid on 4 channels
-        self.drones = consolidated_drones
+
+    def __register_drones(self):
+        for address, channels in self.consolidated_drones.items():
+            hacker = SymaController(address, channels)
+
+            if hacker not in self.syma_hackers:
+                self.syma_hackers.append(hacker)
+                menu.add_numbered_opt( ("Hack", str(hacker)), hacker.start )
+                disp.item1("New Syma X5C-1 drone found with address", address)
 
 
 
@@ -97,12 +109,12 @@ class SymaScanner():
     #    Print drones
     # ==================
 
-    def display_drones(self):
-        if not self.drones:
-            disp.info("No drone found")
+    def show_detected_drones(self):
+        print("Syma X5C-1 drones found:")
 
-        for address in self.drones:
-            drone = self.drones[address]
-            disp.item1("Syma X5C-1 Drone found with address", address, "on channels",
-                    '[%s]' % ', '.join(map(str, drone)) )
+        if len(self.syma_hackers) == 0:
+            disp.item0(disp.str_red("No drone found"))
+
+        for hacker in self.syma_hacker:
+            disp.item0(hacker)
 
