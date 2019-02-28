@@ -18,7 +18,8 @@ class term:
     ENDC      = '\033[0m'
     BOLD      = '\033[1m'
     UNDERLINE = '\033[4m'
-    CLEAR     = '\033c'
+    EMPTY     = '\033c'
+    CLEAR     = "\x1b[2J\x1b[H"
 
 class syms:
     ERROR = term.RED    + term.BOLD + "/!\\"  + term.ENDC
