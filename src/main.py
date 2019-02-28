@@ -74,11 +74,12 @@ if __name__ == "__main__":
 
     # Hacking tools
     #  - Parrot
-    wifi_mon = WifiManager(mon_iface, mon_mode=True)
-    wifi     = WifiManager(iface,     mon_mode=False)
+    wifi_mon    = WifiManager(mon_iface, mon_mode=True)
+    wifi        = WifiManager(iface,     mon_mode=False)
     parrot_list = ParrotAPsList(wifi, wifi_mon)
     #  - Syma X5C-1
-    syma_list = SymaScanner()
+    radio_rf24 = RadioManager()
+    syma_list  = SymaScanner(radio_rf24)
 
 
     # Display banner

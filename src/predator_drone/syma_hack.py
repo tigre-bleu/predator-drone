@@ -18,14 +18,12 @@ from . import disp
 
 class SymaController(Thread):
 
-    def __init__(self, address, channels):
+    def __init__(self, radio, address, channels):
         disp.debug("Initializing radio")
 
         self.address = address
         self.channels = channels
-
-        self.radio = Radio()
-        self.radio.set_tx(int(self.address, 16))
+        self.radio = radio
 
         self.ch = 0
         self.running = False
@@ -108,6 +106,7 @@ class SymaController(Thread):
 
     def run(self):
         self.stopped = False
+        self.radio.set_tx(int(self.address, 16))
         while not self.stopped:
             if self.running:
                 self.build_packet()

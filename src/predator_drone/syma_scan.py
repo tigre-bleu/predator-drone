@@ -16,14 +16,14 @@ from . import disp
 
 class SymaScanner():
 
-    def __init__(self):
+    def __init__(self, radio):
+        # Init drones lists
         self.seen_drones         = {}       # Seen drones on different channels
         self.consolidated_drones = {}       # Only real drones (on the 4 expected channels)
         self.syma_hackers        = []       # List of hacking objects
 
-        disp.debug("Initializing radio")
-        self.radio = Radio()
-        self.radio.set_rx()
+        # Register radio module
+        self.radio = radio
 
 
 
@@ -40,6 +40,8 @@ class SymaScanner():
     def __scan_radio(self):
         disp.info("Searching for Syma X5C-1")
         self.seen_drones = {}
+
+        self.radio.set_rx()
 
         for start_chans in self.radio.start_chans_list:
             disp.debug("Searching in channels", str(start_chans))
@@ -97,7 +99,7 @@ class SymaScanner():
 
     def __register_drones(self):
         for address, channels in self.consolidated_drones.items():
-            hacker = SymaController(address, channels)
+            hacker = SymaController(radio, address, channels)
 
             if hacker not in self.syma_hackers:
                 self.syma_hackers.append(hacker)
