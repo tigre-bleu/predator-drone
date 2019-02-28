@@ -159,7 +159,7 @@ __Installation côté serveur__:
 Le serveur est le PC qui a le périphérique USB physiquement connecté.
 
 Lancer le démon:
-```
+```bash
 sudo modprobe usbip_core
 sudo modprobe usbip_host
 sudo modprobe vhci-hcd
