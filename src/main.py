@@ -96,14 +96,14 @@ if __name__ == "__main__":
             exit_opt_msg  ="Exit program",
             no_num_opts_msg="No drone detected. Try to refresh!")
 
-    main_menu.add_static_opt('P', "Refresh Parrot APs list",
+    main_menu.add_static_opt('P', "Parrot AR.Drone2 :: Refresh Parrot APs list",
             lambda: parrot_list.refresh_aps_list(main_menu))
-    main_menu.add_static_opt('W', "Show found WiFi APs",
+    main_menu.add_static_opt('W', "Parrot AR.Drone2 :: Show found Access Points",
             parrot_list.show_detected_aps)
 
-    main_menu.add_static_opt('X', "Scan RF for Syma X5C-1",
+    main_menu.add_static_opt('X', "Syma X5C-1 drone :: Scan RF for drones",
             lambda: syma_list.scan(main_menu))
-    main_menu.add_static_opt('D', "Show detected Syma X5C-1",
+    main_menu.add_static_opt('D', "Syma X5C-1 drone :: Show detected drones",
             syma_list.show_detected_drones)
 
     main_menu.add_static_opt('C', "Clear all lists",
