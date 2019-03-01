@@ -19,8 +19,6 @@ from . import disp
 class SymaController(Thread):
 
     def __init__(self, radio, address, channels):
-        disp.debug("Initializing radio")
-
         self.address = address
         self.channels = channels
         self.radio = radio
@@ -47,6 +45,10 @@ class SymaController(Thread):
         return isinstance(other, self.__class__)            \
                 and self.address.__eq__(other.address)      \
                 and self.channels.__eq__(other.channels)
+
+
+    def __hash__(self):
+        return hash( (self.address, self.channels) )
 
 
 
