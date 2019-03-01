@@ -40,7 +40,7 @@ def exp(value, koef=1.01, maximum=255):
 class JoystickController(Thread):
 
     def __init__(self, controller):
-        disp.debug("Initilizing joystick")
+        disp.debug("Initializing joystick")
         path = '/dev/'
 
         init_joystick = True
