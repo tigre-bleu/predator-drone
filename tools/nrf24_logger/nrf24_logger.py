@@ -92,7 +92,6 @@ try:
             data = radio.read(payload_size)
             hex_data = str(data).encode('hex')
             log(channel, hex_data)
-    print "Ending"
     log_file_raw.close()
 
     # Filtering correct packets
@@ -156,9 +155,11 @@ try:
                         columns[k].append(float(v))
                     else:
                         columns[k].append(v)
-
-    mean_delta = sum(columns['delta'])/len(columns['delta'])
-    print "Mean value between valid frames: "+str(mean_delta)+"s"
+    if len(columns['delta'])>0:
+        mean_delta = sum(columns['delta'])/len(columns['delta'])
+        print "Mean value between valid frames: "+str(mean_delta)+"s"
+    else:
+        print "No frame has been captured"
 
 finally:
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)

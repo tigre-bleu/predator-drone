@@ -8,7 +8,7 @@ On va parcourir la bande de fréquence entre 2.400 GHz et 2.525 Ghz avec Gnuradi
 
 
 
-Pour cela on crée une waterfall et on voit de l'activité autour **2.410 GHz**. Pour préciser notre observation, on fait une FFT avec Gnuradio autour de cette fréquence. Après avoir bien centré notre FFT, on voit une **bande passante autour de 800kHz** et une fréquence à 2.4701 GHz
+Pour cela on crée une waterfall et on voit de l'activité autour **2.410 GHz**. Pour préciser notre observation, on fait une FFT avec Gnuradio autour de cette fréquence. Après avoir bien centré notre FFT, on voit une **bande passante autour de 800kHz**.
 
 Si on regarde un extrait de la spec du nRF24l01, on peut lire:
 
@@ -44,24 +44,45 @@ Dans Gnuradio, on rajoute donc la démodulation et on constate dans baudline que
 
 # Interprétation du protocole
 
-On utilise les fichiers python d'analyse qui existent déjà pour le RPI.
+On peut utiliser les [scripts python ou C d'analyse offline](https://github.com/chopengauer/nrf_analyze) qui existent déjà pour le RPI afin d'analyser le dump fait avec Gnuradio mais au final il est plus simple pour analyser en temps réel d'utiliser un nRF24l01+ sur un Raspberry Pi.
 
-On voit:
-- Puissance (Octet 1): 0x00 - 0xFF
-- Tanguage (Octet 2):
+En se basant sur les mêmes scripts existants, on peut développer un outil qui affiche en temps réél les paquets reçus.
+
+On voit alors que le protocole est très simple car les octets bougent quasiment de manière indépendantes. On conclut que le protocole est comme suit:
+- Le préambule 0xAA
+- L'adresse (Dans notre cas: 0xa1ca201670)
+- La puissance (Octet 1): 0x00 - 0xFF
+- Le tanguage (Octet 2):
   - Avant: 0x00 - 0x7F
   - Arrière: 0x80 - 0xFF
-- Roulis (Octet 3):
+- Le roulis (Octet 3):
   - Gauche: 0x00 - 0x7F
   - Droite: 0x80 - 0xFF
-- Lacet (Octet 4):
+- Le lacet (Octet 4):
   - Gauche: 0x00 - 0x7F
   - Droite: 0x80 - 0xFF
-- Mode (Octet 6):
+- Le mode (Octet 6):
   - High: 0xA0
   - Low: 0x20
-- Des bits indépendants sur les octets de la fin pour la gachette droite et les trims
+- Des bits indépendants sur les 3 derniers octets de la fin pour la gachette droite et les trims
+- Un CRC construit comme le XOR des 9 premiers octets auquel on ajoute 0x55
 
-# Autres
+# Implémentation du protocole
 
-https://github.com/goebish/nrf24_multipro/blob/master/nRF24_multipro/SymaX.ino
+Il est relativement simple d'implémenter le protocole en Python sur un RPi avec un module nRF24l01+.
+
+On observe alors que si le drone est allumé mais que la télécommande ne l'est pas, le drone clignote et ne prends pas en compte nos commande. Il doit donc y avoir un appairage du drone et de la télécommande. Il faudrait creuser cet aspect mais pour réaliser l'attaque souhaitée, nous n'en avons pas besoin car nous souhaitons intercepter le drone en vol.
+
+Si le drone est appairé avec sa télécommande originale, on observe que les ordres envoyés par le RPi l'emportent sur ceux de la télécommande: **L'attaque fonctionne**.
+
+# Analyse de l'attaque
+
+Le drone reçoit en fait des ordres valides à la fois de la télécommande et du RPi = nRF24l01+ prédateur. Comme tous les paquets sont valides de son point de vue, il essaye de satisfaire tous les ordres.
+
+Cependant, avec le RPi et le nRF24l01+ nous avons la possibilité d'émettre plus de trames que la télécommande, le drone suit donc majoritairement les ordres de l'attaquant et en pratique son contrôle échappe au pilote légitime.
+
+# Références
+
+- https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html
+- https://github.com/chopengauer/nrf_analyze
+- https://github.com/goebish/nrf24_multipro/blob/master/nRF24_multipro/SymaX.ino

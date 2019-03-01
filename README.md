@@ -3,16 +3,16 @@
 L'objectif de ce projet est de développer un drone prédateur permettant de prendre le
 contrôle d'un autre drone. Deux types de drones ont été abordés :
 
-- RF2.4Ghz (Syma X5C)
+- RF2.4Ghz (Syma X5C-1)
 - WiFi (Parrot AR.Drone)
 
-## Prise de contrôle d'un AR.Drone
+## Détails des attaques
 
-L'attaque perpetrée est une variante de la preuve de concept
-[`skyjack`](https://github.com/samyk/skyjack). Le cockpit utilisé pour piloter l'AR.Drone
-est [`ardrone-webflight`](https://github.com/eschnou/ardrone-webflight), avec le plugin
-[`webflight-gamepad`](https://github.com/wiseman/webflight-gamepad/) permettant un
-contrôle avec une manette de jeu.
+La description des attaques est détaillée dans le dossier de documentation:
+- [Attaque Parrot AR.Drone](doc/Parrot\ AR\ Drone/Notes.md)
+- [Attaque Syma X5C-1](doc/Syma\ X5C-1/Notes.md)
+
+## L'outil d'attaque multifonction `predator-drone`
 
 Le script `main.py` est celui à exécuter pour perpétrer l'attaque. La majeure partie du
 code est dans la bibliothèque Python `predator_drone`. Cette bibliothèque contient :
@@ -24,6 +24,8 @@ code est dans la bibliothèque Python `predator_drone`. Cette bibliothèque cont
   tous les paquets reçus sur une adresse IP vers l'adresse de l'AP de l'AR.Drone (avec
   `iptables`)
 - `parrot_list.py` : listage de l'ensemble des AP WiFi Parrot
+- `syma_scan` : listage de l'ensemble des drones Syma X5C-1 détectés
+- `syma_hack` : piratage d'un drone Syma X5C-1 (en renseignant l'adresse et les canaux utilisés). Le contrôle se fait grâce à un gamepad USB partagé via le réseau
 - `wifi.py` : gestion d'une carte WiFi
   + passage en mode *monitor*/*managed*
   + désauthentification d'un client sur un *Access Point* (avec `aireplay-ng`)
@@ -31,12 +33,24 @@ code est dans la bibliothèque Python `predator_drone`. Cette bibliothèque cont
   + listage des clients connectés à un AP
   + connexion à un AP et obtention d'une adresse IPv4 (avec `dhclient`)
 
+### Outils Annexes
+
+Le dossier `tools` contient les scripts :
+
+- `disconnect_link.sh` permet de déconnecter une interface WiFi de l'AP sur lequel elle
+  est enregistrée
+- `share_net_with_rpi.sh` permet de partager Internet, disponible sur votre PC hôte, avec
+  la Raspberry Pi (il faut tout de même indiquer une route par défaut sur la RPi, ainsi
+  qu'un *nameserver* dans `/etc/resolv.conf`)
+- `install_rpi.sh` permet d'installer le programme sur une Raspberry Pi
+- `nrf24_logger.py` permet de créer des fichiers CSV à partir des paquets capturés par un nRF24l01+
+- `syma_protocol_analyser` permet d'afficher en temps réel les paquets capturés par le nRF24l01+ pour faciliter la compréhension du protocole
 
 
-### Intégration sur une RPi Zero W
+## Intégration sur une RPi Zero W
 
 Ce programme devait pouvoir être embarqué sur une Raspberry Pi Zero W, elle-même embarquée
-sur un drone. Le script `tools/install_on_rpi.sh` permet d'installer les dépendances
+sur un drone. Le script `tools/install_rpi.sh` permet d'installer les dépendances
 nécessaires et de configurer le Bluetooth de la RPi en point d'accès réseau. C'est grâce à
 ce point d'accès que l'on garde le contrôle de la RPi, avec une connexion SSH par exemple.
 
@@ -54,20 +68,7 @@ Note : le pilote par défaut sur la RPi Zero pour ce dongle est le `8192cu`, mai
 n'a pas fonctionné pour l'attaque. Il nous a été nécessaire d'enlever le pilote
 `rtl8192cu` de la *blacklist* noyau dans `/etc/modprobe.d/blacklist-rtl8192cu.conf`.
 
-
-
-### Outils
-
-Le dossier `tools` contient les scripts :
-
-- `disconnect_link.sh` permet de déconnecter une interface WiFi de l'AP sur lequel elle
-  est enregistrée
-- `share_net_with_rpi.sh` permet de partager Internet, disponible sur votre PC hôte, avec
-  la Raspberry Pi (il faut tout de même indiquer une route par défaut sur la RPi, ainsi
-  qu'un *nameserver* dans `/etc/resolv.conf`)
-- `install_rpi.sh` permet d'installer le programme sur une Raspberry Pi
-
-
+Il est nécessaire de connecter un module nRF24l01+ sur le bus SPI du RPi tel que spécifié [ici](doc/nRF24l01+/Readme.md).
 
 ### Dépendances
 
