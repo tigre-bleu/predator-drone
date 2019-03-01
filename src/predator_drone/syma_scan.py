@@ -99,7 +99,7 @@ class SymaScanner():
 
     def __register_drones(self):
         for address, channels in self.consolidated_drones.items():
-            hacker = SymaController(radio, address, channels)
+            hacker = SymaController(self.radio, address, channels)
 
             if hacker not in self.syma_hackers:
                 self.syma_hackers.append(hacker)
