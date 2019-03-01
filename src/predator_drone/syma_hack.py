@@ -2,7 +2,6 @@
 # Syma X5C-1 drone hacking
 #
 
-from threading import Thread
 from RF24 import *
 import time
 
@@ -16,12 +15,12 @@ from . import disp
 #    SymaController class
 # ==========================
 
-class SymaController(Thread):
+class SymaController():
 
-    def __init__(self, radio, address, channels):
+    def __init__(self, address, channels):
         self.address = address
         self.channels = channels
-        self.radio = radio
+        self.radio = RadioManager()
 
         self.ch = 0
         self.running = False
@@ -33,12 +32,12 @@ class SymaController(Thread):
 
         self.packet = [0] * 10
 
-        super(SymaController, self).__init__()
-
 
     def __str__(self):
-        return disp.str_join("Syma X5C-1", self.address,
-                "on channels", '[%s]' % ', '.join(map(str, drone)) )
+        return disp.str_join(
+                ("Syma X5C-1", self.address, "on channels",
+                '[%s]' % ', '.join(map(str, self.channels)) )
+                )
 
 
     def __eq__(self, other):
@@ -48,7 +47,7 @@ class SymaController(Thread):
 
 
     def __hash__(self):
-        return hash( (self.address, self.channels.items()) )
+        return hash( (self.address,) + tuple(self.channels) )
 
 
 
@@ -84,7 +83,8 @@ class SymaController(Thread):
         #        format(self.packet[5],'02x'),
         #        format(self.packet[6],'02x'),
         #        format(self.packet[7],'02x'),
-        #        format(self.packet[8],'02x'))
+        #        format(self.packet[8],'02x'),
+        #        format(self.packet[9],'02x'))
 
 
     def set_controls(self, aileron, elevator, throttle, rudder):

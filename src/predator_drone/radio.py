@@ -61,5 +61,5 @@ class RadioManager():
         self.nrf.payloadSize = 10
         self.nrf.setCRCLength(RF24_CRC_16)
         self.nrf.openWritingPipe(address)
-        disp.debug("RF24 set to TX mode (to address", address + ")")
+        disp.debug("RF24 set to TX mode (to address", str(address) + ")")
 

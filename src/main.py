@@ -83,8 +83,7 @@ if __name__ == "__main__":
     wifi        = WifiManager(iface,     mon_mode=False)
     parrot_list = ParrotAPsList(wifi, wifi_mon)
     #  - Syma X5C-1
-    radio_rf24 = RadioManager()
-    syma_list  = SymaScanner(radio_rf24)
+    syma_list  = SymaScanner()
 
 
     # Main menu
