@@ -22,7 +22,7 @@ def do(*args, force_output=False, get_output=False):
             p = sbp.Popen(command, shell=True, stderr=sbp.STDOUT, stdout=sbp.PIPE)
             (output, _) = p.communicate()
             p.wait()
-            return output
+            return output.decode()
 
         if p.returncode < 0:
             disp.die("Command killed by signal", p.returncode)
