@@ -48,7 +48,7 @@ class SymaController(Thread):
 
 
     def __hash__(self):
-        return hash( (self.address, self.channels) )
+        return hash( (self.address, self.channels.items()) )
 
 
 
