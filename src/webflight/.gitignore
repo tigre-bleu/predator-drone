@@ -7,4 +7,5 @@ components
 bower_components
 _site
 pictures
+package-lock.json
 temp.js
