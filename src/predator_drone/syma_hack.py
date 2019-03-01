@@ -35,9 +35,6 @@ class SymaController(Thread):
 
         self.packet = [0] * 10
 
-        self.joystick_controller = JoystickController(self)
-        self.joystick_controller.start()
-
         super(SymaController, self).__init__()
 
 
@@ -104,7 +101,11 @@ class SymaController(Thread):
         self.joystick_controller.stop()
         self.stopped = True
 
+
     def run(self):
+        self.joystick_controller = JoystickController(self)
+        self.joystick_controller.start()
+
         self.stopped = False
         self.radio.set_tx(int(self.address, 16))
         while not self.stopped:
