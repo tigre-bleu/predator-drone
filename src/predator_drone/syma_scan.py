@@ -52,7 +52,7 @@ class SymaScanner():
 
                 time.sleep(0.1)
 
-                for i in range(10):
+                for i in range(50):
                     time.sleep(0.02)
                     while self.radio.nrf.available():
                         data = self.radio.nrf.read(self.radio.nrf.payloadSize)
