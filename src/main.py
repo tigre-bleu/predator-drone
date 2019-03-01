@@ -103,7 +103,7 @@ if __name__ == "__main__":
             syma_list.show_detected_drones)
 
     main_menu.add_static_opt('C', "Clear all lists",
-            lambda: clear_lists(main_menu, parrot_list))
+            lambda: clear_lists(main_menu, parrot_list, syma_list))
 
     main_menu.run()
 
