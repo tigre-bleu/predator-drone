@@ -10,6 +10,12 @@ contrôle d'un autre drone. Deux types de drones ont été abordés :
 ## Détails des attaques
 
 La description des attaques est détaillée dans le dossier de documentation:
+- [Attaque Parrot AR.Drone](https://pe.ertu.be/videos/watch/54cb4bff-c321-4030-ad70-543e044f7b74)
+- [Attaque Syma X5C-1](https://pe.ertu.be/videos/watch/14ae8a25-1c56-4ab7-91fe-47d0ec886a59)
+
+## Vidéos
+
+2 vidéos ont été publiées démontrant l'attaque:
 - [Attaque Parrot AR.Drone](doc/Parrot\ AR\ Drone/Notes.md)
 - [Attaque Syma X5C-1](doc/Syma\ X5C-1/Notes.md)
 
