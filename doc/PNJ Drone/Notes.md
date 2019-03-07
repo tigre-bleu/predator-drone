@@ -47,6 +47,8 @@ Nous choissons les couleurs suivantes:
 
 ## Analyse
 
+![Analyseur Logique](Analyseur_Logique.png)
+
 L'analyseur logique nous confirme bien que nous avons un bus SPI. En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le [comparer à la spec du module BK2421](Dump\ SPI\ Init\ Manette.ods).
 
 ![Image](Analyse_SPI_Binding.png?raw=true)
