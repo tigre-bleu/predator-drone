@@ -1,4 +1,12 @@
+L'attaque perpetrée au final est une variante de la preuve de concept
+[`skyjack`](https://github.com/samyk/skyjack). Le cockpit utilisé pour piloter l'AR.Drone
+est [`ardrone-webflight`](https://github.com/eschnou/ardrone-webflight), avec le plugin
+[`webflight-gamepad`](https://github.com/wiseman/webflight-gamepad/) permettant un
+contrôle avec une manette de jeu.
+
 # *Hacking* existants
+
+Les notes ci-dessous retraçent les recherches menées sur le Parrot AR.Drone 2.0
 
 ## [SkyJack](https://github.com/samyk/skyjack)
 
