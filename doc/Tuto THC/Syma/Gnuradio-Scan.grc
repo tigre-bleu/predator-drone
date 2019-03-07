@@ -113,7 +113,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>50e6</value>
+      <value>2.6e6</value>
     </param>
   </block>
   <block>
@@ -199,7 +199,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>3e6</value>
+      <value>2.6e6</value>
     </param>
   </block>
   <block>
@@ -1545,15 +1545,15 @@
     <key>wxgui_fftsink2</key>
     <param>
       <key>avg_alpha</key>
-      <value>0</value>
+      <value>0.5</value>
     </param>
     <param>
       <key>average</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>baseband_freq</key>
-      <value>0</value>
+      <value>frequency</value>
     </param>
     <param>
       <key>alias</key>
@@ -1581,7 +1581,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(664, 164)</value>
+      <value>(656, 148)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1593,7 +1593,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>wxgui_fftsink2_0</value>
+      <value>wxgui_fftsink2_0_0</value>
     </param>
     <param>
       <key>notebook</key>
@@ -1617,11 +1617,11 @@
     </param>
     <param>
       <key>samp_rate</key>
-      <value>bandwidth</value>
+      <value>samp_rate</value>
     </param>
     <param>
       <key>title</key>
-      <value>FFT Plot</value>
+      <value></value>
     </param>
     <param>
       <key>type</key>
@@ -1629,15 +1629,15 @@
     </param>
     <param>
       <key>win_size</key>
-      <value></value>
+      <value>[800,100]</value>
     </param>
     <param>
       <key>win</key>
-      <value>window.blackmanharris</value>
+      <value>window.hanning</value>
     </param>
     <param>
       <key>y_divs</key>
-      <value>10</value>
+      <value>9</value>
     </param>
     <param>
       <key>y_per_div</key>
@@ -1692,7 +1692,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(664, 380)</value>
+      <value>(656, 412)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1732,7 +1732,7 @@
     </param>
     <param>
       <key>win_size</key>
-      <value>(1600,900)</value>
+      <value>[800,100]</value>
     </param>
     <param>
       <key>win</key>
@@ -1741,7 +1741,7 @@
   </block>
   <connection>
     <source_block_id>uhd_usrp_source_0</source_block_id>
-    <sink_block_id>wxgui_fftsink2_0</sink_block_id>
+    <sink_block_id>wxgui_fftsink2_0_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
