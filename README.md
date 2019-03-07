@@ -2,22 +2,26 @@
 
 ![Logo](logo/logo.png)
 L'objectif de ce projet est de développer un drone prédateur permettant de prendre le
-contrôle d'un autre drone. Deux types de drones ont été abordés :
+contrôle d'un autre drone. Deux types d'attaques ont été réalisées :
 
-- RF2.4Ghz (Syma X5C-1)
+- RF2.4GHz (Syma X5C-1)
 - WiFi (Parrot AR.Drone)
+
+Un autre drone RF2.4GHz a été étudié, mais le reverse engineering du protocole n'est pas allé jusqu'au bout (PNJ Discovery)
 
 ## Détails des attaques
 
 La description des attaques est détaillée dans le dossier de documentation:
-- [Attaque Parrot AR.Drone](https://pe.ertu.be/videos/watch/54cb4bff-c321-4030-ad70-543e044f7b74)
-- [Attaque Syma X5C-1](https://pe.ertu.be/videos/watch/14ae8a25-1c56-4ab7-91fe-47d0ec886a59)
+- [Attaque Parrot AR.Drone](doc/Parrot\ AR\ Drone/Notes.md)
+- [Attaque Syma X5C-1](doc/Syma\ X5C-1/Notes.md)
+
+L'étude partielle du second drone RF est disponible dans le dossier [Etude PNJ Discovery](doc/PNJ\ Drone/Notes.md)
 
 ## Vidéos
 
-2 vidéos ont été publiées démontrant l'attaque:
-- [Attaque Parrot AR.Drone](doc/Parrot\ AR\ Drone/Notes.md)
-- [Attaque Syma X5C-1](doc/Syma\ X5C-1/Notes.md)
+2 vidéos ont été publiées démontrant les attaques sur le Parrot et le Syma:
+- [Attaque Parrot AR.Drone](https://pe.ertu.be/videos/watch/54cb4bff-c321-4030-ad70-543e044f7b74)
+- [Attaque Syma X5C-1](https://pe.ertu.be/videos/watch/14ae8a25-1c56-4ab7-91fe-47d0ec886a59)
 
 ## L'outil d'attaque multifonction `predator-drone`
 
