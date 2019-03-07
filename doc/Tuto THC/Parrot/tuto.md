@@ -3,6 +3,7 @@ title-first-page: |
                 | Prise de contrôle d'un drone
                 | Parrot AR.Drone 2.0
 title:          "Prise de contrôle d'un AR.Drone 2.0"
+title-img:      "img/parrotardrone2.png"
 author:         "Florent Fayollas et Antoine Vacher"
 subject:        "Tuto sécu, THCon 2019"
 toc:            false
@@ -39,7 +40,7 @@ le supporter. Pour vérifier cela, utiliser la commande `iw list` :
 \vspace*{-1.5em}
 ```bash
 iw list
-## Wiphy phy0
+## Wiphy phy1
 ##         ...
 ##         Supported interface modes:
 ##                  * managed
@@ -56,34 +57,34 @@ suivant^[À exécuter en `root`] :
 #    Passage en mode monitor
 # =============================
 iw dev
-## phy#0
-##         Interface wlan0
+## phy#1
+##         Interface wlan1
 ##                 ...
 ##                 type managed
-iw wlan0 del
+iw wlan1 del
 iw dev
-iw phy0 interface add mon0 type monitor
-## phy#0
-##         Interface mon0
+iw phy1 interface add mon1 type monitor
+## phy#1
+##         Interface mon1
 ##                 ...
 ##                 type monitor
-ip link set mon0 up
+ip link set mon1 up
 
 # =============================
 #    Passage en mode managed
 # =============================
-iw mon0 del
-iw phy0 interface add wlan0 type managed
-## phy#0
-##         Interface wlan0
+iw mon1 del
+iw phy1 interface add wlan1 type managed
+## phy#1
+##         Interface wlan1
 ##                 ...
 ##                 type managed
-ip link set wlan0 up
+ip link set wlan1 up
 ```
 
 \bcaution
 Il est nécessaire de désactiver tous les processus gérant la carte WiFi avant d'effectuer 
-cette manipulation, notamment `NetworkManager`.
+cette manipulation, notamment `NetworkManager` (`systemctl stop network-manager`).
 \ecaution
 
 \binfo
@@ -116,6 +117,9 @@ informations suivantes :
 - *BSSID* : adresse MAC de l'*Access Point* (AP)
 - *ESSID* : nom du réseau WiFi (abrégé SSID)
 
+> **Remarque :** pour changer le *channel* de la carte WiFi, il est nécessaire d'exécuter 
+> :\
+> `iw mon1 set channel <CHANNEL>`
 
 Le scan actif consiste en l'envoi de paquets *Probe Request* en indiquant un SSID. Si l'AP 
 correspondant à cet SSID reçoit le paquet, il répondra avec un *Probe Response*. Le client 
@@ -130,40 +134,59 @@ l'ensemble des AP à proximité répondent avec un paquet *Probe Response*.
 <https://www.adriangranados.com/blog/understanding-scan-modes-wifiexplorerpro>
 
 
+
 ## Mise en pratique
 
-Dans le but de faire que notre attaque reste inaperçu un maximum de temps, nous avons 
+Dans le but de faire que notre attaque reste inaperçue un maximum de temps, nous avons 
 choisi d'effectuer un scan passif. Le script Python `main.py` permet de lister passivement 
 les AP WiFi aux alentours. La bibliothèque Scapy (<https://scapy.net/>) est utilisée, 
 notamment les fonctions `sniff` pour l'écoute des paquets et `Dot11Beacon.network_stats` 
 pour obtenir les informations sur le réseau.
 
-\bcaution
-Avec Python 3, le code précédent risque de ne pas fonctionner. En effet, il faut que votre 
-version installée de Scapy intègre le correctif du bug 1872 
-(<https://github.com/secdev/scapy/issues/1872>).
-\ecaution
-
 \bwarning
 **À vous de jouer :**
 
-Si vous comparez la liste des réseaux WiFi produite par votre téléphone avec celle 
-produite par le script, vous pourrez observer des différences. Quelles sont elles ? 
-Corrigez le script pour lister l'ensemble des réseaux à proximité.
+- Si vous comparez la liste des réseaux WiFi produite par votre téléphone avec celle 
+  produite par le script, vous pourrez observer des différences. Quelles sont elles ?
+- Corrigez le script `main.py` pour lister l'ensemble des réseaux à proximité. Pour lancer 
+  le script, vous pouvez utiliser `./main.py mon1 -l`
+
 \ewarning
+
+\bcaution
+Avec Python 3, le code fourni risque de ne pas fonctionner. En effet, il faut que votre 
+version installée de Scapy intègre le correctif du bug 1872 
+(<https://github.com/secdev/scapy/issues/1872>). Le correctif est déjà installé sur le PC 
+de démo.
+\ecaution
+
+\binfo
+**Quelques précisions sur la fonction `sniff(iface=, timeout=, lfilter=, prn=)` :**
+
+- Cette fonction permet d'écouter des paquets réseaux sur une interface précise (`iface`).
+- L'argument `timeout` spécifie un temps d'expiration en seconde.
+- L'argument `prn` est une fonction (*callback*) appelée lorsqu'un paquet est reçu.
+- L'argument `lfilter` est un *callback* renvoyant un booléen, permettant de filtrer les 
+  paquets transmis à `prn` (`True` pour transmettre le paquet, `False` pour le jeter).
+
+\einfo
 
 > Le script `ex1.py` donne la correction.
 
 
+
+\pagebreak
 
 # Détection des clients d'un réseau
 
 \bwarning
 **À vous de jouer :**
 
-Nous souhaitons maintenant lister les clients de l'AP (adresses IP et MAC). Quelle 
-technique proposeriez-vous, toujours dans l'optique que notre attaque ne soit détectée 
-qu'au dernier moment ? Implanter votre solution.
+- Nous souhaitons maintenant lister les clients de l'AP (adresses IP et MAC). Quelle 
+  technique proposeriez-vous, toujours dans l'optique que notre attaque ne soit détectée 
+  qu'au dernier moment ? Implémenter votre solution.
+- Pour lancer le script, vous pouvez utiliser `./main.py mon1 -c <BSSID> <CHANNEL>`
+
 \ewarning
 
 
@@ -171,38 +194,96 @@ qu'au dernier moment ? Implanter votre solution.
 **Indices :**
 
 - Vous pouvez utiliser à nouveau la fonction `sniff` de Scapy.
+- Vous pouvez utiliser les fonctions *lambda* (fonctions anonymes) de Python (voir plus 
+  bas).
 - La méthode `packet.haslayer` permet de vérifier qu'un paquet réseau présente une couche 
-  précise (`IP`, `TCP`, `Dot11`, etc.). Pour récupérer une couche précise associée à un 
+  précise (`IP`, `TCP`, `Dot11FCS`, etc.). Pour récupérer une couche précise associée à un 
   paquet, il faut procéder comme suit : `packet[couche]` (par exemple : `packet[TCP]`).
-- Les champs suivants peuvent être utiles :
-  + `dot11_packet.addr1` : adresse MAC destination
-  + `dot11_packet.addr2` : adresse MAC source
-  + `dot11_packet.addr3` : BSSID
-  + `ip_packet.dst` : adresse IP destination
-  + `ip_packet.src` : adresse IP source
+- Les champs suivants peuvent être utiles sur un paquet WiFi :
+  + `packet.addr1` : adresse MAC destination
+  + `packet.addr2` : adresse MAC source
+  + `packet.addr3` : BSSID
+  + `packet[IP].dst` : adresse IP destination
+  + `packet[IP].src` : adresse IP source
 
+    **Remarque :** pour les deux derniers, il faut que la couche `IP` soit présente.
+
+
+**Topo sur les fonctions anonymes en Python :**
+
+Pour définir une fonction anonyme en Python, il faut utiliser le mot clé `lambda`^[`lambda 
+arg1, arg2, ...: value(arg1, arg2)`]. On peut ensuite appeler la fonction comme une autre. 
+Par exemple :
+\vspace*{-1em}
+
+```python
+x = lambda a : a + 10
+print(x(5))
+```
+
+Ceci est particulièrement utile lorsqu'une fonction attend en argument un *callback* :
+\vspace*{-1em}
+
+```python
+def my_filter(packet, layer):
+    """ Filter packet on layer. """
+    return packet.haslayer(layer)
+
+# Print all packets with IP layer
+sniff(
+        lfilter = lambda p: my_filter(p, IP),
+        prn     = lambda p: p.show()
+      )
+```
 \einfo
 
 > Le script `ex2.py` donne la correction.
 
 
 
+
 # Désauthentification d'un client avec `aireplay-ng`
+
+Nous avons maintenant la liste des clients d'une AP précise. Sur l'AP du drone Parrot, on 
+peut supposer qu'il n'y a qu'un seul client : le pilote du drone. Nous devons le 
+déconnecter du réseau pour prendre le contrôle du drone à sa place.
+
+Pour cela, il nous suffit d'envoyer des trames de désauthentification à l'AP. Dans le cas 
+d'un WiFi ouvert, c'est-à-dire dans notre cas, on parle de trames de désassociation. L'AP 
+croira alors que le client n'est pas associé au réseau et refusera le futur trafic de 
+celui-ci. Le schéma de la page suivante présente le principe.
+
+![Attaque par désauthentification WiFi^[Schéma pris sur 
+<https://en.wikipedia.org/wiki/Wi-Fi_deauthentication_attack>]](./img/deauth.png){width=80%}
 
 \bwarning
 **À vous de jouer :**
 
-Nous avons maintenant la liste des clients d'une AP précise. Désauthentifiez le client 
-pilote avec `aireplay-ng` dans le script Python.
+- Pour perpétrer l'attaque de désauthentification WiFi, on peut utiliser `aireplay-ng`. 
+  Désauthentifiez le client pilotant le drone avec `aireplay-ng` dans le script Python.
+- Pour lancer le script, vous pouvez utiliser `./main.py mon1 -d <CLIENT_MAC> <BSSID> 
+  <CHANNEL>`
+
 \ewarning
+
+\binfo
+**Indices :**
+
+- Étudiez le manuel de `aireplay-ng` (`man aireplay-ng`).
+  - Les options `-c`, `-0`, `-a` peuvent être utiles.
+  - L'option `-0` permet d'indiquer le nombre de paquets de désassociation à envoyer. 3 
+    est une bonne valuer.
+- Commencez par construire la ligne de commande en dehors du script Python.
+
+\einfo
 
 > Le script `ex3.py` donne la correction.
 
-Le pilote officiel est maintenant déconnecté de l'AP. Nous pouvons "prendre sa place" en 
-se connectant à celle-ci. Ceci peut être fait en ligne de commande par `iw wlan0 connect 
-ardrone2_xxxxxx` où `ardrone2_xxxxxx` est le SSID de l'AP. Il suffit alors de demander une 
-adresse IP au drone (`dhclient wlan0`) et de lancer un programme controlant le drone, tel 
-que `ardrone-webflight`.^[<https://github.com/eschnou/ardrone-webflight>]
+Le pilote officiel du drone est maintenant déconnecté de l'AP. Nous pouvons "prendre sa 
+place" en se connectant à celle-ci. Ceci peut être fait en ligne de commande par `iw wlan0 
+connect ardrone2_xxxxxx` où `ardrone2_xxxxxx` est le SSID de l'AP. Il suffit alors de 
+demander une adresse IP au drone (`dhclient wlan0`) et de lancer un programme controlant 
+le drone, tel que `ardrone-webflight`^[<https://github.com/eschnou/ardrone-webflight>].
 
 \bcaution
 Pour se connecter à l'AP, il est nécessaire que la carte WiFi soit en mode *managed*. 
@@ -213,6 +294,8 @@ l'attaque :
   désassocier le client pilote.
 - La seconde, en mode *managed*, permet de se connecter au drone et d'en prendre le 
   contrôle.
+
+Ce n'est pas fait dans le cadre de cet exercice.
 
 \ecaution
 
@@ -238,10 +321,18 @@ Parrot.
 \bwarning
 **À vous de jouer :**
 
-Améliorer le script de l'étape 1 pour ne lister que les APs Parrot. Les blocs d'adresses 
-MAC alloués pour Parrot sont : `90:03:B7`, `00:12:1C`, `90:3A:E6`, `A0:14:3D`, `00:12:1C`, 
-`00:26:7E`.
+- Améliorer le script de l'étape 1 pour ne lister que les APs Parrot. Les blocs d'adresses 
+  MAC alloués pour Parrot sont : `90:03:B7`, `00:12:1C`, `90:3A:E6`, `A0:14:3D`, 
+  `00:12:1C`, `00:26:7E`.
+
 \ewarning
+
+\binfo
+**Indice :**
+
+Utilisez la notation `string[:<int>]` où `<int>` est le nombre de caractères à extraire 
+depuis le début de la chaîne de caractères.
+\einfo
 
 > Le script `ex4.py` donne la correction.
 
