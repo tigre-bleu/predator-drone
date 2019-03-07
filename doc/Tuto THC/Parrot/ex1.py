@@ -14,13 +14,13 @@ import sys, re
 
 debug_sudo    = False
 
-ap_list       = {}      # key=BSSID, value=ESSID
+bssid_list    = []
 clients_list  = []
 
 WIFI_CHAN_MIN = 1
 WIFI_CHAN_MAX = 12
 
-PARROT_MACS   = ["90:03:B7", "00:12:1C", "90:3A:E6", "A0:14:3D", "00:12:1C", "00:26:7E"]
+PARROT_MACS   = ["90:03:b7", "00:12:1c", "90:3a:e6", "a0:14:3d", "00:12:1c", "00:26:7e"]
 
 
 
@@ -29,7 +29,15 @@ PARROT_MACS   = ["90:03:B7", "00:12:1C", "90:3A:E6", "A0:14:3D", "00:12:1C", "00
 # =======================
 
 def sudo(*args):
-    """ Execute an external command. """
+    """
+    Execute an external command.
+
+    :param args: The command line to be executed (can be a tuple)
+
+    Examples:
+        - sudo("ip link set", dev_name, "up")
+        - sudo("ip link set "+dev_name+" up")
+    """
     command     = ' '.join(args)
 
     try:
@@ -54,13 +62,13 @@ def sudo(*args):
 # =================
 
 def filter_beacon(p):
-    """ Filter Beacon frames. """
+    """ Filter beacon frames. """
     return p.haslayer(Dot11Beacon)
 
 
-def register_ap(p):
-    """ Register Access Point. """
-    global ap_list
+def print_ap(p):
+    """ Print Access Point if not already printed. """
+    global bssid_list
 
     # Retreive network statistics
     netstats = p[Dot11Beacon].network_stats()
@@ -71,17 +79,20 @@ def register_ap(p):
     channel  = netstats['channel']
     crypto   = netstats['crypto']
 
-    # Print AP
-    if bssid not in ap_list:
-        ap_list[bssid] = ssid
+    # Print AP if not already printed
+    if bssid not in bssid_list:
+        # Register AP to not print it another time
+        bssid_list.append(bssid)
+        # Print AP
         print("AP", ssid, "("+bssid+")", "on channel", str(channel), "("+'/'.join(crypto)+")")
+        # TODO partie 4
 
 
 def list_ap(wlan):
     """ List Access Points. """
     for chan in range(WIFI_CHAN_MIN, WIFI_CHAN_MAX + 1):
         sudo("iw", wlan, "set channel", str(chan))
-        sniff(iface=wlan, timeout=1, lfilter=filter_beacon, prn=register_ap)
+        sniff(iface=wlan, timeout=1, lfilter=filter_beacon, prn=print_ap)
 
 
 
@@ -89,8 +100,40 @@ def list_ap(wlan):
 #    Clients listing
 # =====================
 
+def filter_clients(bssid, p):
+    """ Filter wifi packets of a specific BSSID, sent from/to AP. """
+    # Filter WiFi packets (Dot11FCS), with IP layer, on SSID bssid
+    # TODO partie 2
+    return False
+
+
+def print_client(p):
+    """ Register client of a specific BSSID. """
+    global clients_list
+
+    # Extract informations
+    mac_dst = p.addr1
+    mac_src = p.addr2
+    bssid   = p.addr3
+
+    ip_dst = p[IP].dst
+    ip_src = p[IP].src
+
+    # Compute client MAC and IP
+    mac   = mac_src   if mac_src != bssid     else mac_dst
+    ip    = ip_src    if mac_src != bssid     else ip_dst
+
+    # Register client
+    if mac not in clients_list:
+        # Register client to not display it another time
+        clients_list.append(mac)
+        # Display client informations
+        print("Client", mac, "with IP", ip)
+
+
 def search_clients(wlan, bssid, channel):
     """ Search for clients. """
+    # TODO partie 2
     print("TODO")
 
 
@@ -101,6 +144,7 @@ def search_clients(wlan, bssid, channel):
 
 def deauth_client(wlan, client_mac, bssid, channel):
     """ Deauthenticate client from AP. """
+    # TODO partie 3
     print("TODO")
 
 
