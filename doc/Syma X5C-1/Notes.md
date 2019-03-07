@@ -83,6 +83,8 @@ Le drone reçoit en fait des ordres valides à la fois de la télécommande et d
 
 Cependant, avec le RPi et le nRF24l01+ nous avons la possibilité d'émettre plus de trames que la télécommande, le drone suit donc majoritairement les ordres de l'attaquant et en pratique son contrôle échappe au pilote légitime.
 
+![Image](plot.png)
+*L'attaque est visible lorsque la fréquence des trames augmente*
 
 # Notes et Références
 
