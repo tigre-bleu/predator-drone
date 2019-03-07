@@ -133,12 +133,10 @@ l'ensemble des AP à proximité répondent avec un paquet *Probe Response*.
 ## Mise en pratique
 
 Dans le but de faire que notre attaque reste inaperçu un maximum de temps, nous avons 
-choisi d'effectuer un scan passif. Le script Python ci-dessous permet de lister 
-passivement les AP WiFi aux alentours. La bibliothèque Scapy (<https://scapy.net/>) est 
-utilisée, notamment les fonctions `sniff` pour l'écoute des paquets et 
-`Dot11Beacon.network_stats` pour obtenir les informations sur le réseau.
-
-\itodo{code sans channel hopping}
+choisi d'effectuer un scan passif. Le script Python `main.py` permet de lister passivement 
+les AP WiFi aux alentours. La bibliothèque Scapy (<https://scapy.net/>) est utilisée, 
+notamment les fonctions `sniff` pour l'écoute des paquets et `Dot11Beacon.network_stats` 
+pour obtenir les informations sur le réseau.
 
 \bcaution
 Avec Python 3, le code précédent risque de ne pas fonctionner. En effet, il faut que votre 
@@ -154,7 +152,7 @@ produite par le script, vous pourrez observer des différences. Quelles sont ell
 Corrigez le script pour lister l'ensemble des réseaux à proximité.
 \ewarning
 
-\itodo{correction avec channel hopping}
+> Le script `ex1.py` donne la correction.
 
 
 
@@ -185,7 +183,7 @@ qu'au dernier moment ? Implanter votre solution.
 
 \einfo
 
-\itodo{solution}
+> Le script `ex2.py` donne la correction.
 
 
 
@@ -198,7 +196,7 @@ Nous avons maintenant la liste des clients d'une AP précise. Désauthentifiez l
 pilote avec `aireplay-ng` dans le script Python.
 \ewarning
 
-\itodo{code correction}
+> Le script `ex3.py` donne la correction.
 
 Le pilote officiel est maintenant déconnecté de l'AP. Nous pouvons "prendre sa place" en 
 se connectant à celle-ci. Ceci peut être fait en ligne de commande par `iw wlan0 connect 
@@ -245,6 +243,6 @@ MAC alloués pour Parrot sont : `90:03:B7`, `00:12:1C`, `90:3A:E6`, `A0:14:3D`, 
 `00:26:7E`.
 \ewarning
 
-\itodo{code de correction}
+> Le script `ex4.py` donne la correction.
 
 
