@@ -77,6 +77,14 @@ On observe alors que si le drone est allumé mais que la télécommande ne l'est
 
 Si le drone est appairé avec sa télécommande originale, on observe que les ordres envoyés par le RPi l'emportent sur ceux de la télécommande: **L'attaque fonctionne**.
 
+# Vidéo
+
+Cette vidéo montre l'utilisation de `predator-drone` pour attaquer un Parrot AR 2.0.
+
+<figure class="video_container">
+  <iframe src="https://pe.ertu.be/videos/embed/14ae8a25-1c56-4ab7-91fe-47d0ec886a59" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
+
 # Analyse de l'attaque
 
 Le drone reçoit en fait des ordres valides à la fois de la télécommande et du RPi = nRF24l01+ prédateur. Comme tous les paquets sont valides de son point de vue, il essaye de satisfaire tous les ordres.
