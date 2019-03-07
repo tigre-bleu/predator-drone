@@ -1,3 +1,5 @@
+*Cette attaque correspond au travail très bien décrit [ici](https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html)*
+
 # Sniffing SDR
 
 On va commencer par le plus simple: caractériser la liaison radio avec le drone éteint et la télécommande en mode recherche (avant l'appairage).
@@ -81,8 +83,12 @@ Le drone reçoit en fait des ordres valides à la fois de la télécommande et d
 
 Cependant, avec le RPi et le nRF24l01+ nous avons la possibilité d'émettre plus de trames que la télécommande, le drone suit donc majoritairement les ordres de l'attaquant et en pratique son contrôle échappe au pilote légitime.
 
-# Références
+
+# Notes et Références
+
+Si le drone ne se connecte plus bien à la télécommande, il existe une [procédure de reset](https://www.firstquadcopter.com/news/resetting-calibrating-Syma-x5c/).
 
 - https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html
 - https://github.com/chopengauer/nrf_analyze
 - https://github.com/goebish/nrf24_multipro/blob/master/nRF24_multipro/SymaX.ino
+- Proakis Digital Communications (livre généraliste sur les télécommunications numériques, voir en particulier partie sur les enveloppes complexes et FSK/GFSK)
