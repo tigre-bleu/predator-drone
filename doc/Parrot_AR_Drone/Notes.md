@@ -61,10 +61,7 @@ Services ouverts sur le Parrot AR drone :
 
 Cette vidéo montre l'utilisation de `predator-drone` pour attaquer un Parrot AR 2.0.
 
-
-<figure class="video_container">
-  <iframe src="https://pe.ertu.be/videos/embed/54cb4bff-c321-4030-ad70-543e044f7b74" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
+https://pe.ertu.be/videos/watch/54cb4bff-c321-4030-ad70-543e044f7b74
 
 
 # Notes diverses

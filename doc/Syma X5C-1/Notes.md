@@ -81,9 +81,7 @@ Si le drone est appairé avec sa télécommande originale, on observe que les or
 
 Cette vidéo montre l'utilisation de `predator-drone` pour attaquer un Parrot AR 2.0.
 
-<figure class="video_container">
-  <iframe src="https://pe.ertu.be/videos/embed/14ae8a25-1c56-4ab7-91fe-47d0ec886a59" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
+https://pe.ertu.be/videos/watch/14ae8a25-1c56-4ab7-91fe-47d0ec886a59
 
 # Analyse de l'attaque
 
