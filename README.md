@@ -1,5 +1,6 @@
 # Projet `predator-drone`
 
+![Logo](logo/logo.png)
 L'objectif de ce projet est de développer un drone prédateur permettant de prendre le
 contrôle d'un autre drone. Deux types de drones ont été abordés :
 
