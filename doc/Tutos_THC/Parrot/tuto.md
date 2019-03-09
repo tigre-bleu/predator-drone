@@ -272,7 +272,7 @@ celui-ci. Le schéma de la page suivante présente le principe.
 - Étudiez le manuel de `aireplay-ng` (`man aireplay-ng`).
   - Les options `-c`, `-0`, `-a` peuvent être utiles.
   - L'option `-0` permet d'indiquer le nombre de paquets de désassociation à envoyer. 3 
-    est une bonne valuer.
+    est une bonne valeur.
 - Commencez par construire la ligne de commande en dehors du script Python.
 
 \einfo
@@ -295,7 +295,7 @@ l'attaque :
 - La seconde, en mode *managed*, permet de se connecter au drone et d'en prendre le 
   contrôle.
 
-Ce n'est pas fait dans le cadre de cet exercice.
+Cette dernière étape ne sera pas réalisée dans le cadre de cet exercice.
 
 \ecaution
 
