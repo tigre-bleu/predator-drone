@@ -18,7 +18,7 @@ documentclass:  article
 
 ## Introduction généraliste sur les drones
 
-Les UAVs (*Unmanned Aerial Vehicles*), souvent appelés drones, sont des aéronefs sans 
+Les UAVs (*Unmanned Aerial Vehicles*), communément appelés drones, sont des aéronefs sans 
 pilote humain à bord. Un drone est un composant d'un UAS (*Unmanned Aircraft System*), qui 
 comprend un UAV, une station de contrôle au sol et un system de communication entre les 
 deux.
@@ -60,7 +60,7 @@ exemple). Ceci n'étant pas acceptable dans un cadre civil.
 L'objectif de notre projet est donc de développer un outil capable de prendre le contrôle 
 de plusieurs drones. Cette prise de contrôle ne doit pas impliquer une chute du drone 
 piraté. Cet outil pourrait ensuite être utilisé, par exemple, pour sécuriser la 
-médiatisation d'un match sportif : il sera en mesure dee "capturer" les drones détectés et 
+médiatisation d'un match sportif : il sera en mesure de "capturer" les drones détectés et 
 de les récupérer. Après capture, il sera aussi possible d'analyser le contenu des drones 
 et éventuellement de remonter au propriétaire.
 
@@ -87,12 +87,15 @@ troisième partie de ce rapport.
 
 
 
+\pagebreak
+
 # Attaque Syma
 
 \itodo{TODO}
 
 
 
+\pagebreak
 
 # Embarquement sur un drone
 
@@ -106,6 +109,7 @@ troisième partie de ce rapport.
   => utilisation moyens volière
 
 
+\pagebreak
 
 # Conclusion
 
