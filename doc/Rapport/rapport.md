@@ -74,7 +74,7 @@ troisième partie de ce rapport.
 
 \pagebreak
 
-# Attaque Parrot
+# Prise de contrôle d'un drone Parrot AR.Drone 2.0
 
 \itodo{TODO}
 
@@ -89,7 +89,7 @@ troisième partie de ce rapport.
 
 \pagebreak
 
-# Attaque Syma
+# Prise de contrôle d'un drone Syma X5C-1
 
 \itodo{TODO}
 
@@ -97,7 +97,7 @@ troisième partie de ce rapport.
 
 \pagebreak
 
-# Embarquement sur un drone
+# Embarquement de l'outil de prise de contrôle sur un drone prédateur
 
 \itodo{TODO}
 
