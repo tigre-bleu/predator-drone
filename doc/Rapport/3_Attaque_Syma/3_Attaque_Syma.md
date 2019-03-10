@@ -1,8 +1,8 @@
 # Attaque Syma X5C-1
-## Présentation
+## Présentation de l'attaque
 Le Syma X5C-1 est un petit drone RF opérant sur 3 canaux dans la bande de fréquence 2.4GHz. Il se pilote via une télécommande.
 
-*Une attaque a déjà eu lieue sur ce drone dont les détails ont été publiés sur un blog (https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html). Nous avons cherché à rejouer la même attaque pour la comprendre et l'embarquer sur le drone prédateur.*
+*Une attaque a déjà eu lieue sur ce drone dont les détails ont été publiés sur le blog ptsecurity^[<https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html>]. Nous avons cherché à rejouer la même attaque pour la comprendre et l'embarquer sur le drone prédateur.*
 
 Afin de pouvoir détourner le drone en vol, il est nécessaire de:
 - Découvrir les canaux utilisés
@@ -18,7 +18,7 @@ Le drone reçoit donc à la fois les ordres légitimes et les ordres de l'attaqu
 
 ## Compréhension de la couche physique
 
-Ce chapitre détaille les étapes qui ont été nécessaires afin de réaliser l'attaque.
+Ce chapitre détaille les étapes qui ont été nécessaires afin de comprendre la couche physique utilisée par le drone.
 
 ### Découverte des canaux utilisés
 
@@ -37,7 +37,7 @@ Pour cela nous avons crée une waterfall et rapidement nous avons constaté de l
 
 > Ajouter image waterfall et FFT
 
-En regardant un extrait de la spec d'un module radio nRF24l01 (voir plus loin dans ce rapport), on peut lire:
+En regardant un extrait de la spec d'un module radio nRF24l01^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/nRF24L01+/nRF24L01Pluss_Preliminary_Product_Specification_v1_0.pdf>], on peut lire:
 
 ```
 6.3 RF channel frequency
@@ -72,7 +72,7 @@ Nous créons donc un autre traitement GnuRadio pour enregistrer le signal en sor
 Puis nous l'ouvrons dans le logiciel `baudline` afin de le visualiser.
 
 ![Waterfall Baudline](img/baudline-waterfall.png)
-![Waterfall Signal Brut](img/baudline-signal-raw.png)
+![Signal Brut](img/baudline-signal-raw.png)
 
 Nous pouvons constater que l'amplitude du signal est constante, ce n'est donc pas de l'ASK. Il est légitime de penser que la modulation est du FSK/GFSK mais cela pourrait aussi être du PSK.
 
@@ -82,21 +82,23 @@ Nous rajoutons un filtre passe bas afin d'avoir un signal plus propre puis un bl
 
 On peut voir les bits de notre signal:
 
-![Baudline Demodulé](img/baudline-signal-demod.png)
+![Signal Démodulé](img/baudline-signal-demod.png)
 
 La fin du traitement GnuRadio enregistre dans un fichier des bits pris à une période constante correspondante à 250kbits/s. Nous y retrouverons donc nos trames mais aussi les "faux bits" issus de la mauvaise interprétation du bruit.
 
-![Hexdump](img/hexdump.png)
+![Hexdump du bit stream](img/hexdump.png)
 
 *Pour être plus propre, nous aurions pu développer une chaine de démodulation complète permettant de synchroniser l'horloge et de filtrer le bruit entre plusieurs messages. Cependant ce n'était pas strictement nécessaire pour réaliser notre attaque.*
 
 ## Compréhension de la couche liaison de données
 
-**Première Impression**
+Une fois la modulation déterminée, il nous a fallu comprendre le fonctionnement de la couche liaison de données.
+
+### Première Impression
 
 En regardant de plus près notre signal démodulé, on observe les éléments suivants:
 
-![Baudline Interprétation](img/baudline-interpretation-protocole.png)
+![Début de trame](img/baudline-interpretation-protocole.png)
 
 - Du bruit
 - Une phase ou le signal se stabilise (probablement l'initialisation de l'émetteur)
@@ -108,33 +110,37 @@ En regardant de plus près notre signal démodulé, on observe les éléments su
 
 Le nombre d'octets total (incluant le préambule) semble donc être de 18.
 
-On peut voir dans la specification d'un module radio nRF24l01 (voir plus loin dans ce rapport), que celui-ci émet un préambule de 0xAA ou 0x55. Il est donc légitime de penser que le drone utilise un module de ce type (c'est en effet un module bon marché très utilisé pour des petits équipements électroniques: drones, souris sans fil, ...).
+On peut voir dans la specification d'un module radio nRF24l01+ que celui-ci émet un préambule de 0xAA ou 0x55. Il est donc légitime de penser que le drone utilise un module de ce type (c'est en effet un module bon marché très utilisé pour des petits équipements électroniques: drones, souris sans fil, ...).
 
-> **Le module nRF24l01+ en bref**
->
-> A ce stade, nous nous sommes intéressés plus en détail au fonctionnement de ce module. En voici les caractéristiques les plus importantes pour notre projet:
-> - C'est un transceiver GFSK opérant sur la bande de fréquence 2.4GHz
-> - Il utilise un préambule en émission de type Ox55 ou 0xAA
-> - Une adresse Tx ou Rx est configurable entre 3 et 5 octets
-> - La taille de la payload est configurable entre 0 et 32 octets
-> - Un CRC est optionnel (sur 1 ou 2 octets)
->
-> ![Protocole nRF24l01](img/protocole-nrf24l01.png)
+### Le module nRF24l01+
 
-Ainsi, en supposant que le drone Syma utilise un module nRF24l01, il nous faudra trouver la taille des champs configurables. Il nous faut donc écouter sur un des canaux utilisés par la télécommande afin de trouver ces paramètres.
+A ce stade, nous nous sommes intéressés plus en détail au fonctionnement du module nRF24l01+. C'est en effet un module radio très populaire faisant du GFSK sur la bande 2.4 GHz. Il est utilisé dans beaucoup de projets électroniques (drones mais aussi souris sans-fil, projets DIY, ...)
 
-Nous savons déjà qu'il y a 18 octets de bits utiles dont 1 octet de préambule. Nous en concluons donc que:
-- L'adresse fait entre 3 et 5 octets
-- Le CRC fait entre 0 et 3 octets
-- La payload fait entre 10 et 14 octets
+En voici les caractéristiques les plus importantes pour notre projet:
+- Il utilise un préambule en émission de type Ox55 ou 0xAA
+- Une adresse Tx ou Rx est configurable entre 3 et 5 octets
+- 2 couches liaison de données en mode paquet sont possibles: le mode basique et le mode Enhanced Shockburst
+- La taille de la payload est configurable entre 0 et 32 octets
+- Un CRC est optionnel (sur 1 ou 2 octets)
 
-**Détermination de la taille des champs**
+Nous ne nous intéresserons ici qu'au mode basique et non au mode Enhanced Shockburst. Celui-ci propose des fonctionnalités supplémentaires tels que des acquittements et de la reprise sur erreur.
 
-**Méthode 1: Analyse hors avec un SDR**
+![Protocole nRF24l01 basique](img/protocole-nrf24l01.png)
 
-Nous sommes partis du fichier de bits enregistré par GnuRadio en utilisant un outil déjà disponible [sur GitHub](https://github.com/chopengauer/nrf_analyze/blob/master/nrf24_analyzer.py) qui assiste dans cette tâche.
+Ainsi, **en supposant que le drone Syma utilise un module de type nRF24l01+ ou compatible**, il nous faudra trouver la taille des champs configurables. Il nous faut donc écouter sur un des canaux utilisés par la télécommande afin de trouver ces paramètres.
 
-Ce script recherche le prérambule 0xAA puis affiche les octets qui suivent en fonction de taille de champs configurable. Il est ainsi possible de faire des hypothèses sur la taille des champs (par exemple, l'adresse est sur 3 octets, la payload sur 13 et le CRC sur 1). L'outil recalcule le CRC ce qui permet de vérifier en partie si nos hypothèses sont correctes.
+Nous savons déjà qu'il y a 18 octets de bits utiles dont 1 octet de préambule. Nous en concluons donc que dans cette hypothèse:
+- L'adresse ferait entre 3 et 5 octets
+- Le CRC ferait entre 0 et 3 octets
+- La payload ferait entre 10 et 14 octets
+
+### Déterminaison des paramètres du procole nRF24l01+
+
+**Méthode 1: Analyse en temps différé avec un SDR**
+
+Nous sommes partis du fichier de bits enregistré par GnuRadio en utilisant un outil déjà disponible sur GitHub^[<https://github.com/chopengauer/nrf_analyze/blob/master/nrf24_analyzer.py>] qui assiste dans cette tâche.
+
+Ce script recherche le préambule 0xAA puis affiche les octets qui suivent en fonction de taille de champs configurable. Il est ainsi possible de faire des hypothèses sur la taille des champs (par exemple, l'adresse est sur 3 octets, la payload sur 13 et le CRC sur 1). L'outil recalcule le CRC ce qui permet de vérifier en partie si nos hypothèses sont correctes.
 
 L'outil permet également de trouver de façon partiellement automatique la taille de la payload et la taille du CRC.
 
@@ -153,7 +159,7 @@ brute_len = True
 ```
 *On fait l'hypothèse que l'adresse est sur 3 octets puis le script essaye toutes les combinaisons de taille de payload et de CRC possibles. Si un CRC calculé correspond à un CRC reçu alors il affiche la trame.*
 
-![nrf24analyser](img/recherche-taille-champs.png)
+![Hypothèse d'une adresse sur 3 octets](img/recherche-taille-champs.png)
 
 *On constate qu'il y a beaucoup de "fausses trames" provenant du bruit et pour lesquelles par hasard le CRC est valide. Hors nous savons que la payload fait entre 10 et 14 octets ce qui nous permet de filtrer une grande partie des fausses trames.*
 
@@ -163,7 +169,7 @@ brute_len = True
 
 On observe rapidement en utilisant la télécommande que les 5 premiers octets restent fixes quelle que soit la position des commandes. Nous pouvons donc en conclure une **adresse de 5 octets (0xa1ca201670), une payload de 10 octets et un CRC de 2 octets**.
 
-![nrf24analyser](img/nrf24_analyser.png)
+![Tailles de champs correctes](img/nrf24_analyser.png)
 
 **Méthode 2: Analyse en temps réel avec un nRF24l01+**
 
@@ -177,7 +183,7 @@ Il serait alors nécessaire que le module soit capable de passer en mode promisc
 > - La partie juste avant le préambule (Tx Init) est la plupart du temps interprétée comme 0x00
 > - Le registre de configuration de la taille de l'adresse autorise les valeurs 01, 10 et 11 pour des tailles de 3, 4 et 5 octets. La valeur 00 est interdite dans la spec. Pourtant, si on met 00 dans ce registre, on constate que le module considère une adresse de 2 octets.
 >
-> ![Spec nRF24l01+](img/spec_nrf24l01_taille-adresse.png)
+> ![Extrait de la spécification du nRF24l01+](img/spec_nrf24l01_taille-adresse.png)
 >
 > En combinant toutes ces propriétés, on peut configurer une adresse de 0x00AA (2 octets) qui va matcher avec tous les débuts de trames.
 >
@@ -188,13 +194,13 @@ Nous n'avons pas réellement mis en pratique cette méthode, connaissant déjà 
 ## Compréhension du protocole Syma
 Nous avons déterminé que l'adresse fait 5 octets et que la payload fait 10 octets. Il faut donc à présent comprendre le contenu de ces 10 octets de payload.
 
-Nous avons monté un nRF24l01+ sur un Raspberry PI 3 et adapté un [script existant](https://github.com/chopengauer/nrf_analyze/blob/master/scan.py) permetant d'afficher dans une console en temps réel le contenu des payload.
+Nous avons monté un nRF24l01+ sur un Raspberry PI 3 et adapté un script existant permetant d'afficher dans une console en temps réel le contenu des payload^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/tools/syma_protocol_analyser/syma_protocol_analyser.py>].
 
-Pour faciliter l'interaction avec le public lors du tutoriel de l THCon, nous avons rajouté un petit écran OLED sur bus I2C afin d'y afficher le contenu des trames.
+Pour faciliter l'interaction avec le public lors du tutoriel de la THCon, nous avons rajouté un petit écran OLED sur bus I2C afin d'y afficher le contenu des trames.
 
-![Schema](img/PI3_Syma_Sketch_bb.png)
+![Montage de l'analyseur](img/PI3_Syma_Sketch_bb.png)
 
-![RPI3](img/rpi3_analyser.png)
+![Capture et affichage des paquets](img/rpi3_analyser.png)
 
 *Note: La performance de l'ensemble avec l'écran n'est pas suffisante pour faire les observations confortablement donc il n'a été utilisé que pour la THCon.*
 
@@ -221,7 +227,7 @@ Nous avons donc compris entièrement le protocole et sommes donc en mesure de le
 
 Il est relativement simple d'implémenter le protocole en Python sur un RPi avec un module nRF24l01+. Afin de simplifier le contrôle du drone, nous choisissons d'utiliser une manette USB.
 
-Nous sommes parti d'un [code existant](https://github.com/chopengauer/nrf_analyze/blob/master/syma_joy.py) que nous avons simplifié et adapté pour fonctionner avec notre manette.
+Nous sommes parti d'un code existant^[<https://github.com/chopengauer/nrf_analyze/blob/master/syma_joy.py>] que nous avons simplifié et adapté pour fonctionner avec notre manette.
 
 On observe alors que si le drone est allumé mais que la télécommande ne l'est pas, le drone clignote et ne prends pas en compte nos commande. Il doit donc y avoir un appairage du drone et de la télécommande. Il faudrait creuser cet aspect mais pour réaliser l'attaque souhaitée, nous n'en avons pas besoin. En effet nous souhaitons intercepter le drone en vol, donc déjà appairé à une télécommande.
 
@@ -231,29 +237,27 @@ Si le drone est appairé avec sa télécommande originale, on observe que les or
 
 L'attaque fonctionne car le Raspberry émet plus de trames que la télécommande légitime. Le drone reçoit des trames contradictoires mais valides des deux émetteurs et cherche à obéir aux deux ordres. L'attaquant envoyant plus d'ordres que le pilote légitime, c'est donc lui qui gagne.
 
-Pour visualiser ce phénomène, nous avons développé un [simple outil de log](https://framagit.org/tigre-bleu/predator-drone/tree/master/tools/nrf24_logger) pour un Raspberry PI avec un nRF24l01+ qui enregistre les trames reçues sur un canal. On peut ensuite tracer des courbes avec Gnuplot.
+Pour visualiser ce phénomène, nous avons développé un simple outil de log^[<https://framagit.org/tigre-bleu/predator-drone/tree/master/tools/nrf24_logger>] pour un Raspberry PI avec un nRF24l01+ qui enregistre les trames reçues sur un canal. On peut ensuite tracer des courbes avec Gnuplot ou LibreOffice.
 
-![Plot](img/gnuplot-trames-emises.png)
+![Répartition des trames sur un canal au début d'une attaque](img/gnuplot-trames-emises.png)
 
 On voit très nettement l'augmentation du nombre de trames pendant l'attaque.
 
-Nous remarquons également un phénomène qui nous avait échappé: La télécommande émet 2 trames sur un canal avant de passer au canal suivant. Notre attaquant n'utilise pas le même algorithme et émet une seule fois sur chaque canal.
-
-En pratique, cette différence n'a pas d'effet.
+Nous remarquons également un phénomène qui nous avait échappé: La télécommande émet 2 trames sur un canal avant de passer au canal suivant. Notre script d'attaque n'utilise pas le même algorithme et émet une seule fois sur chaque canal. En pratique, cette différence n'a pas d'effet. Cela est probablement dû au fort taux d'émission de trame par l'attaquant.
 
 A partir du log enregistré, nous pouvons aussi recalculer des taux de trames par seconde reçus par le drone avant et pendant l'attaque:
 - Environ 50 trames/s par canal (200 trames/s au total) envoyées hors attaque
 - Environ 250 trames/s par canal (1000 trames/s au total) envoyées pendant l'attaque
 
-![Frame Rate](img/frame-rate.png)
+![Frame Rate sur un canal pendant une attaque](img/frame-rate.png)
 
 *Ces taux de trames sont indicatifs, car on pourrait atteindre les limites de performance du nRF24l01+ en réception. La grande variation du taux pendant l'attaque nous semble confirmer cette hypothèse. Néanmoins nous pensons que l'ordre de grandeur est correct.*
 
-Nous avons également visualisé la différence de nombre de trames dans GnuRadio (voir la fin de la [vidéo](https://pe.ertu.be/videos/watch/14ae8a25-1c56-4ab7-91fe-47d0ec886a59) que nous avons faite dans la volière de l'ENAC).
+Nous avons également visualisé la différence de nombre de trames dans GnuRadio (voir la fin de la vidéo^[<https://pe.ertu.be/video-channels/tls_sec/videos>] que nous avons faite dans la volière de l'ENAC).
 
 Une caractérisation plus rigoureuse de l'attaque nécéssiterait de passer par Gnuradio et de créer un traitement capable de compter les trames Syma.
 
-## Détection de l'attaque et protection
+## Détection et prévention de l'attaque
 
 La detection de l'attaque est difficile du point de vue du pilote qui perds le contrôle d'un seul coup sans aucune indication d'un quelquonque problème.
 
