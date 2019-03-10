@@ -72,18 +72,38 @@ troisième partie de ce rapport.
 
 
 
+
 \pagebreak
 
 # Prise de contrôle d'un drone Parrot AR.Drone 2.0
 
+\itodo{présentation vulgarisée}
+
+
+## Présentation technique de l'attaque
+
 \itodo{TODO}
 
-+ présentation vulgarisée
-+ présentation scientifique de l'attaque
-+ problèmes dongle WiFi
-+ problèmes carte unique
-+ moyen de détection de l'attaque
-+ moyen de protection (capture ENAC)
+
+## Réalisation
+
+\itodo{TODO}
+
+
+### Utilisation d'une unique puce WiFi
+
+\itodo{TODO}
+
+
+### Problème de pilote de puce WiFi
+
+\itodo{TODO}
+
+
+## Détection et prévention de l'attaque
+
+\itodo{TODO : capture ENAC}
+
 
 
 
@@ -95,18 +115,42 @@ troisième partie de ce rapport.
 
 
 
+
 \pagebreak
 
 # Embarquement de l'outil de prise de contrôle sur un drone prédateur
 
-\itodo{TODO}
+## Installation de l'outil sur une Raspberry Pi Zero W
 
-+ présentation vulgarisée
-+ pan bluetooth
-+ compilation pyrf24
-+ usbip
-+ tests volières ENAC avec paparazzi
-  => utilisation moyens volière
+\itodo{présentation vulgarisée}
+
+
+### Utilisation du cockpit `ardrone-webflight`
+
+\itodo{déport par iptables}
+
+
+### Compilation de la bibliothèque `pyRF24`
+
+\itodo{compilation pyrf24}
+
+
+### Utilisation distante d'une manette
+
+\itodo{usbip}
+
+
+### Contrôle distant de l'outil
+
+\itodo{Bluetooth PAN}
+
+
+## Tests finaux de l'outil embarqué
+
+\itodo{volière ENAC avec paparazzi + utilisation moyens volière (vidéo, etc.) + portée 
+bluetooth}
+
+
 
 
 \pagebreak
