@@ -213,6 +213,8 @@ En affinant un peu plus notre compréhension, on conclue que;
 - Octet 5 à 9 = Trims, Mode, … peu utiles pour notre attaque
 - Octet 10 = Un pseudo CRC construit comme le XOR des 9 premiers octets auquel on ajoute 0x55
 
+![Trame Complète](img/protocole-complet.png)
+
 Nous avons donc compris entièrement le protocole et sommes donc en mesure de le réimplémenter en émission pour usurper une télécommande.
 
 ## Implémentation du protocole
@@ -239,7 +241,17 @@ Nous remarquons également un phénomène qui nous avait échappé: La télécom
 
 En pratique, cette différence n'a pas d'effet.
 
+A partir du log enregistré, nous pouvons aussi recalculer des taux de trames par seconde reçus par le drone avant et pendant l'attaque:
+- Environ 50 trames/s par canal (200 trames/s au total) envoyées hors attaque
+- Environ 250 trames/s par canal (1000 trames/s au total) envoyées pendant l'attaque
+
+![Frame Rate](img/frame-rate.png)
+
+*Ces taux de trames sont indicatifs, car on pourrait atteindre les limites de performance du nRF24l01+ en réception. La grande variation du taux pendant l'attaque nous semble confirmer cette hypothèse. Néanmoins nous pensons que l'ordre de grandeur est correct.*
+
 Nous avons également visualisé la différence de nombre de trames dans GnuRadio (voir la fin de la [vidéo](https://pe.ertu.be/videos/watch/14ae8a25-1c56-4ab7-91fe-47d0ec886a59) que nous avons faite dans la volière de l'ENAC).
+
+Une caractérisation plus rigoureuse de l'attaque nécéssiterait de passer par Gnuradio et de créer un traitement capable de compter les trames Syma.
 
 ## Détection de l'attaque et protection
 
