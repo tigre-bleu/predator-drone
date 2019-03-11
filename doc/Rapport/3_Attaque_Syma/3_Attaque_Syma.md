@@ -2,6 +2,8 @@
 ## Présentation de l'attaque
 Le Syma X5C-1 est un petit drone RF opérant sur 3 canaux dans la bande de fréquence 2.4GHz. Il se pilote via une télécommande.
 
+![Syma X5C-1](img/syma-x5c-1.png)
+
 *Une attaque a déjà eu lieue sur ce drone dont les détails ont été publiés sur le blog ptsecurity^[<https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html>]. Nous avons cherché à rejouer la même attaque pour la comprendre et l'embarquer sur le drone prédateur.*
 
 Afin de pouvoir détourner le drone en vol, il est nécessaire de:
