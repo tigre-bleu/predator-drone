@@ -127,7 +127,7 @@ On peut voir dans la specification du module radio nRF24l01+ que celui-ci émet 
 
 ![Protocole nRF24l01 basique](img/protocole-nrf24l01.png)
 
-Ainsi, **nous avons supposé que le drone Syma utilisait un module de type nRF24l01+ ou compatible**. Il nous fallait alors trouver la taille des champs configurables. Pour cela, il nous fallait donc écouter sur un des canaux utilisés par la télécommande.
+Ainsi, **nous avons supposé que le drone Syma utilisait un module de type nRF24l01+ ou compatible, en mode basique**. Il nous fallait alors trouver la taille des champs configurables. Pour cela, il nous fallait donc écouter sur un des canaux utilisés par la télécommande.
 
 Nous savions déjà qu'il y avait 18 octets de bits utiles dont 1 octet de préambule. Nous en concluions donc que :
 - L'adresse ferait entre 3 et 5 octets
@@ -180,7 +180,7 @@ Il serait alors nécessaire que le module soit capable de passer en mode *promis
 > Le module possède les carastéristiques suivantes:
 > - Le préambule n'est pas utilisé à la réception d'un message. Le module se contente de rechercher son adresse sur le canal pour trouver le début d'une trame qui lui est destinée
 > - La partie juste avant le préambule (`Tx init`) est, la plupart du temps, interprétée comme `0x00`
-> - Le registre de configuration de la taille de l'adresse autorise les valeurs `0x01`, `0x10` et `0x11` pour des tailles de 3, 4 et 5 octets. La valeur `0x00` est interdite dans la *datasheet* du module. Pourtant, si on met `0x00` dans ce registre, on constate que le module considère une adresse de 2 octets.
+> - Le registre de configuration de la taille de l'adresse autorise les valeurs `0b01`, `0b10` et `0b11` pour des tailles de 3, 4 et 5 octets. La valeur `0b00` est interdite dans la *datasheet* du module. Pourtant, si on met `0b00` dans ce registre, on constate que le module considère une adresse de 2 octets.
 >
 > ![Extrait de la spécification du nRF24l01+](img/spec_nrf24l01_taille-adresse.png)
 >
@@ -224,7 +224,7 @@ Nous avons ainsi compris entièrement le protocole et sommes donc en mesure de l
 
 Il est relativement simple d'implémenter le protocole en Python sur un RPi avec un module nRF24l01+. Afin de simplifier le contrôle du drone, nous choisissons d'utiliser une manette USB. Nous sommes parti d'un code existant^[<https://github.com/chopengauer/nrf_analyze/blob/master/syma_joy.py>] que nous avons simplifié et adapté pour fonctionner avec notre manette.
 
-Après implémentation de notre script d'attaque, nous avons observé que si le drone était allumé mais que la télécommande ne l'était pas, le drone clignotait et ne prenait pas en compte nos commande. Nous en avons conclu qu'il y avait un appairage du drone et de la télécommande. Il faudrait creuser cet aspect mais pour réaliser l'attaque souhaitée, nous n'en avions pas besoin. En effet nous souhaitons intercepter le drone en vol, donc déjà appairé à une télécommande.
+Après implémentation de notre script d'attaque, nous avons observé que si le drone était allumé mais que la télécommande ne l'était pas, le drone clignotait et ne prenait pas en compte nos commandes. Nous en avons conclu qu'il y avait un appairage du drone et de la télécommande. Il faudrait creuser cet aspect mais pour réaliser l'attaque souhaitée, nous n'en avions pas besoin. En effet nous souhaitons intercepter le drone en vol, donc déjà appairé à une télécommande.
 
 Lorsque le drone était appairé avec sa télécommande originale, nous avons observé que les ordres envoyés par le RPi l'emportent sur ceux de la télécommande : **l'attaque fonctionne**.
 
