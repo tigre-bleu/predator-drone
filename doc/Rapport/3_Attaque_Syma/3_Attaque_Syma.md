@@ -259,7 +259,7 @@ Une caractérisation plus rigoureuse de l'attaque nécéssiterait de passer par 
 
 ## Détection et prévention de l'attaque
 
-La detection de l'attaque est difficile du point de vue du pilote qui perds le contrôle d'un seul coup sans aucune indication d'un quelquonque problème.
+L'attaque peut être difficile à comprendre du point de vue du pilote qui perds le contrôle d'un seul coup sans aucune indication d'un quelquonque problème. En effet, si l'attaquant est suffisamment fin pour mettre sa manette dans une position proche de la position courante du drone, on ne note aucune interférence sur le drone (il ne tombe pas).
 
 Un observateur disposant d'un SDR ou d'un moniteur spécialement développé (sur le principe de notre outil de log radio) pourrait facilement constater qu'une attaque est en cours en observant un nombre de trames beaucoup plus élevé que la normale.
 
