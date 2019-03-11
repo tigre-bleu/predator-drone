@@ -265,8 +265,15 @@ clé en main, avec une interface attractive. En outre, ce programme pourrait fon
 manière embarquée sur le drone pirate, puisque le contrôle du drone se fait par navigateur
 web.
 
+Il faut cependant noter que ce programme suppose, à son démarrage, que l'AR.Drone est
+posé. Ainsi, si celui-ci est en vol lors de la prise de contrôle, `ardrone-webflight` lui
+envoie l'ordre de se poser. Ce comportement pourrait être corrigé en modifiant le
+programme, mais nous n'avons pas eu le temps de le faire.
+
 ![Menu de l'outil `predator-drone`](img/menu.png){width=90%}
 
+
+\pagebreak
 
 ### Utilisation de Scapy pour déconnecter le client
 
@@ -351,6 +358,8 @@ ralenti l'initialisation de notre script, mais pas son exécution.
 
 Enfin, nous avons cherché à n'utiliser qu'une puce WiFi pour perpétrer l'attaque.
 L'objectif était alors de réduire le matériel embarqué sur le drone prédateur.
+
+\pagebreak
 
 Ainsi, l'algorithme haut niveau de l'attaque était :
 
