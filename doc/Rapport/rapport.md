@@ -226,7 +226,7 @@ APs Parrot grâce à leur adresse MAC (BSSID).
 
 Il ne nous manquait alors que l'adresse MAC du client pour pouvoir perpétrer l'attaque de
 manière automatisée. Nous avons donc utilisé à nouveau la fonction `sniff` de Scapy afin
-d'écouter les paquets IP transitant sur le *channel* obtenu précédemment. Il nous a suffit
+d'écouter les paquets IP transitant sur le *channel* obtenu précédemment. Il nous a suffi
 de filtrer les paquets WiFi (couche `Dot11FCS` dans Scapy) reçus en ne traitant que les
 paquets dont le `addr3` était notre BSSID et pour lesquels une couche IP existait.
 
@@ -267,7 +267,7 @@ clé en main, avec une interface attractive. En outre, ce programme pourrait fon
 manière embarquée sur le drone pirate, puisque le contrôle du drone se fait par navigateur
 web.
 
-Il faut cependant noter que ce programme suppose, à son démarrage, que l'AR.Drone est
+Il faut cependant noter que ce programme suppose, à son démarrage, que l'AR.Drone soit
 posé. Ainsi, si celui-ci est en vol lors de la prise de contrôle, `ardrone-webflight` lui
 envoie l'ordre de se poser. Ce comportement pourrait être corrigé en modifiant le
 programme, mais nous n'avons pas eu le temps de le faire.
@@ -286,7 +286,7 @@ le fonctionnement de `aireplay-ng`.
 Une attaque par désauthentification WiFi fonctionne en envoyant un certain nombre de trame
 de désauthentification à l'AP et au client. Ainsi, les deux entités vont enregistrer
 qu'elles ne sont plus associées entre elles sur le réseau WiFi. Tout le trafic qui suivra,
-provenant d'une entité vers l'autre sera alors jeté, comme le montre le schéma suivant :
+provenant d'une entité vers l'autre sera alors rejeté, comme le montre le schéma suivant :
 
 ![Attaque par désauthentification WiFi^[Schéma pris sur
 <https://en.wikipedia.org/wiki/Wi-Fi_deauthentication_attack>]](./img/deauth.png){width=80%}
@@ -483,22 +483,22 @@ Nous avons utilisé une radio logicielle (SDR USRP B200) avec le logiciel GnuRad
 
 > Un SDR (*Software-Defined Radio*) est un équipement qui permet de recevoir et émettre
 > des signaux radios. Contrairement à une puce radio classique, le SDR ne fait aucune
-> modulation/démodulation ni aucun traitement. Celui-ci est réalisé par un ordinateur
+> modulation/démodulation ni aucun traitement. Ceux-ciq sont réalisés par un ordinateur
 > relié au SDR.
 
 > GnuRadio est un logiciel qui permet de construire des chaînes de traitement radio. Il
-> permet des traitements très complexes. La chaîne peut être construite graphiuement avec
+> permet des traitements très complexes. La chaîne peut être construite graphiquement avec
 > l'application GnuRadio Companion.
 
 Nous avons donc parcouru la bande de fréquence entre 2.400 GHz et 2.525 Ghz avec Gnuradio.
-Cela correspond à la plage de fréquences gérables par un nRF24l01 (la puce que l'on
-souhaite utiliser pour prendre le contrôle du drone).
+Cela correspond à la plage de fréquences gérables par un nRF24l01+ (la puce que l'on
+souhaitait utiliser pour prendre le contrôle du drone).
 
-Pour cela nous avons créé une *waterfall* et avons rapidement constaté de l'activité autour
+Pour cela nous avons créé une *waterfall* et avons rapidement constaté de l'activité autour de
 **2.410 GHz**. Pour préciser notre observation, nous avons rajouté une FFT^[*Fast Fourier
 Transform*, ou transformation de Fourier Rapide] avec Gnuradio autour de cette fréquence.
 Après avoir bien centré notre FFT, nous avons pu relever une **bande passante autour de
-800kHz**.
+800 kHz**.
 
 \vspace*{8em}
 
@@ -508,7 +508,7 @@ fréquences](img/gnuradio-scan.png){width=95%}
 ![*Waterfall* et FFT obtenues](img/waterfall_fft_gnuradio.png){width=95%}
 
 En regardant un extrait de la *datasheet* d'un module radio
-nRF24l01^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/nRF24L01+/nRF24L01Pluss_Preliminary_Product_Specification_v1_0.pdf>],
+nRF24l01+^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/nRF24L01+/nRF24L01Pluss_Preliminary_Product_Specification_v1_0.pdf>],
 on peut lire :
 
 ```
@@ -547,7 +547,7 @@ sur les canaux : **10, 31, 42 et 66**.
 ### Découverte de la modulation
 
 Nous avons pris l'hypothèse que les quatre canaux sont utilisés de manière identique et
-nous nous concentrons alors sur le canal 10. Nous avons donc créé un autre traitement
+nous nous sommes alors concentrés sur le canal 10. Nous avons donc créé un autre traitement
 GnuRadio pour enregistrer le signal en sortie de l'USRP.
 
 ![Chaîne d'enregistrement GnuRadio](img/gnuradio-record.png){width=50%}
@@ -562,6 +562,8 @@ visualiser.
 Nous avons constaté que l'amplitude du signal est constante, ce n'était donc pas de l'ASK.
 Il était légitime de penser que la modulation était du FSK/GFSK mais cela aurait aussi pu
 être du PSK.
+
+La modulation GFSK étant souvent utilisée dans des équipements électroniques de loisirs, nous sommes partis dans cette direction.
 
 Nous avons rajouté un filtre passe-bas afin d'avoir un signal plus propre, puis un bloc
 `Quadrature Demod` permettant de séparer les fréquences.
@@ -610,7 +612,7 @@ Le nombre d'octets total (incluant le préambule) semblait donc être de 18.
 On peut voir dans la specification du module radio nRF24l01+ que celui-ci émet un
 préambule de `0xAA` ou `0x55`. Il est donc légitime de penser que le drone utilise un
 module de ce type. Il s'agit en effet d'un module bon marché très utilisé pour des petits
-équipements électroniques: drones, souris sans fil, etc.
+équipements électroniques.
 
 
 ### Module nRF24l01+
@@ -715,6 +717,7 @@ en combinant certaines propriétés du module.
 
 > **Pseudo-mode *promiscuous* avec un nRF24l01+**
 > Le module possède les carastéristiques suivantes:
+>
 > - Le préambule n'est pas utilisé à la réception d'un message. Le module se contente de
 >   rechercher son adresse sur le canal pour trouver le début d'une trame qui lui est
 >   destinée.
@@ -841,7 +844,7 @@ ces résultats, nous vous invitons à voir la fin de la
 vidéo^[<https://pe.ertu.be/video-channels/tls_sec/videos>] que nous avons faite dans la
 volière de l'ENAC.
 
-Une caractérisation plus rigoureuse de l'attaque nécéssiterait de passer par GnuRadio et
+Une caractérisation plus rigoureuse de l'attaque nécessiterait de passer par GnuRadio et
 de créer un traitement capable de compter les trames Syma.
 
 ## Détection et prévention de l'attaque
@@ -921,7 +924,7 @@ portée aux alentours de 10 mètres. Cependant, selon l'adaptateur, la portée p
 ### Compilation de la bibliothèque `pyRF24`
 
 Afin d'installer notre outil sur le Raspberry Pi, nous avons dû installer la bibliothèque
-`pyRF24`, utilisée pour contrôler la puce nRFL01+. Pour cela, il fallait compiler la
+`pyRF24`, utilisée pour contrôler la puce nRF2lL01+. Pour cela, il fallait compiler la
 bibliothèque. Cependant, en raison des faibles capacités calcul et mémoire de la carte,
 nous avons d'abord tenté une cross-compilation, sans succès. Après réflexion, nous avons
 simplement créé un fichier d'échange *swap* sur le Raspberry et avons compilé localement
@@ -952,7 +955,7 @@ dongle USB WiFi. Nous avons testé 3 dongles WiFi :
   `/etc/modprobe.d/blacklist-rtl8192cu.conf`. Après désactivation de ceci, le pilote était
   bien chargé et l'attaque fonctionnait.
 
-Finalement, les cartes WiFi étaient utilisées de la manière suivante :
+Finalement, les cartes WiFi furent utilisées de la manière suivante :
 
 - Le dongle TP-Link permettait de perpétrait l'attaque par désauthentification WiFi ;
 - La puce WiFi intégrée permettait de se connecter au drone piraté.
@@ -981,7 +984,7 @@ transiter :
 - Les commandes de l'AR.Drone sont envoyées en UDP sur le port 5556 du drone
 - La vidéo est échangée en TCP, envoyée depuis le port 5555 du drone
 
-Ces choix de conception nous ont quelque peu étonné, mais nous ne nous apesentirons pas
+Ces choix de conception nous ont quelque peu étonnés, mais nous ne nous apesentirons pas
 sur cela ici. Après quelques tests non fructueux et une réflexion plus approfondie, nous
 avons conclu qu'une autre solution, plus simple, était envisageable.
 
@@ -1004,7 +1007,7 @@ iptables -t nat -A POSTROUTING -o wlan0       -j SNAT --to $IP_RÉCUPÉRÉE_AVEC
 
 ### Prise de contrôle du Syma X5C-1 et utilisation distante d'une manette
 
-Lors du passage de notre outil sur le Raspberry Pi, nous avons été confronté au problème
+Lors du passage de notre outil sur le Raspberry Pi Zero W, nous avons été confronté au problème
 de pilotage du drone Syma piraté. En effet, notre outil utilisait un joystick connecté en
 USB pour ce pilotage.
 
@@ -1020,8 +1023,8 @@ Cette solution fonctionne très bien.
 
 ## Tests finaux de l'outil embarqué
 
-Lorsque notre script était stable sur le Raspberry Pi, nous sommes allés effectuer des
-tests en vol dans la volière de l'ENAC. Pour cela, nous avons monté le Raspberry Pi ainsi
+Lorsque notre script était stable sur le Raspberry Pi Zero W, nous sommes allés effectuer des
+tests en vol dans la volière de l'ENAC. Pour cela, nous avons monté le Raspberry Pi Zero W ainsi
 qu'une batterie et le module nRFL01+ sur une carène d'AR.Drone, comme le montre la photo
 ci-contre.
 
@@ -1143,7 +1146,7 @@ puce nRF24l01+[^bk2421-nrfl01].
 Nous avons soudé, sur la télécommande, des fils qui vont nous permettre de connecter ce
 qu'on suppose être le bus SPI à un analyseur logique.
 
-Après une première soudure ratée qui a arraché une partie des pistes, la manette a pu être
+Après une première soudure ratée qui a arrachée une partie des pistes, la manette a pu être
 réparée grâce à Monsieur Michel Gorraz de l'ENAC. Il nous a également soudé les fils
 souhaités sur les pistes menant à la puce radio et partant du microcontroleur principal de
 la télécommande. Nous l'en remercions chaleureusement.
@@ -1183,7 +1186,7 @@ drone est déjà appairé, dans le but de comprendre le protocole PNJ.
 ## Résultats et limitations
 
 L'objectif de ce projet était de développer une solution embarquée permettant de détourner
-un drone en vol. Nous avons implémenté une solution permettant la capture des drones WiFi
+un drone en vol. Nous avons implémenté un outil permettant la capture des drones WiFi
 Parrot AR 2.0 et 2.4 GHz Syma X5C-1.
 
 Nous avons montré qu'une capture "propre" était possible aux conditions suivantes :
