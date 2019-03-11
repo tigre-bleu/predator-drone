@@ -41,8 +41,9 @@ Bien que les précédents cas d'usage civils soient bénéfiques, d'autres usage
 exister... En effet, un cas concret concernant tout le monde est celui d'une personne qui
 utiliserait un drone pour vous espionner, en survolant votre maison et passant proche de
 vos fenêtres. Une autre utilisation, plus grave, est l'utilisation, par Daesh, de drones
-civils pour larguer des bombes sur le front en Syrie. Enfin, plus récemment, l'aéroport de
-Londres Gatwick a été fermé pour cause de survols répétés par un drone non identifié.
+de loisirs pour larguer des bombes sur le front en Syrie. Enfin, plus récemment,
+l'aéroport de Londres Gatwick a été fermé pour cause de survols répétés par un drone non
+identifié.
 
 Ainsi, il devient nécessaire de pouvoir se protéger des drones. Du côté militaire, des
 solutions existent déjà, telles que le brouillage de la liaison de commandes, par exemple
@@ -68,7 +69,7 @@ de les récupérer. Après capture, il sera aussi possible d'analyser le contenu
 et éventuellement de remonter au propriétaire.
 
 Pour réaliser cet outil, nous nous sommes focalisés sur la prise de contrôle de drones
-civils : le Parrot AR.Drone 2.0 et le Syma X5C-1. C'est ce que nous détaillons dans les
+de loisir : le Parrot AR.Drone 2.0 et le Syma X5C-1. C'est ce que nous détaillons dans les
 deux premières parties de ce rapport. Lorsque ces prises de contrôle furent réussies,
 nous avons cherché à embarquer l'outil sur un autre drone. Ceci est discuté dans la
 troisième partie de ce rapport.
@@ -335,7 +336,7 @@ que certaines des trames de désauthentification étaient envoyés plusieurs foi
 quelques heures recherches, nous n'avions toujours pas trouvé d'explication valable. Nous
 avons donc décidé de conserver le code avec `aireplay-ng`.
 
-> **Remarque\ :** lorsque nous avons souhaité embarquer notre outil sur une Raspberry Pi
+> **Remarque\ :** lorsque nous avons souhaité embarquer notre outil sur un Raspberry Pi
 > Zero W (voir plus loin), nous avons été confrontés à des problèmes de *drivers* de
 > cartes WiFi. Ceci pourrait expliquer l'envoi répété des paquets. Cette découverte ayant eu lieu peu
 > avant la fin du projet, nous n'avons pas eu le temps de  confirmer/infirmer cette hypothèse.
@@ -873,12 +874,12 @@ pour tout le monde.
 # Embarquement de notre outil sur un drone prédateur
 
 L'outil que nous avons développé permettait donc de prendre le contrôle de deux drones
-civils : le Parrot AR.Drone 2.0 et le Syma X5C-1. Nous avons ensuite cherché à l'embarquer
-sur un drone prédateur.
+de loisir : le Parrot AR.Drone 2.0 et le Syma X5C-1. Nous avons ensuite cherché à
+l'embarquer sur un drone prédateur.
 
-## Installation sur une Raspberry Pi Zero W
+## Installation sur un Raspberry Pi Zero W
 
-Pour cela, nous avons retenu l'utilisation d'une Raspberry Pi Zero\ W. Notre choix s'est
+Pour cela, nous avons retenu l'utilisation d'un Raspberry Pi Zero\ W. Notre choix s'est
 porté sur cette carte car celle-ci fonctionne sous Linux (Debian Stretch) et qu'elle
 dispose d'une connectivité WiFi et Bluetooth intégrée. Elle embarque aussi une
 connectivité SPI, qui sera utilisée par le module radio nRF24L01+ nécessaire au piratage
@@ -888,7 +889,7 @@ le débogage et une batterie pour les tests en vol.
 
 ![Raspberry Pi Zero W](img/rpi0w.jpg){width=50%}
 
-Il est bon de noter qu'un connecteur de caméra CSI est intégré à la Raspberry Pi Zero\ W,
+Il est bon de noter qu'un connecteur de caméra CSI est intégré au Raspberry Pi Zero\ W,
 ce qui permettra éventuellement à l'avenir d'intégrer une caméra à notre outil. Un bus I2C
 est aussi disponible, ce qui permettra éventuellement d'ajouter un écran intégré pour
 indiquer l'état de la batterie en vol.
@@ -896,18 +897,18 @@ indiquer l'état de la batterie en vol.
 
 ### Contrôle distant de l'outil
 
-Comme nous le verrons après, la puce WiFi intégrée à la Raspberry Pi était utilisée pour
+Comme nous le verrons après, la puce WiFi intégrée au Raspberry Pi était utilisée pour
 l'attaque de l'AR.Drone. Il nous fallait donc envisager une autre solution pour contrôler
 la carte de manière distante.
 
 La seule autre option que nous avons entrevu était de mettre en place un réseau Bluetooth
-PAN (*Personal Area Network*). Ainsi, nous avons configuré la Raspberry Pi pour qu'elle se
+PAN (*Personal Area Network*). Ainsi, nous avons configuré le Raspberry Pi pour qu'il se
 comporte comme un *Network Access Point* (NAP) avec pour adresse IP `172.20.1.1` sur le
 réseau `172.20.1.0/24`. L'ordinateur de contrôle de celle-ci devait simplement être
-appairé avec la Raspberry Pi, s'y connecter en Bluetooth et paramétrer son IP sur ce
+appairé avec le Raspberry Pi, s'y connecter en Bluetooth et paramétrer son IP sur ce
 réseau.
 
-Grâce à ce réseau Bluetooth NAP, nous pouvions accéder à la Raspberry Pi en SSH. La seule
+Grâce à ce réseau Bluetooth NAP, nous pouvions accéder au Raspberry Pi en SSH. La seule
 critique que nous voyions était celle de la portée. En effet, le Bluetooth a souvent une
 portée aux alentours de 10 mètres. Cependant, selon l'adaptateur, la portée peut atteindre
 100 mètres.
@@ -916,17 +917,17 @@ portée aux alentours de 10 mètres. Cependant, selon l'adaptateur, la portée p
 
 ### Compilation de la bibliothèque `pyRF24`
 
-Afin d'installer notre outil sur la Raspberry Pi, nous avons dû installer la bibliothèque
+Afin d'installer notre outil sur le Raspberry Pi, nous avons dû installer la bibliothèque
 `pyRF24`, utilisée pour contrôler la puce nRFL01+. Pour cela, il fallait compiler la
 bibliothèque. Cependant, en raison des faibles capacités calcul et mémoire de la carte,
 nous avons d'abord tenté une cross-compilation, sans succès. Après réflexion, nous avons
-simplement créé un fichier d'échange *swap* sur la Raspberry et avons compilé localement
+simplement créé un fichier d'échange *swap* sur le Raspberry et avons compilé localement
 la bibliothèque. Cette seconde solution a bien fonctionné.
 
 
 ### Problème de pilote de puce WiFi
 
-La Raspberry Pi Zero W intègre une puce WiFi. Celle-ci ne supporte pas le mode *monitor*.
+Le Raspberry Pi Zero W intègre une puce WiFi. Celle-ci ne supporte pas le mode *monitor*.
 Ainsi, pour pouvoir perpétrer l'attaque sur les AR.Drone, il nous a fallu installer un
 dongle USB WiFi. Nous avons testé 3 dongles WiFi :
 
@@ -940,7 +941,7 @@ dongle USB WiFi. Nous avons testé 3 dongles WiFi :
   pas au premier abord, pour la même raison que précédemment (Ralink MT7601U).
 
   Cependant, après quelques recherches, nous avons pu observer que le *driver* chargé par
-  la Raspberry Pi n'était pas le *driver* officiel. En effet, celle-ci chargeait le
+  le Raspberry Pi n'était pas le *driver* officiel. En effet, celle-ci chargeait le
   *driver* `8192cu` au lieu du `rtl8192cu`. Après une tentative de mise à jour de Debian
   et du noyau Linux pour installer la dernière version du driver, nous avons découvert,
   grâce à un forum^[<https://www.raspberrypi.org/forums/viewtopic.php?t=224931>], que le
@@ -957,14 +958,14 @@ Finalement, les cartes WiFi étaient utilisées de la manière suivante :
 ### Utilisation du cockpit `ardrone-webflight`
 
 Lors des premiers tests de prise de contrôle d'un AR.Drone, nous avons été confrontés aux
-faibles capacités du processeur de la Raspberry Pi Zero\ W. En effet, le cockpit que nous
+faibles capacités du processeur de le Raspberry Pi Zero\ W. En effet, le cockpit que nous
 utilisions pour contrôler le drone piraté (`ardrone-webflight`) était trop lourd pour
 fonctionner convenablement. La vidéo envoyée par le drone était très sacadée et les
 commandes de contrôle prenaient effet avec quelques secondes de retard, ce qui n'était pas
 acceptable.
 
-Nous avons donc décidé de déporter le cockpit sur l'ordinateur controlant la Raspberry Pi
-en instaurant un routage des paquets réseaux destinés au drone sur la Raspberry Pi. Ainsi,
+Nous avons donc décidé de déporter le cockpit sur l'ordinateur controlant le Raspberry Pi
+en instaurant un routage des paquets réseaux destinés au drone sur le Raspberry Pi. Ainsi,
 la chaîne de contrôle était celle ci-dessous :
 
 ![Schéma fonctionnel du cockpit de piratage de l'AR.Drone](img/iptables.pdf){width=95%}
@@ -982,7 +983,7 @@ sur cela ici. Après quelques tests non fructueux et une réflexion plus approfo
 avons conclu qu'une autre solution, plus simple, était envisageable.
 
 Celle-ci consistait à ajouter une adresse IP à l'interface `pan0` (réseau Bluetooth avec
-le pilote de la Raspberry) et à transférer tous les paquets reçus sur cette adresse IP au
+le pilote du Raspberry) et à transférer tous les paquets reçus sur cette adresse IP au
 drone. Cette solution permettait de donner l'illusion d'un accès transparent à l'AR.Drone,
 en laissant passer les accès FTP et `telnet`, eux aussi permis par défaut sur ce drone.
 
@@ -1000,7 +1001,7 @@ iptables -t nat -A POSTROUTING -o wlan0       -j SNAT --to $IP_RÉCUPÉRÉE_AVEC
 
 ### Prise de contrôle du Syma X5C-1 et utilisation distante d'une manette
 
-Lors du passage de notre outil sur la Raspberry Pi, nous avons été confronté au problème
+Lors du passage de notre outil sur le Raspberry Pi, nous avons été confronté au problème
 de pilotage du drone Syma piraté. En effet, notre outil utilisait un joystick connecté en
 USB pour ce pilotage.
 
@@ -1016,8 +1017,8 @@ Cette solution fonctionne très bien.
 
 ## Tests finaux de l'outil embarqué
 
-Lorsque notre script était stable sur la Raspberry Pi, nous sommes allés effectuer des
-tests en vol dans la volière de l'ENAC. Pour cela, nous avons monté la Raspberry Pi ainsi
+Lorsque notre script était stable sur le Raspberry Pi, nous sommes allés effectuer des
+tests en vol dans la volière de l'ENAC. Pour cela, nous avons monté le Raspberry Pi ainsi
 qu'une batterie et le module nRFL01+ sur une carène d'AR.Drone, comme le montre la photo
 ci-contre.
 
