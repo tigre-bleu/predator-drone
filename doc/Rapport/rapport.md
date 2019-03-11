@@ -735,7 +735,9 @@ en combinant certaines propriétés du module.
 > octets], il sera impossible de récupérer les 2 derniers octets de CRC car le module
 > retournera 39 octets en partant de `0x00AA`.
 
-Nous n'avons pas réellement mis en pratique cette méthode, connaissant déjà toutes les informations nécessaires via la méthode 1, qui est plus simple.
+Nous n'avons pas mis en pratique cette méthode pour la rétro ingéniérie du protocole vu que nous connaissions déjà toutes les informations nécessaires via la méthode 1, qui est plus simple.
+
+Nous avons néanmoins implémenté ce pseudo-mode promiscuous dans `predator-drone` lors de la phase de scan afin de détecter les adresses des drones inconnus environnants.
 
 
 ## Compréhension du protocole Syma
@@ -860,10 +862,10 @@ s'interromprait uniquement le temps d'émettre une trame légitime. Nous n'avons
 connaissances suffisament précises dans ce domaine pour juger de la possibilité d'un tel
 brouillage. Ce serait une direction à creuser par la suite.
 
-On pourrait également imaginer une "contre attaque": si une attaque est détectée, le 
-pilote légitime augmente aussi le nombre de trames envoyées via un outil similaire à notre 
-prédateur. Le résultat d'une telle bataille est difficile à prévoir car il pourra y avoir 
-des collisions sur les trames. Le plus probable est que le contrôle du drone soit perdu 
+On pourrait également imaginer une "contre attaque": si une attaque est détectée, le
+pilote légitime augmente aussi le nombre de trames envoyées via un outil similaire à notre
+prédateur. Le résultat d'une telle bataille est difficile à prévoir car il pourra y avoir
+des collisions sur les trames. Le plus probable est que le contrôle du drone soit perdu
 pour tout le monde.
 
 
