@@ -623,26 +623,36 @@ qui nous a permis de monter deux vidéos présentant les attaques perpétrées :
 
 
 \pagebreak
-# Etude du drone PNJ Discovery
-Nos attaques étant fonctionnelles sur les deux drones que nous voulions étudier, nous avons commencé à faire du rétro-engineering d'un troisère modèle en notre possession, un PNJ Discovery.
 
-![Drone PNJ Discovery](img/drone_pnj_discovery.jpg)
+# Étude du drone PNJ Discovery
 
-Il s'agit d'un autre drone de loisir RF opérant sur 4 canaux de la bande 2.4 GHz.
+Nos attaques étant fonctionnelles sur les deux drones que nous voulions étudier, nous
+avons commencé à faire du rétro-ingénierie d'un troisième modèle en notre possession, un
+PNJ Discovery. Il s'agit d'un autre drone de loisir RF opérant sur 4 canaux de la bande
+2.4 GHz.
+
+![Drone PNJ Discovery](img/drone_pnj_discovery.jpg){width=50%}
+
 
 ## Démarche
 
-Ne souhaitant pas refaire la même chose que pour le Syma X5C-1, nous avons décidé d'utiliser une approche alternative n'utilisant pas de moyen radio pour faire l'analyse du protocole.
+Ne souhaitant pas refaire la même chose que pour le Syma X5C-1, nous avons décidé
+d'utiliser une approche alternative n'utilisant pas de moyen radio pour faire l'analyse du
+protocole : une approche semi-invasive, en se connectant directement aux circuits de la
+télécommande.
 
-Nous avons décidé d'une approche semi-invasive en se connectant directement aux circuits de la télécommande.
+Nous n'avons pu mener à terme cette partie dans le temps du projet, mais nous avons tout
+de même pu avancer. Le chapitre suivant montre l'avancement de notre analyse.
 
-Cette partie n'a pas pu aller jusqu'à son terme dans le temps du projet, mais nous avons tout de même pu avancer. Le chapitre suivant montre l'avancement de notre analyse.
 
-## Identification des controleurs
-### Drone
-Une fois le carrénage du drone retiré, on peut voir une inscription UD U17B et une référence à 2013 sur la carte mère du drone.
+## Identification des contrôleurs
 
-Un peu de recherche sur internet^[<https://www.deviationtx.com/forum/protocol-development/2551-udi-r-c-u816-u818-protocol?start=60#32387>] nous indique:
+### Sur le drone
+
+Une fois le carrénage du drone retiré, on peut voir une inscription `UD U17B` et une
+référence à 2013 sur la carte mère du drone. Un peu de recherche sur Internet[^udirc] nous
+indique:
+\vspace*{-1em}
 
 ```
 // Known UDI 2.4GHz protocol variants, all using BK2421
@@ -654,51 +664,87 @@ Un peu de recherche sur internet^[<https://www.deviationtx.com/forum/protocol-de
 //  * U830 mini quadcopter with tilt steering ("Protocol 2014")
 //  * U839 nano quadcopter ("Protocol 2014")
 ```
-Il y a aussi une puce ARM (probablement le CPU) et une autre puce avec une inscription difficile à lire.
 
-### Télécommande
+[^udirc]: 
+<https://www.deviationtx.com/forum/protocol-development/2551-udi-r-c-u816-u818-protocol?start=60#32387>
 
-La télécommande est séparée en 2 parties, une carte mère et une carte fille.
+On remarque aussi une puce ARM, probablement le CPU, ainsi qu'une autre puce avec une
+inscription difficile à lire.
 
-Une grande puce sans inscription est présente sur la carte mère sur laquelle arrivent les boutons/joysticks et partent des pistes vers la carte fille et l'écran.
 
-On peut supposer que la grande puce est le microcontroleur principal de la télécommande et la carte fille est le transceiver radio.
+### Sur la télécommande
 
-La carte fille est soudée à la carte mère à 90°. Il y a 8 points de soudures assez facilement accessibles. Nous supposons que l'on peut y trouver un bus SPI.
+La télécommande est séparée en 2 parties, une carte mère et une carte fille. Une grande
+puce sans inscription est présente sur la carte mère sur laquelle arrivent des fils reliés
+aux boutons/joysticks et partent des pistes vers la carte fille et l'écran. On peut
+supposer que cette grande puce est le micro-contrôleur principal de la télécommande et la
+carte fille est le *transceiver* radio.
 
-On va donc souder des fils pour pouvoir mettre un analyseur logique.
+La carte fille est soudée à la carte mère à 90°. Il y a 8 points de soudures assez
+facilement accessibles. Nous supposons que l'on peut y trouver un bus SPI. Nous avons donc
+soudé des fils pour pouvoir mettre un analyseur logique.
 
-On note que ce sont les mêmes puces sur la télécommande et sur le drone. Une inscription est présente dessus mais illisible à cause d'un gros point de colle. L'inscription est à côté de ce qui semble être le cristal.
+Nous remarquons que ces puces filles sont les mêmes sur la télécommande et sur
+le drone. Une inscription est présente dessus mais illisible à cause d'un gros point de
+colle. L'inscription est à côté de ce qui semble être le cristal d'horloge.
 
-En recherchant sur internet des personnes ayant déjà fait du reverse engineering de drone, nous découvrons un article de blog^[<https://www.hackster.io/geekphysical/controlling-toy-quadcopter-s-with-arduino-6b4dcf>] avec un circuit ressemble très fortement au notre.
+En recherchant sur internet des personnes ayant déjà fait du *reverse-engineering* de
+drone, nous découvrons un article de blog[^blog-hackster] avec un circuit qui ressemble
+très fortement au nôtre.
 
-![Puce Radio](img/bk2421.jpg)
+[^blog-hackster]: 
+<https://www.hackster.io/geekphysical/controlling-toy-quadcopter-s-with-arduino-6b4dcf>
 
-On peut donc supposer que c'est une puce BK2421^[<http://www.bekencorp.com/en/Botong.Asp?Parent_id=2&Class_id=8&Id=13>], très similaire à une puce nRF24l01+^[<https://forbot.pl/forum/applications/core/interface/file/attachment.php?id=894>].
+![Puce Radio](img/bk2421.jpg){width=50%}
+
+On peut donc supposer que la puce radio est une puce BK2421[^bk2421], très similaire à une
+puce nRF24l01+[^bk2421-nrfl01].
+
+[^bk2421]: <http://www.bekencorp.com/en/Botong.Asp?Parent_id=2&Class_id=8&Id=13>
+
+[^bk2421-nrfl01]: 
+<https://forbot.pl/forum/applications/core/interface/file/attachment.php?id=894>
+
 
 ## Analyse du bus SPI
 
 ### Connexion au bus
 
-Nous avons soudé sur la télécommande des fils qui vont nous permettre de connecter ce qu'on suppose être le bus SPI à un analyseur logique.
+Nous avons soudé, sur la télécommande, des fils qui vont nous permettre de connecter ce
+qu'on suppose être le bus SPI à un analyseur logique.
 
-Après une première soudure ratée qui a arraché une partie des pistes, la manette a pu être réparée grâce à Michel Gorraz de l'ENAC. Il nous a également soudé des fils sur les pistes menant à la puce radio et partant du microcontroleur principal de la télécommande. Nous le remercions chaleureusement.
+Après une première soudure ratée qui a arraché une partie des pistes, la manette a pu être
+réparée grâce à Monsieur Michel Gorraz de l'ENAC. Il nous a également soudé les fils
+souhaités sur les pistes menant à la puce radio et partant du microcontroleur principal de
+la télécommande. Nous l'en remercions chaleureusement.
 
-### Analyse
 
-Nous avons ensuite connecté sur ces fils un analyseur logique Saleae et ouvert le logiciel d'analyse.
+### Analyse grâce à un analyseur logique
 
-Nous avons rapidement pu constater qu'il y avait effectivement 4 pins ressemblant très fortement à un bus SPI.
+Nous avons ensuite connecté sur ces fils un analyseur logique Saleae et ouvert le logiciel
+d'analyse. Nous avons rapidement pu constater qu'il y avait effectivement 4 pins
+ressemblant très fortement à un bus SPI (voir capture d'écran sur la page suivante).
 
 ![Analyseur Logique](img/Analyseur_Logique.png)
 
-En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le comparer à la *datasheet* du module BK2421^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/PNJ%20Drone/SPI_RC_ON_and_Binding.ods>].
+En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le comparer à la
+*datasheet* du module BK2421[^datasheet-bk2421]. C'est ce que nous présentons sur le
+tableau suivant :
 
-![Image](img/Analyse_SPI_Binding.png?raw=true)
+[^datasheet-bk2421]: 
+<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/PNJ%20Drone/SPI_RC_ON_and_Binding.ods>
 
-La comparaison nous indique entre autres la liste des canaux utilisés. Une analyse avec un SDR nous confirme de l'activité sur les canaux 70, 63, 56 et 48.
+![Analyse du bus SPI par tableur](img/Analyse_SPI_Binding.png){width=70%}
 
-Malheureusement, nous nous sommes arrêtés là faute de temps mais nous pourrions poursuivre l'analyse du dump en nous focalisant sur le traffic lorsque le drone est déjà appairé pour essayer de comprendre le protocole PNJ.
+La comparaison nous indique entre autres la liste des canaux utilisés. Une analyse avec un
+SDR nous confirme de l'activité sur les canaux 70, 63, 56 et 48.
+
+Malheureusement, nous nous sommes arrêtés là faute de temps. Cependant, nous pourrions
+tout à fait poursuivre l'analyse du *dump* en nous focalisant sur le trafic lorsque le
+drone est déjà appairé, dans le but de comprendre le protocole PNJ.
+
+
+
 
 \pagebreak
 
@@ -773,12 +819,12 @@ dans un centre de contrôle unique fixe, à des centaines de kilomètres. Cette 
 serait utile uniquement pour des drones à capturer qui peuvent se contrôler sans vue
 directe (par exemple le Parrot AR.Drone 2.0).
 
-![Contrôle de drone autonome](perspectives-drone-autonome.png){width=100%}
+![Contrôle de drone autonome](img/perspectives-drone-autonome.pdf){width=100%}
 
 Pour les autres, il serait toujours nécessaire que l'équipe locale puisse choisir les
 commandes en fonction de leur vision du drone à capturer.
 
-![Contrôle de drone simple](perspectives-drone-simple.png){width=100%}
+![Contrôle de drone simple](img/perspectives-drone-simple.pdf){width=100%}
 
 ## Compétences aquises
 
@@ -796,7 +842,7 @@ Nous avons également pu mettre en pratique des techniques de base d'électroniq
 soudure, etc.
 
 
-\pagebreak
+
 
 # Remerciements {-}
 
