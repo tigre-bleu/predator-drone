@@ -704,40 +704,87 @@ Malheureusement, nous nous sommes arrêtés là faute de temps mais nous pourrio
 
 # Conclusion
 
-**Résultats et Limitations:**
+## Résultats et limitations
 
-L'objectif de ce projet était de mettre en place une solution embarquée permettant de détourner un drone en vol. Nous avons implémenté une solution permettant la capture des drones WiFi Parrot AR 2.0 et Syma X5C-1.
+L'objectif de ce projet était de développer une solution embarquée permettant de détourner
+un drone en vol. Nous avons implémenté une solution permettant la capture des drones WiFi
+Parrot AR 2.0 et 2.4 GHz Syma X5C-1.
 
-Nous avons montré qu'une capture "propre" était possible au conditions suivantes:
-- Pour le Syma X5C-1 : Que la manette du pilote du predator soit proche de la position courante du drone volé au moment de la prise de contrôle.
-- Pour le Parrot AR 2.0 : Que le code de `ardrone-webflight` soit modifié afin d'inhiber l'ordre d'atterrissage au moment de la connexion au drone
+Nous avons montré qu'une capture "propre" était possible aux conditions suivantes :
 
-L'outil `predator-drone` est suffisamment léger pour pouvoir fonctionner sur un Raspberry Pi Zero W. Nous avons donc montré qu'il est possible d'embarquer notre solution sur un autre drone aéroporté.
+- Pour le Parrot AR 2.0, que le code de `ardrone-webflight` soit modifié afin d'inhiber
+  l'ordre d'atterrissage au moment de la connexion au drone.
+- Pour le Syma X5C-1, que la manette du pilote du prédateur soit proche de la position
+  courante du drone volé au moment de la prise de contrôle.
 
-Le code fourni a été écrit dans un souci de modularité. En effet, nous avons intégré l'attaque Parrot AR 2.0 et Syma X5C-1 sous formes de modules d'un logiciel principal. Cette approche permettra éventuellement d'étendre le périmètre de l'outil si des contributeurs souhaitaient rajouter le support d'autres drones.
+L'outil `predator-drone` est suffisamment léger pour pouvoir fonctionner sur un Raspberry
+Pi Zero\ W. Nous avons donc montré qu'il est possible d'embarquer notre solution sur un
+autre drone aéroporté.
 
-Nous devons néanmoins noter les limitations suivantes:
-- **Autonomie du Raspberry Pi:** L'ensemble Rasberry Pi Zero W avec un dongle WiFi et un module radio nRF24l01+ tient environ 3h avec une batterie de 800mAH et des attaques occasionnelles. C'est une performance suffisante pour un grand nombre de cas mais pourrait être une limitation pour une opération plus longue sur le théatre d'opérations.
-- **Autonomie du drone:** L'AR Drone 2.0 sur lequel nous avons embarqué notre matériel n'offre que quelques minutes d'autonomie en vol. Dans un cadre d'utilisation réaliste, il serait nécessaire de monter le prédateur sur une plateforme plus performante. Nous pouvons noter qu'il n'y a pas de nécessité de faire du vol stationnaire du moment que la cible reste à portée radio. Ainsi, il est possible d'imaginer utiliser une voilure fixe, souvent dotée d'une meilleure autonomie.
-- **Portée de l'attaque:** Le fait d'embarquer `predator-drone` sur un drone predateur permet d'approcher celui-ci de sa cible et donc de toujours se placer à portée. Le corollaire est qu'il faut maintenir la connexion entre le sol et le drone prédateur. Le module WiFi intégré et le port USB du Raspberry Pi Zero W étant utilisés pour l'attaque WiFi, notre solution utilise le bluetooth du Raspberry Pi pour cet effet. Nous sommes donc dépendants de sa portée (10 à 20m pour du Classe 2 comme sur les Rapsberrys, 100m pour du classe 3) et de son débit (24 Mbits/s pour du Bluetooth 3). Une solution pourrait être d'utiliser une connectivité 3G/4G mais il faudrait alors ajouter un modem.
-- **Puissance nécessaire à `ardrone-webflight`:** Nous comptions initialement embarquer le logiciel `ardrone-webflight` directement sur le Raspberry Pi Zero W. Ainsi l'attaquant n'aurait eu besoin que d'une connexion SSH et d'un navigateur pour faire l'attaque. Cependant le logiciel - développé en Node.js - s'est avéré trop gourmand en ressources pour la carte. Afin de réussir cette étape, il faudrait envisager des cartes plus puissantes sans compromettre le poids de l'ensemble.
+Le code fourni a été écrit dans un souci de modularité. En effet, nous avons intégré les
+attaques Parrot et Syma X5C-1 sous formes de modules d'un logiciel principal. Cette
+approche permettra éventuellement d'étendre le périmètre de l'outil si des contributeurs
+souhaitaient rajouter le support d'autres drones.
 
-**Perspectives et améliorations:**
+Nous devons néanmoins noter les limitations suivantes :
 
-A court terme, `predator-drone` pourrait être enrichi par l'ajout du support de drones supplémentaires (par exemple en terminant le travail initié sur le drone PNJ Discovery).
+- **Autonomie du Raspberry Pi :**\
+  L'ensemble Rasberry Pi Zero\ W avec un dongle WiFi et un module radio nRF24l01+ tient
+  environ 3 heures avec une batterie de 800 mAh et des attaques occasionnelles. C'est une
+  performance suffisante pour un grand nombre de cas mais pourrait être une limitation
+  pour une opération plus longue sur le théatre d'opérations.
+- **Autonomie du drone :**\
+  L'AR.Drone 2.0 sur lequel nous avons embarqué notre matériel prédateur n'offre que
+  quelques minutes d'autonomie en vol. Dans un cadre d'utilisation réaliste, il serait
+  nécessaire de monter le matériel prédateur sur une plateforme plus performante. Nous
+  pouvons noter qu'il n'y a pas de nécessité de faire du vol stationnaire du moment que la
+  cible reste à portée radio. Ainsi, il est possible d'imaginer utiliser une voilure fixe,
+  souvent dotée d'une meilleure autonomie.
+- **Portée de l'attaque :**\
+  Le fait d'embarquer l'outil `predator-drone` sur un drone prédateur permet d'approcher
+  celui-ci de sa cible et donc de toujours se placer à portée. Le corollaire est qu'il
+  faut maintenir la connexion entre le sol et le drone prédateur. Le module WiFi intégré
+  et le port USB du Raspberry Pi Zero\ W étant utilisés pour l'attaque WiFi, notre
+  solution utilise le bluetooth du Raspberry Pi pour cet effet. Nous sommes donc
+  dépendants de sa portée (10 à 20 mètres pour du Classe 2 comme sur les Raspberry, 100
+  mètres pour du classe 3). Une solution pourrait être d'utiliser une connectivité 3G/4G
+  mais il faudrait alors ajouter un modem.
+- **Puissance nécessaire à `ardrone-webflight` :**\
+  Nous comptions initialement embarquer le logiciel `ardrone-webflight` directement sur le
+  Raspberry Pi Zero\ W. Ainsi, l'attaquant n'aurait eu besoin que d'une connexion SSH et
+  d'un navigateur pour faire l'attaque. Cependant le logiciel --développé en Node.js--
+  s'est avéré trop gourmand en ressources pour la carte. Afin de réussir cette étape, il
+  faudrait envisager des cartes plus puissantes sans compromettre le poids de l'ensemble.
 
-Plus globalement, une amélioration possible serait de réaliser la connexion entre le drone prédateur et le contrôle au sol via une connexion 3G/4G. En effet, nous pourions ainsi jouir d'une portée illimitée. On pourrait alors imaginer plusieurs équipes locales envoyer des drones autonomes couvrir des zones différentes et que la partie "attaque" soit opérée dans un centre de contrôle unique fixe, à des centaines de kilomètres. Cette amélioration serait utile uniquement pour des drones à capturer qui peuvent se contrôler sans vue directe (par exemple le Parrot AR 2.0).
 
-![Contrôle de drone autonome](perspectives-drone-autonome.png)
+\pagebreak
 
-Pour les autres, il serait toujours nécessaire que l'équipe locale puisse choisir les commandes en fonction de leur vision du drone à capturer.
+## Perspectives et améliorations
 
-![Contrôle de drone simple](perspectives-drone-simple.png)
+À court terme, l'outil `predator-drone` pourrait être enrichi par l'ajout du support de
+drones supplémentaires, notamment en terminant le travail initié sur le drone PNJ
+Discovery.
 
-**Compétences aquises:**
+Plus globalement, une amélioration possible serait de réaliser la connexion entre le drone
+prédateur et le contrôle au sol via une connexion 3G/4G. En effet, nous pourrions ainsi
+jouir d'une portée illimitée. On pourrait alors imaginer plusieurs équipes locales envoyer
+des drones autonomes couvrir des zones différentes et que la partie "attaque" soit opérée
+dans un centre de contrôle unique fixe, à des centaines de kilomètres. Cette amélioration
+serait utile uniquement pour des drones à capturer qui peuvent se contrôler sans vue
+directe (par exemple le Parrot AR.Drone 2.0).
 
-Ce projet nous a permis d'aquerir de nombreuses compétences. En particulier sur:
-- L'utilisation du mode promiscous WiFi
+![Contrôle de drone autonome](perspectives-drone-autonome.png){width=100%}
+
+Pour les autres, il serait toujours nécessaire que l'équipe locale puisse choisir les
+commandes en fonction de leur vision du drone à capturer.
+
+![Contrôle de drone simple](perspectives-drone-simple.png){width=100%}
+
+## Compétences aquises
+
+Ce projet nous a permis d'acquérir de nombreuses compétences. En particulier sur :
+
+- L'utilisation du mode *monitor* WiFi
 - Les attaques par désauthentification WiFi (utilisation de la suite Aircrack-ng)
 - L'utilisation de la bibliothèque Scapy
 - L'utilisation d'un SDR
@@ -745,12 +792,22 @@ Ce projet nous a permis d'aquerir de nombreuses compétences. En particulier sur
 - L'utilisation du module nRF24l01+ et son protocole de liaison de données
 - L'espionnage de bus SPI
 
-Nous avons également pu mettre en pratique des techniques de base d'électronique (soudure, ...)
+Nous avons également pu mettre en pratique des techniques de base d'électronique :
+soudure, etc.
 
-# Remerciements
 
-Nous remercions l'ENAC pour nous avoir donnée accès la volière de drones et à tout le matériel nécessaire. En particulier, Messieurs Nicolas Larrieu, Xavier Paris et Michel Gorraz.
+\pagebreak
 
-Merci également à Monsieur Damien Roque de l'ISAE pour ses explications sur la modulation GFSK et sur GnuRadio, ainsi que Monsieur Benoit Morgan de l'INP ENSEEIHT pour ses conseils.
+# Remerciements {-}
 
-Merci globalement à l'ensemble des intervenants de la formation TLS-SEC^[<http://tls-sec.github.io/>], qui bien qu'exigeante est très enrichissante.
+Nous remercions tout d'abord l'ENAC pour nous avoir permis d'accéder à la volière de
+drones et à tout le matériel nécessaire à nos expérimentations. Nous souhaitons remercier
+en particulier Messieurs Nicolas Larrieu, Xavier Paris et Michel Gorraz.
+
+Nous remercions également Monsieur Damien Roque de l'ISAE pour ses explications sur la
+modulation GFSK et sur GnuRadio, ainsi que Monsieur Benoit Morgan de l'INP ENSEEIHT pour
+ses conseils.
+
+Enfin, nous tenons à remercier globalement l'ensemble des intervenants de la formation
+TLS-SEC^[<https://tls-sec.github.io/>], qui bien qu'exigeante est très enrichissante.
+
