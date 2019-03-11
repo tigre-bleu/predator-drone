@@ -627,7 +627,7 @@ qui nous a permis de monter deux vidéos présentant les attaques perpétrées :
 # Étude du drone PNJ Discovery
 
 Nos attaques étant fonctionnelles sur les deux drones que nous voulions étudier, nous
-avons commencé à faire du rétro-ingénierie d'un troisième modèle en notre possession, un
+avons commencé à faire de la rétro-ingénierie d'un troisième modèle en notre possession, un
 PNJ Discovery. Il s'agit d'un autre drone de loisir RF opérant sur 4 canaux de la bande
 2.4 GHz.
 
@@ -649,7 +649,7 @@ de même pu avancer. Le chapitre suivant montre l'avancement de notre analyse.
 
 ### Sur le drone
 
-Une fois le carrénage du drone retiré, on peut voir une inscription `UD U17B` et une
+Une fois le carrénage du drone retiré, on peut voir une inscription `UD U817B` et une
 référence à 2013 sur la carte mère du drone. Un peu de recherche sur Internet[^udirc] nous
 indique:
 \vspace*{-1em}
@@ -665,7 +665,7 @@ indique:
 //  * U839 nano quadcopter ("Protocol 2014")
 ```
 
-[^udirc]: 
+[^udirc]:
 <https://www.deviationtx.com/forum/protocol-development/2551-udi-r-c-u816-u818-protocol?start=60#32387>
 
 On remarque aussi une puce ARM, probablement le CPU, ainsi qu'une autre puce avec une
@@ -675,7 +675,7 @@ inscription difficile à lire.
 ### Sur la télécommande
 
 La télécommande est séparée en 2 parties, une carte mère et une carte fille. Une grande
-puce sans inscription est présente sur la carte mère sur laquelle arrivent des fils reliés
+puce sans inscription est présente sur la carte mère sur laquelle arrivent des pistes reliées
 aux boutons/joysticks et partent des pistes vers la carte fille et l'écran. On peut
 supposer que cette grande puce est le micro-contrôleur principal de la télécommande et la
 carte fille est le *transceiver* radio.
@@ -692,7 +692,7 @@ En recherchant sur internet des personnes ayant déjà fait du *reverse-engineer
 drone, nous découvrons un article de blog[^blog-hackster] avec un circuit qui ressemble
 très fortement au nôtre.
 
-[^blog-hackster]: 
+[^blog-hackster]:
 <https://www.hackster.io/geekphysical/controlling-toy-quadcopter-s-with-arduino-6b4dcf>
 
 ![Puce Radio](img/bk2421.jpg){width=50%}
@@ -702,7 +702,7 @@ puce nRF24l01+[^bk2421-nrfl01].
 
 [^bk2421]: <http://www.bekencorp.com/en/Botong.Asp?Parent_id=2&Class_id=8&Id=13>
 
-[^bk2421-nrfl01]: 
+[^bk2421-nrfl01]:
 <https://forbot.pl/forum/applications/core/interface/file/attachment.php?id=894>
 
 
@@ -731,7 +731,7 @@ En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le compa
 *datasheet* du module BK2421[^datasheet-bk2421]. C'est ce que nous présentons sur le
 tableau suivant :
 
-[^datasheet-bk2421]: 
+[^datasheet-bk2421]:
 <https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/PNJ%20Drone/SPI_RC_ON_and_Binding.ods>
 
 ![Analyse du bus SPI par tableur](img/Analyse_SPI_Binding.png){width=70%}
