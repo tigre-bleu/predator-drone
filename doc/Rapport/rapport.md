@@ -692,7 +692,7 @@ Nous avons rapidement pu constater qu'il y avait effectivement 4 pins ressemblan
 
 ![Analyseur Logique](img/Analyseur_Logique.png)
 
-En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le comparer à la spec du module BK2421^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/PNJ%20Drone/SPI_RC_ON_and_Binding.ods>].
+En rajoutant un analyseur, nous pouvons voir ce qui passe sur le bus et le comparer à la *datasheet* du module BK2421^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/PNJ%20Drone/SPI_RC_ON_and_Binding.ods>].
 
 ![Image](img/Analyse_SPI_Binding.png?raw=true)
 
