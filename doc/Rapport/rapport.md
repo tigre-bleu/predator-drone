@@ -72,9 +72,10 @@ Pour réaliser cet outil, nous nous sommes focalisés sur la prise de contrôle 
 de loisir : le Parrot AR.Drone 2.0 et le Syma X5C-1. C'est ce que nous détaillons dans les
 deux premières parties de ce rapport. Lorsque ces prises de contrôle furent réussies,
 nous avons cherché à embarquer l'outil sur un autre drone. Ceci est discuté dans la
-troisième partie de ce rapport.
-
-
+troisième partie de ce rapport. Enfin, nous avons commencé à nous intéresser à un
+troisième drone de loisir - le PNJ Discovery - pour lequel nous n'avons pas terminé de
+faire la rétro-conception dans le temps du projet. La quatrième partie de ce rapport
+décrit l'avancement partiel de cette tâche.
 
 
 \pagebreak
