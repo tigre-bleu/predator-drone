@@ -37,15 +37,15 @@
 
 \begin{abstract}
   Drones are now present almost everywhere. Reserved before to military, this technology
-  is now accessible to everyone. Their feild of use is wide: surveillance, agriculture,
+  is now accessible to everyone. Their field of use is wide: surveillance, agriculture,
   media coverage, etc. However, some people are using them in malicious way, to spy,
-  to bomb, etc. In this work, we developed a tool whose goal is to take control of
+  to bomb, etc. In this work, we developed a tool which goal is to take control of
   multiples civil drones.
 \end{abstract}
 \vspace*{1.5em}
 
 \begin{IEEEkeywords}
-  Security, UAV, Drone, Hijack, Parrot AR.Drone 2.0, Syma X5C-1, WiFi, RF 2.4 GHz, Deauth attack
+  Security, UAV, Drone, Hijack, Parrot AR.Drone 2.0, Syma X5C-1, WiFi, RF 2.4 GHz, Retro-engineering
 \end{IEEEkeywords}
 \vspace*{1.5em}
 
@@ -61,7 +61,7 @@ pilot aboard. An UAV is a component of an unmanned aircraft system (UAS), which 
 UAV, a ground-based controller and a communication system between the two. However, many
 UAVs can take certain decisions autonomously during their flight.
 
-These systems were originally developed by military and used in too dangerous missions for
+These systems were originally developed by the military and used in missions too dangerous for
 humans. In the past few years, their use became generalized to many sectors such as
 academic, commercial, and even recreational. As concrete examples, drones are now used for
 surveillance, agriculture and aerial photography.
@@ -72,9 +72,9 @@ perform its first fully autonomous delivery on December 7, 2016~\cite{bib:amazon
 
 \subsection{Motivation of this work}
 The use cases stated before are mostly advantageous for our society. Yet, malicious usages
-also exists. A first concrete example is the recreational drone use by Daesh to bomb on Syrian
+also exists. A first concrete example is the recreational drone use by ISIS to bomb on Syrian
 frontline~\cite{bib:daesh}. Another one, more recent, is the flight over London Gatwick
-airport by a non-identified drone, which caused a blockage of the whole
+airport by a non-identified drone, which caused a shutdown of the whole
 airport~\cite{bib:gatwick}.
 
 Thereby, it is necessary to protect from these threats. Military has developed solutions,
@@ -85,14 +85,14 @@ do not exist for civilians.
 We could think on making military solutions accessible publicly, but these solutions often
 take down the drone, without considering the final state of the drone. This means that
 these solutions can cause a crash. This is not acceptable for civilians. As an example, we
-could think of a drone flighting over a crowd, that a crash would harm.
+could think of a drone flying over a crowd, that a crash would harm.
 
 \subsection{Our goals}
 The objective of this work is to develop a tool able to take control of multiple
 commercial drones, without implying their crash. This tool will be embedded on a predator
 drone that will cover a restricted flying zone.
 
-In ou study, we focused on taking control of two commercial drones: the Parrot AR.Drone
+In our study, we focused on taking control of two commercial drones: the Parrot AR.Drone
 2.0 and the Syma X5C-1. We also addressed the protection means that could be deployed to
 shield these drones from our attacks. Then, we discussed about the embedding question on a
 predator drone.
@@ -102,19 +102,19 @@ predator drone.
 \section{Hijacking a Parrot AR.Drone}
 The Parrot AR.Drone 2.0 was released on January 2012. It is a quadcopter drone developed
 by the French company Parrot SA\@. The user can control it thanks to a WiFi control link,
-with his smartphone and a dedicated app. In this WiFi control link, the drone is the
+with his smartphone and a dedicated app. In this open WiFi control link, the drone is the
 access point and the user is a client.
 
 In December 2013, Samy Kamkar published an attack called SkyJack~\cite{bib:skyjack} on
-this drone. This attack can be use to take drone control with the following steps:
+this drone. This attack can be used to take drone control with the following steps:
 
 \begin{enumerate}
-  \item Search for opened WiFi networks and search for their clients thanks to
+  \item Search for open WiFi networks and search for their clients thanks to
     \myv{airodump-ng}
   \item Filter Parrot WiFi networks
   \item Disconnect found client\footnote{The client will be the real pilot of the drone.}
     with \myv{aireplay-ng}
-  \item Connect to the opened WiFi network
+  \item Connect to the open WiFi network
   \item Run a controlling program to take drone control
 \end{enumerate}
 
@@ -127,10 +127,10 @@ library~\cite{bib:scapy}. In addition, we used the PyRIC library~\cite{bib:pyric
 manage WiFi adapter.
 
 \subsection{Opened WiFi discovering}
-To list available opened WiFi networks, we can perform an active scan, sending probe
+To list available open WiFi networks, we can perform an active scan, sending probe
 request packets and listening for probe response packets. However, doing this, we become
 easily detectable. Thus, we decided to perform a passive scan, only listening for beacon
-frames. These packets contains lots of data about the access point that sent it: channel
+frames. These packets contains lots of data about the access point that sends it: channel
 used, SSID\footnote{Name of the WiFi network} and BSSID.\footnote{MAC address of the access
 point}
 
@@ -139,26 +139,28 @@ remove the \myv{airodump-ng} dependency. In addition, we are now stealthier than
 program.
 
 \subsection{Disconnecting client}
-To disconnect real pilot of the drone, we used \myv{aireplay-ng}, as Samy Kamkar had
-done. We first tried to use Scapy to send de-authentication packets, but they were not sent
+To disconnect the real pilot of the drone, we used \myv{aireplay-ng}, as Samy Kamkar did.
+We first tried to use Scapy to send de-authentication packets, but they were not sent
 correctly.
 
 \subsection{Controlling software after attack}
-To control the drone after hijacking, we used \myv{ardrone-webflight}. This program is
-a web server that serves drone's video and allow us to control a Parrot AR.Drone through a
-web browser and a keyboard (or a gamepad).
+To control the drone after hijacking, we used
+\myv{ardrone-webflight}~\cite{bib:webflight}. This program is a web server that serves
+drone's video and allow us to control a Parrot AR.Drone through a web browser and a
+keyboard (or a gamepad).
 
 \subsection{Attack prevention}
 A first solution to prevent our attack is to use Parrot's security solution. This
-register MAC address of the real pilot in the drone. Then, any other devices from the
+register MAC address of the real pilot in the drone. Then, any other devices but the
 registered one will be rejected when connecting to the WiFi network. However, MAC address
-can be spoofed to bypass this security solution.
+can be spoofed to bypass this security measure.
 
 Another option is to configure the drone access points to not send beacon frames. Doing
 this, the access point will be hidden and our passive scan will not work. Nonetheless, we
-could perform an active scan and the hidden access point will answer.
+could perform an active scan and the hidden access point will answer. We could even just
+listen to the WiFi trafic and filter the one coming from a Parrot access point.
 
-A last solution is to use an encrypted WiFi network, such as WEP or WPA2. This solution
+A last solution is to use an encrypted WiFi network, such as WPA2. This solution
 was adopted by Parrot to secure their new drones. The de-authentication attack will work,
 but not the connection to the WiFi: we would need the secret key.
 
@@ -173,11 +175,12 @@ We developed a Python script to hijack the drone. This tool uses a nRF24L01+ mod
 listen for Syma neighbouring drones and to take their control.
 
 The listening consists in searching for any valid packet, according to Syma protocol, on
-the four radio channels used by a Syma drone.
+the radio channels used by Syma X5C-1 drones.
 
 To take control, we transmit a packet build from the position of a gamepad's joysticks and
-buttons. This transmission is performed faster than the one of the real remote controller.
-Thus, as the drone tries to perform all received orders, we can control it.
+buttons. This transmission is performed at higher rate than the real remote controller.
+Thus, as the drone tries to perform all received orders, most frames are from the attacker
+and we can control it.
 
 \subsection{Attack characterization}
 We built a log tool that listen for Syma packets on a specific radio channel. We used it
@@ -192,16 +195,17 @@ because of the increase of received packets.
 \end{figure}
 
 Our attack is hard to understand from the real pilot point of view. Indeed, he will lose
-control of the drone in just a second.
+control of the drone in just a second. In addition, no warnings are shown, neither by the
+drone nor the remote controller.
 
 \subsection{Attack prevention}
 There is no simple and efficient way to protect from this attack. Indeed, we could imagine
-to scramble all the drone's radio channel, but the control link would be lost for
+to jam all the drone's radio channel, but the control link would be lost for
 everyone.
 
-We could yet think of scrambling all drone's radio channel just when the lawful remote
+We could yet think of jamming all drone's radio channel excepted when the lawful remote
 controller is transmitting. This solution could work, but would requires an extremely
-accurate scrambling.
+accurate jamming.
 
 A last solution could be to increase the transmission rate of the lawful remote controller
 when such an attack is detected. Nevertheless, we can't predict the drone's comportement
@@ -217,8 +221,8 @@ Stretch and has an SPI connectivity that can be used with the nRF24L01+ module. 
 addition, this board is really lightweight and can be powered by an external battery.
 
 We used a Bluetooth PAN\footnote{Personal Area Network} to establish a SSH connection to
-the Raspberry Pi. Doing this, we released the integrated WiFi adapter that we used as a
-second WiFi adapter for the Parrot attack. The first adapter (in monitor mode) was an
+the Raspberry Pi. Doing this, we released the integrated WiFi adapter that could be used
+as a second WiFi adapter for the Parrot attack. The first adapter (in monitor mode) was an
 external USB WiFi dongle.
 
 We first thought about running the Parrot controlling software (\myv{ardrone-webflight})
@@ -237,8 +241,8 @@ predator drone and its embedded Raspberry Pi. Indeed, in ou experiments, the fly
 predator drone was another Parrot AR.Drone. Its battery life is 15 minutes when flying.
 
 Another limitation is the working range of the attack. As we use Bluetooth to control our
-predator tool, the working range is around 100 metres. It could be a great improvement to
-use a 3G/4G connectivity to control it. Doing this, we could imagine an away control
+predator tool, the working range is around 100 meters. It could be a great improvement to
+use a 3G/4G connectivity to control it. Doing this, we could imagine a remote control
 center, controlling lots of predator drones, to secure a public event.
 
 
@@ -269,6 +273,9 @@ center, controlling lots of predator drones, to secure a public event.
 
   \bibitem{bib:pyric}
     \url{https://github.com/wraith-wireless/PyRIC}
+
+  \bibitem{bib:webflight}
+    \url{https://github.com/eschnou/ardrone-webflight}
 
   \bibitem{bib:syma}
     \url{https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html}
