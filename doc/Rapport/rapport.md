@@ -77,6 +77,11 @@ troisième drone de loisir, le PNJ Discovery, pour lequel nous n'avons pas termi
 faire la rétro-conception dans le temps du projet. La quatrième partie de ce rapport
 décrit l'avancement partiel de cette tâche.
 
+> **Note :** l'ensemble du projet et des sources utilisées sont archivés sur le dépot Git 
+> suivant :
+> 
+> <https://framagit.org/tigre-bleu/predator-drone/>
+
 
 \pagebreak
 
