@@ -56,7 +56,7 @@
 
 \section{Introduction}
 \subsection{Overall introduction}
-Unmanned aerial vehicles (UAV), commonly known as drones, are aircrafts without human
+Unmanned aerial vehicles (UAV), commonly known as drones, are aircraft without human
 pilot aboard. An UAV is a component of an unmanned aircraft system (UAS), which include an
 UAV, a ground-based controller and a communication system between the two. However, many
 UAVs can take certain decisions autonomously during their flight.
@@ -94,7 +94,7 @@ drone that will cover a restricted flying zone.
 
 In our study, we focused on taking control of two commercial drones: the Parrot AR.Drone
 2.0 and the Syma X5C-1. We also addressed the protection means that could be deployed to
-shield these drones from our attacks. Then, we discussed about the embedding question on a
+shield these drones from our attacks. Then, we discussed the embedding question on a
 predator drone.
 
 
@@ -130,7 +130,7 @@ manage WiFi adapter.
 To list available open WiFi networks, we can perform an active scan, sending probe
 request packets and listening for probe response packets. However, doing this, we become
 easily detectable. Thus, we decided to perform a passive scan, only listening for beacon
-frames. These packets contains lots of data about the access point that sends it: channel
+frames. These packets contain lots of data about the access point that sends it: channel
 used, SSID\footnote{Name of the WiFi network} and BSSID.\footnote{MAC address of the access
 point}
 
@@ -158,7 +158,7 @@ can be spoofed to bypass this security measure.
 Another option is to configure the drone access points to not send beacon frames. Doing
 this, the access point will be hidden and our passive scan will not work. Nonetheless, we
 could perform an active scan and the hidden access point will answer. We could even just
-listen to the WiFi trafic and filter the one coming from a Parrot access point.
+listen to the WiFi traffic and filter the one coming from a Parrot access point.
 
 A last solution is to use an encrypted WiFi network, such as WPA2. This solution
 was adopted by Parrot to secure their new drones. The de-authentication attack will work,
@@ -167,8 +167,8 @@ but not the connection to the WiFi: we would need the secret key.
 
 
 \section{Hijacking a Syma X5C-1}
-The Syma X5C-1 is a small drone, controlled thanks to a RF 2.4 GHz remote controller. Its
-protocol was Reverse-engineered in June 2016~\cite{bib:syma}.
+The Syma X5C-1 is a small drone, controlled thanks to an RF 2.4 GHz remote controller. Its
+protocol was reverse-engineered in June 2016~\cite{bib:syma}.
 
 \subsection{Development of a hacking tool}
 We developed a Python script to hijack the drone. This tool uses a nRF24L01+ module to
@@ -179,8 +179,8 @@ the radio channels used by Syma X5C-1 drones.
 
 To take control, we transmit a packet build from the position of a gamepad's joysticks and
 buttons. This transmission is performed at higher rate than the real remote controller.
-Thus, as the drone tries to perform all received orders, most frames are from the attacker
-and we can control it.
+Thus, as the drone tries to perform all received orders, most frames are from the
+attacker, and we can control it.
 
 \subsection{Attack characterization}
 We built a log tool that listen for Syma packets on a specific radio channel. We used it
@@ -200,15 +200,15 @@ drone nor the remote controller.
 
 \subsection{Attack prevention}
 There is no simple and efficient way to protect from this attack. Indeed, we could imagine
-to jam all the drone's radio channel, but the control link would be lost for
+jamming all the drone's radio channel, but the control link would be lost for
 everyone.
 
 We could yet think of jamming all drone's radio channel excepted when the lawful remote
-controller is transmitting. This solution could work, but would requires an extremely
+controller is transmitting. This solution could work, but would require an extremely
 accurate jamming.
 
 A last solution could be to increase the transmission rate of the lawful remote controller
-when such an attack is detected. Nevertheless, we can't predict the drone's comportement
+when such an attack is detected. Nevertheless, we can't predict the drone's comportment
 in such a case because of packets collisions. The control link will most probably be lost
 for everyone.
 
@@ -220,24 +220,24 @@ to install our tool on a Raspberry Pi Zero~W~\cite{bib:rpi0w}. This board runs D
 Stretch and has an SPI connectivity that can be used with the nRF24L01+ module. In
 addition, this board is really lightweight and can be powered by an external battery.
 
-We used a Bluetooth PAN\footnote{Personal Area Network} to establish a SSH connection to
+We used a Bluetooth PAN\footnote{Personal Area Network} to establish an SSH connection to
 the Raspberry Pi. Doing this, we released the integrated WiFi adapter that could be used
 as a second WiFi adapter for the Parrot attack. The first adapter (in monitor mode) was an
 external USB WiFi dongle.
 
 We first thought about running the Parrot controlling software (\myv{ardrone-webflight})
-on the Raspberry Pi. However, it was using too much resources. We decided to deport it on
+on the Raspberry Pi. However, it was using too many resources. We decided to deport it on
 the attacker's computer, thanks to the magic of packet routing on the embedded board.
 
 
 
 \section{Conclusion and future applications}
 Our tool was designed to hijack two commercial drones: the Parrot AR.Drone 2.0 and the
-Syma X5C-1. These attacks works well. In addition, we developed the tool to be extensible
+Syma X5C-1. These attacks work well. In addition, we developed the tool to be extensible
 in a such manner that another drone attack can be added easily.
 
 However, our predator-drone has some limitations. The first one is the battery life of the
-predator drone and its embedded Raspberry Pi. Indeed, in ou experiments, the flying
+predator drone and its embedded Raspberry Pi. Indeed, in our experiments, the flying
 predator drone was another Parrot AR.Drone. Its battery life is 15 minutes when flying.
 
 Another limitation is the working range of the attack. As we use Bluetooth to control our
