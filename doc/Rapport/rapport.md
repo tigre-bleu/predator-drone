@@ -73,7 +73,7 @@ de loisir : le Parrot AR.Drone 2.0 et le Syma X5C-1. C'est ce que nous détaillo
 deux premières parties de ce rapport. Lorsque ces prises de contrôle furent réussies,
 nous avons cherché à embarquer l'outil sur un autre drone. Ceci est discuté dans la
 troisième partie de ce rapport. Enfin, nous avons commencé à nous intéresser à un
-troisième drone de loisir - le PNJ Discovery - pour lequel nous n'avons pas terminé de
+troisième drone de loisir, le PNJ Discovery, pour lequel nous n'avons pas terminé de
 faire la rétro-conception dans le temps du projet. La quatrième partie de ce rapport
 décrit l'avancement partiel de cette tâche.
 
@@ -483,7 +483,7 @@ Nous avons utilisé une radio logicielle (SDR USRP B200) avec le logiciel GnuRad
 
 > Un SDR (*Software-Defined Radio*) est un équipement qui permet de recevoir et émettre
 > des signaux radios. Contrairement à une puce radio classique, le SDR ne fait aucune
-> modulation/démodulation ni aucun traitement. Ceux-ciq sont réalisés par un ordinateur
+> modulation/démodulation ni aucun traitement. Ceux-ci sont réalisés par un ordinateur
 > relié au SDR.
 
 > GnuRadio est un logiciel qui permet de construire des chaînes de traitement radio. Il
@@ -491,7 +491,7 @@ Nous avons utilisé une radio logicielle (SDR USRP B200) avec le logiciel GnuRad
 > l'application GnuRadio Companion.
 
 Nous avons donc parcouru la bande de fréquence entre 2.400 GHz et 2.525 Ghz avec Gnuradio.
-Cela correspond à la plage de fréquences gérables par un nRF24l01+ (la puce que l'on
+Cela correspond à la plage de fréquences gérables par un nRF24L01+ (la puce que l'on
 souhaitait utiliser pour prendre le contrôle du drone).
 
 Pour cela nous avons créé une *waterfall* et avons rapidement constaté de l'activité autour de
@@ -508,7 +508,7 @@ fréquences](img/gnuradio-scan.png){width=95%}
 ![*Waterfall* et FFT obtenues](img/waterfall_fft_gnuradio.png){width=95%}
 
 En regardant un extrait de la *datasheet* d'un module radio
-nRF24l01+^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/nRF24L01+/nRF24L01Pluss_Preliminary_Product_Specification_v1_0.pdf>],
+nRF24L01+^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/doc/nRF24L01+/nRF24L01Pluss_Preliminary_Product_Specification_v1_0.pdf>],
 on peut lire :
 
 ```
@@ -533,7 +533,7 @@ You must program a transmitter and a receiver with the same RF channel frequency
 communicate with each other.
 ```
 
-En supposant que le chipset du drone est similaire à un nRF24l01, on voit qu'avec 800 kHz
+En supposant que le chipset du drone est similaire à un nRF24L01, on voit qu'avec 800 kHz
 de bande passante, nous avons un **débit de 250 Kbps ou 1 Mbps** mais certainement pas de
 2 Mbps.
 
@@ -561,9 +561,8 @@ visualiser.
 
 Nous avons constaté que l'amplitude du signal est constante, ce n'était donc pas de l'ASK.
 Il était légitime de penser que la modulation était du FSK/GFSK mais cela aurait aussi pu
-être du PSK.
-
-La modulation GFSK étant souvent utilisée dans des équipements électroniques de loisirs, nous sommes partis dans cette direction.
+être du PSK. La modulation GFSK étant souvent utilisée dans des équipements électroniques
+de loisirs, nous sommes partis dans cette direction.
 
 Nous avons rajouté un filtre passe-bas afin d'avoir un signal plus propre, puis un bloc
 `Quadrature Demod` permettant de séparer les fréquences.
@@ -578,7 +577,7 @@ La fin du traitement GnuRadio enregistre dans un fichier des bits pris à une p�
 constante correspondante à 250 kbits/s. Nous y avons donc retrouvé nos trames mais aussi
 de "faux bits" issus de la mauvaise interprétation du bruit.
 
-![*Dump* hexadécimal du *bit stream*](img/hexdump.png){width=65%}
+![*Dump* hexadécimal du *bit stream*](img/hexdump.png){width=60%}
 
 > **Remarque :** pour être plus propre, nous aurions pu développer une chaine de
 > démodulation complète permettant de synchroniser l'horloge et de filtrer le bruit entre
@@ -609,16 +608,16 @@ Le nombre d'octets total (incluant le préambule) semblait donc être de 18.
 > est courant pour un émetteur de transmettre un préambule de 1 et de 0 alternés afin que
 > le récepteur puisse synchroniser son horloge interne sur celle de l'émetteur.
 
-On peut voir dans la specification du module radio nRF24l01+ que celui-ci émet un
+On peut voir dans la specification du module radio nRF24L01+ que celui-ci émet un
 préambule de `0xAA` ou `0x55`. Il est donc légitime de penser que le drone utilise un
 module de ce type. Il s'agit en effet d'un module bon marché très utilisé pour des petits
 équipements électroniques.
 
 
-### Module nRF24l01+
+### Module nRF24L01+
 
 À ce stade, nous nous sommes intéressés plus en détail au fonctionnement du module
-nRF24l01+. C'est en effet un module radio très populaire faisant du GFSK sur la bande 2.4
+nRF24L01+. C'est en effet un module radio très populaire faisant du GFSK sur la bande 2.4
 GHz. Il est utilisé dans beaucoup de projets électroniques : drones mais aussi souris
 sans-fil, projets DIY, etc. En voici les caractéristiques les plus importantes pour notre
 projet :
@@ -632,9 +631,9 @@ projet :
 - La taille de la *payload* est configurable entre 0 et 32 octets
 - Un CRC est optionnel (sur 1 ou 2 octets)
 
-![Protocole nRF24l01 basique](img/protocole-nrf24l01.png){width=45%}
+![Protocole nRF24L01 basique](img/protocole-nrf24l01.png){width=45%}
 
-Ainsi, **nous avons supposé que le drone Syma utilisait un module de type nRF24l01+ ou
+Ainsi, **nous avons supposé que le drone Syma utilisait un module de type nRF24L01+ ou
 compatible, en mode basique**. Il nous fallait alors trouver la taille des champs
 configurables. Pour cela, il nous fallait donc écouter sur un des canaux utilisés par la
 télécommande.
@@ -647,7 +646,7 @@ en concluions donc que :
 - La *payload* ferait entre 10 et 14 octets
 
 
-### Déterminaison des paramètres du procole nRF24l01+
+### Déterminaison des paramètres du procole nRF24L01+
 
 **Méthode 1: analyse en temps différé avec un SDR**
 
@@ -704,18 +703,19 @@ et CRC de 2 octets**.
 
 ![Exécution de l'outil `nrf24_analyser.py` avec des tailles de champs correctes](img/nrf24_analyser.png)
 
-**Méthode 2: analyse en temps réel avec un nRF24l01+**
+**Méthode 2: analyse en temps réel avec un nRF24L01+**
 
 Un attaquant n'ayant pas de SDR et supposant, à raison, que le drone utilise un protocole
-de type nRF24l01+ pourrait tout de même retrouver les tailles des champs et la valeur de
-l'adresse en utilisant un simple module nRF24l01+. Il faudrait pour cela qu'il écoute tout
+de type nRF24L01+ pourrait tout de même retrouver les tailles des champs et la valeur de
+l'adresse en utilisant un simple module nRF24L01+. Il faudrait pour cela qu'il écoute tout
 le traffic radio sur chaque canal et qu'il essaye d'y reconnaitre des trames valides.
 
 Il serait alors nécessaire que le module soit capable de passer en mode *promiscuous*, ce
 qui n'est pas officiellement supporté. Cependant, il est possible d'arriver à ce résultat
 en combinant certaines propriétés du module.
 
-> **Pseudo-mode *promiscuous* avec un nRF24l01+**
+> **Pseudo-mode *promiscuous* avec un nRF24L01+**
+>
 > Le module possède les carastéristiques suivantes:
 >
 > - Le préambule n'est pas utilisé à la réception d'un message. Le module se contente de
@@ -729,7 +729,7 @@ en combinant certaines propriétés du module.
 >   que le module considère une adresse de 2 octets.
 >
 > ![Extrait de la spécification du
-> nRF24l01+](img/spec_nrf24l01_taille-adresse.png){width=75%}
+> nRF24L01+](img/spec_nrf24l01_taille-adresse.png){width=75%}
 >
 > En combinant ces trois propriétés, on peut configurer une adresse de `0x00AA` (2 octets)
 > qui va correspondre à tous les débuts de trames possibles.
@@ -739,23 +739,26 @@ en combinant certaines propriétés du module.
 > octets], il sera impossible de récupérer les 2 derniers octets de CRC car le module
 > retournera 39 octets en partant de `0x00AA`.
 
-Nous n'avons pas mis en pratique cette méthode pour la rétro ingéniérie du protocole vu que nous connaissions déjà toutes les informations nécessaires via la méthode 1, qui est plus simple.
-
-Nous avons néanmoins implémenté ce pseudo-mode promiscuous dans `predator-drone` lors de la phase de scan afin de détecter les adresses des drones inconnus environnants.
+Nous n'avons pas mis en pratique cette méthode pour la rétro-ingéniérie du protocole vu
+que nous connaissions déjà toutes les informations nécessaires via la méthode 1, qui est
+plus simple. Nous avons néanmoins implémenté ce pseudo-mode promiscuous dans
+`predator-drone` lors de la phase de scan afin de détecter les adresses des drones
+inconnus environnants.
 
 
 ## Compréhension du protocole Syma
+
 Nous avons ainsi déterminé que l'adresse fait 5 octets et que la *payload* fait 10 octets.
 Il nous faut donc à présent comprendre le contenu de ces 10 octets de *payload*.
 
-Pour cela, nous avons monté un nRF24l01+ sur un Raspberry Pi 3 et adapté un script
+Pour cela, nous avons monté un nRF24L01+ sur un Raspberry Pi 3 et adapté un script
 existant permetant d'afficher dans une console en temps réel le contenu des
 *payload*^[<https://framagit.org/tigre-bleu/predator-drone/blob/master/tools/syma_protocol_analyser/syma_protocol_analyser.py>].
 
 Pour faciliter l'interaction avec le public lors du tutoriel de la THCon, nous avons
 rajouté un petit écran OLED sur bus I2C afin d'y afficher le contenu des trames.
 
-![Montage de l'analyseur](img/PI3_Syma_Sketch_bb.png){width=50%}
+![Montage de l'analyseur](img/PI3_Syma_Sketch_bb.png){width=35%}
 
 ![Capture et affichage des paquets](img/rpi3_analyser.png)
 
@@ -788,7 +791,7 @@ réimplémenter en émission pour usurper une télécommande.
 ## Implémentation du protocole
 
 Il est relativement simple d'implémenter le protocole en Python sur un RPi avec un module
-nRF24l01+. Afin de simplifier le contrôle du drone, nous choisissons d'utiliser une
+nRF24L01+. Afin de simplifier le contrôle du drone, nous choisissons d'utiliser une
 manette USB. Nous sommes parti d'un code
 existant^[<https://github.com/chopengauer/nrf_analyze/blob/master/syma_joy.py>] que nous
 avons simplifié et adapté pour fonctionner avec notre manette.
@@ -813,7 +816,7 @@ l'emporte.
 
 Pour visualiser ce phénomène, nous avons développé un simple outil de
 log^[<https://framagit.org/tigre-bleu/predator-drone/tree/master/tools/nrf24_logger>] pour
-un Raspberry Pi avec un nRF24l01+ qui enregistre les trames reçues sur un canal. On peut
+un Raspberry Pi avec un nRF24L01+ qui enregistre les trames reçues sur un canal. On peut
 ensuite tracer des courbes avec Gnuplot ou LibreOffice.
 
 ![Répartition des trames sur un canal au début d'une attaque](img/gnuplot-trames-emises.png)
@@ -835,7 +838,7 @@ reçus par le drone avant et pendant l'attaque :
 ![*Frame-rate* sur un canal pendant une attaque](img/frame-rate.png){width=60%}
 
 > Ces taux de trames sont indicatifs, car on pourrait avoir atteint les limites de
-> performance du nRF24l01+ en réception. La grande variation du taux pendant l'attaque
+> performance du nRF24L01+ en réception. La grande variation du taux pendant l'attaque
 > nous semble confirmer cette hypothèse. Néanmoins nous pensons que l'ordre de grandeur
 > est correct.
 
@@ -866,9 +869,9 @@ s'interromprait uniquement le temps d'émettre une trame légitime. Nous n'avons
 connaissances suffisament précises dans ce domaine pour juger de la possibilité d'un tel
 brouillage. Ce serait une direction à creuser par la suite.
 
-On pourrait également imaginer une "contre attaque": si une attaque est détectée, le
-pilote légitime augmente aussi le nombre de trames envoyées via un outil similaire à notre
-prédateur. Le résultat d'une telle bataille est difficile à prévoir car il pourra y avoir
+On pourrait également imaginer une "contre-attaque": si une attaque est détectée, le
+pilote légitime augmente aussi le nombre de trames envoyées via un outil similaire au
+nôtre. Le résultat d'une telle bataille est difficile à prévoir car il pourra y avoir
 des collisions sur les trames. Le plus probable est que le contrôle du drone soit perdu
 pour tout le monde.
 
@@ -924,7 +927,7 @@ portée aux alentours de 10 mètres. Cependant, selon l'adaptateur, la portée p
 ### Compilation de la bibliothèque `pyRF24`
 
 Afin d'installer notre outil sur le Raspberry Pi, nous avons dû installer la bibliothèque
-`pyRF24`, utilisée pour contrôler la puce nRF2lL01+. Pour cela, il fallait compiler la
+`pyRF24`, utilisée pour contrôler la puce nRF24L01+. Pour cela, il fallait compiler la
 bibliothèque. Cependant, en raison des faibles capacités calcul et mémoire de la carte,
 nous avons d'abord tenté une cross-compilation, sans succès. Après réflexion, nous avons
 simplement créé un fichier d'échange *swap* sur le Raspberry et avons compilé localement
@@ -1025,7 +1028,7 @@ Cette solution fonctionne très bien.
 
 Lorsque notre script était stable sur le Raspberry Pi Zero W, nous sommes allés effectuer des
 tests en vol dans la volière de l'ENAC. Pour cela, nous avons monté le Raspberry Pi Zero W ainsi
-qu'une batterie et le module nRFL01+ sur une carène d'AR.Drone, comme le montre la photo
+qu'une batterie et le module nRF24L01+ sur une carène d'AR.Drone, comme le montre la photo
 ci-contre.
 
 ![Montage du drone prédateur](img/drone_predateur_montage_crop.jpg){width=47.5%}
@@ -1131,7 +1134,7 @@ très fortement au nôtre.
 ![Puce Radio](img/bk2421.jpg){width=50%}
 
 On peut donc supposer que la puce radio est une puce BK2421[^bk2421], très similaire à une
-puce nRF24l01+[^bk2421-nrfl01].
+puce nRF24L01+[^bk2421-nrfl01].
 
 [^bk2421]: <http://www.bekencorp.com/en/Botong.Asp?Parent_id=2&Class_id=8&Id=13>
 
@@ -1208,7 +1211,7 @@ souhaitaient rajouter le support d'autres drones.
 Nous devons néanmoins noter les limitations suivantes :
 
 - **Autonomie du Raspberry Pi :**\
-  L'ensemble Rasberry Pi Zero\ W avec un dongle WiFi et un module radio nRF24l01+ tient
+  L'ensemble Rasberry Pi Zero\ W avec un dongle WiFi et un module radio nRF24L01+ tient
   environ 3 heures avec une batterie de 800 mAh et des attaques occasionnelles. C'est une
   performance suffisante pour un grand nombre de cas mais pourrait être une limitation
   pour une opération plus longue sur le théatre d'opérations.
@@ -1268,7 +1271,7 @@ Ce projet nous a permis d'acquérir de nombreuses compétences. En particulier s
 - L'utilisation de la bibliothèque Scapy
 - L'utilisation d'un SDR
 - L'analyse de signaux RF
-- L'utilisation du module nRF24l01+ et son protocole de liaison de données
+- L'utilisation du module nRF24L01+ et son protocole de liaison de données
 - L'espionnage de bus SPI
 
 Nous avons également pu mettre en pratique des techniques de base d'électronique :
