@@ -105,7 +105,7 @@ by the French company Parrot SA\@. The user can control it thanks to a WiFi cont
 with his smartphone and a dedicated app. In this WiFi control link, the drone is the
 access point and the user is a client.
 
-In december 2013, Samy Kamkar published an attack called SkyJack~\cite{bib:skyjack} on
+In December 2013, Samy Kamkar published an attack called SkyJack~\cite{bib:skyjack} on
 this drone. This attack can be use to take drone control with the following steps:
 
 \begin{enumerate}
@@ -144,7 +144,7 @@ To control the drone after hijacking, we used \myv{ardrone-webflight}. This prog
 a web server that serves drone's video and allow us to control a Parrot AR.Drone through a
 web browser and a keyboard (or a gamepad).
 
-\subsection{Prevention of this attack}
+\subsection{Attack prevention}
 A first solution to prevent our attack is to use Parrot's security solution. This
 register MAC address of the real pilot in the drone. Then, any other devices from the
 registered one will be rejected when connecting to the WiFi network. However, MAC address
@@ -161,16 +161,48 @@ but not the connection to the WiFi: we would need the secret key.
 
 
 \section{Hijacking a Syma X5C-1}
-%TODO
-
-\subsection{Protocol reverse-engineering}
-%TODO
+The Syma X5C-1 is a small drone, controlled thanks to a RF 2.4 GHz remote controller. Its
+protocol was Reverse-engineered in June 2016~\cite{bib:syma}.
 
 \subsection{Development of a hacking tool}
-%TODO
+We developed a Python script to hijack the drone. This tool uses a nRF24L01+ module to
+listen for Syma neighbouring drones and to take their control.
 
-\subsection{Prevention of this attack}
-%TODO
+The listening consists in searching for any valid packet, according to Syma protocol, on
+the four radio channels used by a Syma drone.
+
+To take control, we transmit a packet build from the position of a gamepad's joysticks and
+buttons. This transmission is performed faster than the one of the real remote controller.
+Thus, as the drone tries to perform all received orders, we can control it.
+
+\subsection{Attack characterization}
+We built a log tool that listen for Syma packets on a specific radio channel. We used it
+to build the figure~\ref{fig:syma}. We clearly can see when the attack is performed
+because of the increase of received packets.
+
+\begin{figure}[!hb]
+  \centering
+  \includegraphics[width=\linewidth]{../Rapport/img/gnuplot-trames-emises.png}
+  \caption{Received frame before and during attack}%
+  \label{fig:syma}
+\end{figure}
+
+Our attack is hard to understand from the real pilot point of view. Indeed, he will lose
+control of the drone in just a second.
+
+\subsection{Attack prevention}
+There is no simple and efficient way to protect from this attack. Indeed, we could imagine
+to scramble all the drone's radio channel, but the control link would be lost for
+everyone.
+
+We could yet think of scrambling all drone's radio channel just when the lawful remote
+controller is transmitting. This solution could work, but would requires an extremely
+accurate scrambling.
+
+A last solution could be to increase the transmission rate of the lawful remote controller
+when such an attack is detected. Nevertheless, we can't predict the drone's comportement
+in such a case because of packets collisions. The control link will most probably be lost
+for everyone.
 
 
 
@@ -182,15 +214,6 @@ but not the connection to the WiFi: we would need the secret key.
 \section{Conclusion and future applications}
 %TODO
 
-
-
-%\ref{fig:onlyoffice}
-%\begin{figure}[!hb]
-  %\centering
-  %\includegraphics[width=\linewidth]{}
-  %\caption{}%
-  %\label{fig:}
-%\end{figure}
 
 
 
@@ -219,6 +242,9 @@ but not the connection to the WiFi: we would need the secret key.
 
   \bibitem{bib:pyric}
     \url{https://github.com/wraith-wireless/PyRIC}
+
+  \bibitem{bib:syma}
+    \url{https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html}
 
 \end{thebibliography}
 
