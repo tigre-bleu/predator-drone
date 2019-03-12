@@ -228,7 +228,18 @@ the attacker's computer, thanks to the magic of packet routing on the embedded b
 
 
 \section{Conclusion and future applications}
-%TODO
+Our tool was designed to hijack two commercial drones: the Parrot AR.Drone 2.0 and the
+Syma X5C-1. These attacks works well. In addition, we developed the tool to be extensible
+in a such manner that another drone attack can be added easily.
+
+However, our predator-drone has some limitations. The first one is the battery life of the
+predator drone and its embedded Raspberry Pi. Indeed, in ou experiments, the flying
+predator drone was another Parrot AR.Drone. Its battery life is 15 minutes when flying.
+
+Another limitation is the working range of the attack. As we use Bluetooth to control our
+predator tool, the working range is around 100 metres. It could be a great improvement to
+use a 3G/4G connectivity to control it. Doing this, we could imagine an away control
+center, controlling lots of predator drones, to secure a public event.
 
 
 
