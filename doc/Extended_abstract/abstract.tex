@@ -1,0 +1,132 @@
+\newcommand{\CLASSINPUTtoptextmargin}{1.9cm}
+\newcommand{\CLASSINPUTbottomtextmargin}{1.9cm}
+\documentclass[conference,a4paper]{IEEEtran}
+
+\usepackage[hyphens]{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cite}
+\usepackage[super]{nth}
+\usepackage{graphicx}
+
+% Plot graphics
+\usepackage{pgfplots}
+\usepackage{etoolbox}
+\usepgfplotslibrary{dateplot}
+\pgfplotsset{compat=1.12}
+
+\usepackage{todonotes}
+\usepackage{kantlipsum}
+
+
+\begin{document}
+
+% ----------------------
+%    Document header
+% ----------------------
+\title{%
+  \textit{Predator-drone}, one drone to rule them all%
+}
+\author{%
+  Florent Fayollas and Antoine Vacher,\\%
+  \textit{Masters students at TLS-SEC}%
+}
+\maketitle
+
+
+\begin{abstract}
+  Drones are now present almost everywhere. Reserved before to military, this technology
+  is now accessible to everyone. Their feild of use is wide: surveillance, agriculture,
+  media coverage, etc. However, some people are using them in malicious way, to spy,
+  to bomb, etc. In this work, we developed a tool whose goal is to take control of
+  multiples civil drones.
+\end{abstract}
+\vspace*{1.5em}
+
+\begin{IEEEkeywords}
+  Security, UAV, Drone, Hijack, Parrot AR.Drone 2.0, Syma X5C-1, WiFi, RF 2.4 GHz, Deauth attack
+\end{IEEEkeywords}
+\vspace*{1.5em}
+
+
+% ----------------------
+%    Document content
+% ----------------------
+
+\section{Introduction}
+\subsection{Overall introduction}
+Unmanned aerial vehicles (UAV), commonly known as drones, are aircrafts without human
+pilot aboard. An UAV is a component of an unmanned aircraft system (UAS), which include an
+UAV, a ground-based controller and a communication system between the two. However, many
+UAVs can take certain decisions autonomously during their flight.
+
+These systems were originally developed by military and used in too dangerous missions for
+humans. In the past few years, their use became generalized to many sectors such as
+academic, commercial, and even recreational. As concrete examples, drones are now used for
+surveillance, agriculture and aerial photography.
+
+Their field of use is continuously growing. As an example, Amazon is working on drones to
+be used for their deliveries: the future Amazon Prime Air service. Amazon managed to
+perform its first fully autonomous delivery on December 7, 2016~\cite{bib:amazon}.
+
+\subsection{Motivation of this work}
+The use cases stated before are mostly advantageous for our society. Yet, malicious usages
+also exists. A first concrete example is the recreational drone use by Daesh to bomb on Syrian
+frontline~\cite{bib:daesh}. Another one, more recent, is the flight over London Gatwick
+airport by a non-identified drone, which caused a blockage of the whole
+airport~\cite{bib:gatwick}.
+
+Thereby, it is necessary to protect from these threats. Military has developed solutions,
+such as control link jamming. The DroneGun, constructed by
+DroneShield~\cite{bib:droneshield}, is a great example. Nevertheless, such solutions
+do not exist for civilians.
+
+We could think on making military solutions accessible publicly, but these solutions often
+take down the drone, without considering the final state of the drone. This means that
+these solutions can cause a crash. This is not acceptable for civilians. As an example, we
+could think of a drone flighting over a crowd, that a crash would harm.
+
+\subsection{Our goals}
+The objective of this work is to develop a tool able to take control of multiple
+commercial drones, without implying their crash. This tool will be embedded on a predator
+drone that will cover a restricted flying zone.
+
+In ou study, we focused on two commercial drones: the Parrot AR.Drone 2.0 and the Syma
+X5C-1. Then, we addressed the embedding question on a predator drone.
+
+\section{Hijacking a Parrot AR.Drone}
+\section{Hijacking a Syma X5C-1}
+\section{Embedding tool on a predator drone}
+\section{Conclusion and future applications}
+
+
+
+%\ref{fig:onlyoffice}
+%\begin{figure}[!hb]
+  %\centering
+  %\includegraphics[width=\linewidth]{}
+  %\caption{}%
+  %\label{fig:}
+%\end{figure}
+
+
+
+% ------------------
+%    Bibliography
+% ------------------
+
+\begin{thebibliography}{1}
+  \bibitem{bib:amazon}
+    \url{https://www.amazon.com/Amazon-Prime-Air/}
+
+  \bibitem{bib:daesh}
+    \url{https://ctc.usma.edu/islamic-state-drones-supply-scale-future-threats/}
+
+  \bibitem{bib:gatwick}
+    \url{https://www.bbc.com/news/uk-england-sussex-46623754}
+
+  \bibitem{bib:droneshield}
+    \url{https://www.droneshield.com/}
+
+\end{thebibliography}
+
+\end{document}
