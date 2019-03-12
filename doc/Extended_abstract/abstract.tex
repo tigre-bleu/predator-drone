@@ -118,6 +118,10 @@ this drone. This attack can be use to take drone control with the following step
   \item Run a controlling program to take drone control
 \end{enumerate}
 
+This attack needs two WiFi adapters. The first one is used to scan for WiFi networks and
+perform the de-authentication attack. The second one is used to connect to the hacked
+network.
+
 We enhanced this attack, keeping in mind the embedding goal, using the Python Scapy
 library~\cite{bib:scapy}. In addition, we used the PyRIC library~\cite{bib:pyric} to
 manage WiFi adapter.
@@ -207,7 +211,19 @@ for everyone.
 
 
 \section{Embedding tool on a predator drone}
-%TODO: choix + nécessités
+We then wanted to embed our tool on a predator drone. To be drone-independent, we decided
+to install our tool on a Raspberry Pi Zero~W~\cite{bib:rpi0w}. This board runs Debian
+Stretch and has an SPI connectivity that can be used with the nRF24L01+ module. In
+addition, this board is really lightweight and can be powered by an external battery.
+
+We used a Bluetooth PAN\footnote{Personal Area Network} to establish a SSH connection to
+the Raspberry Pi. Doing this, we released the integrated WiFi adapter that we used as a
+second WiFi adapter for the Parrot attack. The first adapter (in monitor mode) was an
+external USB WiFi dongle.
+
+We first thought about running the Parrot controlling software (\myv{ardrone-webflight})
+on the Raspberry Pi. However, it was using too much resources. We decided to deport it on
+the attacker's computer, thanks to the magic of packet routing on the embedded board.
 
 
 
@@ -245,6 +261,9 @@ for everyone.
 
   \bibitem{bib:syma}
     \url{https://blog.ptsecurity.com/2016/06/phd-vi-how-they-stole-our-drone.html}
+
+  \bibitem{bib:rpi0w}
+    \url{https://www.raspberrypi.org/products/raspberry-pi-zero-w/}
 
 \end{thebibliography}
 
