@@ -8,6 +8,8 @@
 \usepackage[super]{nth}
 \usepackage{graphicx}
 
+\newcommand{\myv}[1]{\texttt{\small#1}}
+
 % Plot graphics
 \usepackage{pgfplots}
 \usepackage{etoolbox}
@@ -90,13 +92,95 @@ The objective of this work is to develop a tool able to take control of multiple
 commercial drones, without implying their crash. This tool will be embedded on a predator
 drone that will cover a restricted flying zone.
 
-In ou study, we focused on two commercial drones: the Parrot AR.Drone 2.0 and the Syma
-X5C-1. Then, we addressed the embedding question on a predator drone.
+In ou study, we focused on taking control of two commercial drones: the Parrot AR.Drone
+2.0 and the Syma X5C-1. We also addressed the protection means that could be deployed to
+shield these drones from our attacks. Then, we discussed about the embedding question on a
+predator drone.
+
+
 
 \section{Hijacking a Parrot AR.Drone}
+The Parrot AR.Drone 2.0 was released on January 2012. It is a quadcopter drone developed
+by the French company Parrot SA\@. The user can control it thanks to a WiFi control link,
+with his smartphone and a dedicated app. In this WiFi control link, the drone is the
+access point and the user is a client.
+
+In december 2013, Samy Kamkar published an attack called SkyJack~\cite{bib:skyjack} on
+this drone. This attack can be use to take drone control with the following steps:
+
+\begin{enumerate}
+  \item Search for opened WiFi networks and search for their clients thanks to
+    \myv{airodump-ng}
+  \item Filter Parrot WiFi networks
+  \item Disconnect found client\footnote{The client will be the real pilot of the drone.}
+    with \myv{aireplay-ng}
+  \item Connect to the opened WiFi network
+  \item Run a controlling program to take drone control
+\end{enumerate}
+
+We enhanced this attack, keeping in mind the embedding goal, using the Python Scapy
+library~\cite{bib:scapy}. In addition, we used the PyRIC library~\cite{bib:pyric} to
+manage WiFi adapter.
+
+\subsection{Opened WiFi discovering}
+To list available opened WiFi networks, we can perform an active scan, sending probe
+request packets and listening for probe response packets. However, doing this, we become
+easily detectable. Thus, we decided to perform a passive scan, only listening for beacon
+frames. These packets contains lots of data about the access point that sent it: channel
+used, SSID\footnote{Name of the WiFi network} and BSSID.\footnote{MAC address of the access
+point}
+
+We implemented this solution using Scapy's \myv{sniff} function. This allowed us to
+remove the \myv{airodump-ng} dependency. In addition, we are now stealthier than this
+program.
+
+\subsection{Disconnecting client}
+To disconnect real pilot of the drone, we used \myv{aireplay-ng}, as Samy Kamkar had
+done. We first tried to use Scapy to send de-authentication packets, but they were not sent
+correctly.
+
+\subsection{Controlling software after attack}
+To control the drone after hijacking, we used \myv{ardrone-webflight}. This program is
+a web server that serves drone's video and allow us to control a Parrot AR.Drone through a
+web browser and a keyboard (or a gamepad).
+
+\subsection{Prevention of this attack}
+A first solution to prevent our attack is to use Parrot's security solution. This
+register MAC address of the real pilot in the drone. Then, any other devices from the
+registered one will be rejected when connecting to the WiFi network. However, MAC address
+can be spoofed to bypass this security solution.
+
+Another option is to configure the drone access points to not send beacon frames. Doing
+this, the access point will be hidden and our passive scan will not work. Nonetheless, we
+could perform an active scan and the hidden access point will answer.
+
+A last solution is to use an encrypted WiFi network, such as WEP or WPA2. This solution
+was adopted by Parrot to secure their new drones. The de-authentication attack will work,
+but not the connection to the WiFi: we would need the secret key.
+
+
+
 \section{Hijacking a Syma X5C-1}
+%TODO
+
+\subsection{Protocol reverse-engineering}
+%TODO
+
+\subsection{Development of a hacking tool}
+%TODO
+
+\subsection{Prevention of this attack}
+%TODO
+
+
+
 \section{Embedding tool on a predator drone}
+%TODO: choix + nécessités
+
+
+
 \section{Conclusion and future applications}
+%TODO
 
 
 
@@ -126,6 +210,15 @@ X5C-1. Then, we addressed the embedding question on a predator drone.
 
   \bibitem{bib:droneshield}
     \url{https://www.droneshield.com/}
+
+  \bibitem{bib:skyjack}
+    \url{https://samy.pl/skyjack/}
+
+  \bibitem{bib:scapy}
+    \url{https://scapy.net/}
+
+  \bibitem{bib:pyric}
+    \url{https://github.com/wraith-wireless/PyRIC}
 
 \end{thebibliography}
 
