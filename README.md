@@ -1,21 +1,32 @@
 # Projet `predator-drone`
 
 ![Logo](logo/logo.png)
+
+> For an english introduction to this project, see the [abstract](doc/Extended_abstract/abstract.pdf)
+
 L'objectif de ce projet est de développer un drone prédateur permettant de prendre le
 contrôle d'un autre drone. Deux types d'attaques ont été réalisées :
 
 - RF2.4GHz (Syma X5C-1)
 - WiFi (Parrot AR.Drone)
 
-Un autre drone RF2.4GHz a été étudié, mais le reverse engineering du protocole n'est pas allé jusqu'au bout (PNJ Discovery)
+Un autre drone RF2.4GHz a été étudié, mais le reverse engineering du protocole n'est pas allé jusqu'au bout (PNJ Discovery).
+
+Ce projet s'inscrit dans le cadre d'un projet long étudiant pour la formation [TLS-SEC](https://tls-sec.github.io/).
 
 ## Détails des attaques
 
-La description des attaques est détaillée dans le dossier de documentation:
+Les attaques sont décrites dans le dossier de documentation:
 - [Attaque Parrot AR.Drone](doc/Parrot_AR_Drone/Notes.md)
 - [Attaque Syma X5C-1](doc/Syma\ X5C-1/Notes.md)
 
-L'étude partielle du second drone RF est disponible dans le dossier [Etude PNJ Discovery](doc/PNJ\ Drone/Notes.md)
+L'étude partielle du second drone RF est disponible dans le dossier [Etude PNJ Discovery](doc/PNJ\ Drone/Notes.md).
+
+Pour des détails plus précis, se référer au rapport ci-dessous.
+
+## Publication
+
+Pour une vision complète de l'ensemble du travail fourni par le projet, voir le [rapport complet](doc/Rapport/rapport.pdf).
 
 ## Vidéos
 
